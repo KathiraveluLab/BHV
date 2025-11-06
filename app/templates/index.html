@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to BHV</h1>
+    <p>Track and analyze your behavioral health with sentiment analysis</p>
+    {% if not current_user.is_authenticated %}
+        <div class="hero-actions">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Get Started</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Login</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

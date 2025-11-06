@@ -1,0 +1,231 @@
+{% extends "layout.html" %}
+
+{% block title %}User Details - {{ user.email }} - Admin Dashboard - BHV{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">← Back to Users</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Dashboard</a>
+    </div>
+    
+    <h2>User Details</h2>
+    
+    <div class="user-info-section">
+        <div class="info-card">
+            <h3>User Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Email:</strong> {{ user.email }}
+                </div>
+                <div class="info-item">
+                    <strong>Role:</strong> 
+                    <span class="role-badge role-{{ user.role }}">
+                        {{ user.role|title }}
+                    </span>
+                </div>
+                <div class="info-item">
+                    <strong>Verified:</strong> 
+                    {% if user.is_verified %}
+                        <span class="verified-badge">✓ Yes</span>
+                    {% else %}
+                        <span class="unverified-badge">✗ No</span>
+                    {% endif %}
+                </div>
+                <div class="info-item">
+                    <strong>Created:</strong> {{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else 'N/A' }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="user-uploads-section">
+        <h3>User Uploads ({{ uploads|length }})</h3>
+        {% if uploads %}
+            <div class="uploads-list">
+                {% for upload in uploads %}
+                    <div class="upload-item">
+                        <img src="{{ upload.image_url }}" alt="{{ upload.title }}" class="upload-thumb">
+                        <div class="upload-details">
+                            <h4>{{ upload.title }}</h4>
+                            <p>{{ upload.description[:100] }}{% if upload.description|length > 100 %}...{% endif %}</p>
+                            <span class="sentiment-badge sentiment-{{ upload.sentiment }}">
+                                {{ upload.sentiment|title }}
+                            </span>
+                            <span class="upload-date">{{ upload.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No uploads found.</p>
+        {% endif %}
+    </div>
+    
+    <div class="user-chats-section">
+        <h3>User Chats ({{ chats|length }})</h3>
+        {% if chats %}
+            <div class="chats-list">
+                {% for chat in chats %}
+                    <div class="chat-item chat-{{ chat.sender_role }}">
+                        <div class="chat-header">
+                            <span class="chat-role">{{ chat.sender_role|title }}</span>
+                            <span class="chat-date">{{ chat.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        <div class="chat-message-text">{{ chat.message }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No chat messages found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.user-info-section {
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background-color: var(--yellow-light);
+    border: 2px solid var(--primary-yellow);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.info-card h3 {
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    padding: 0.5rem 0;
+}
+
+.user-uploads-section,
+.user-chats-section {
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background-color: var(--white);
+    border: 2px solid var(--primary-yellow);
+    border-radius: 8px;
+}
+
+.user-uploads-section h3,
+.user-chats-section h3 {
+    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+}
+
+.uploads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.upload-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--gray-light);
+    border-radius: 4px;
+    align-items: center;
+}
+
+.upload-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.upload-details {
+    flex: 1;
+}
+
+.upload-details h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.upload-details p {
+    margin-bottom: 0.5rem;
+    color: var(--gray-dark);
+}
+
+.chats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.chat-item {
+    padding: 1rem;
+    border-radius: 4px;
+    background-color: var(--gray-light);
+}
+
+.chat-item.chat-admin {
+    background-color: var(--primary-yellow);
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.chat-role {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.chat-date {
+    font-size: 0.875rem;
+    color: var(--gray-dark);
+}
+
+.chat-message-text {
+    color: var(--text-dark);
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.role-badge.role-admin {
+    background-color: var(--error);
+    color: var(--white);
+}
+
+.role-badge.role-user {
+    background-color: var(--success);
+    color: var(--white);
+}
+
+.verified-badge {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.unverified-badge {
+    color: var(--error);
+    font-weight: 600;
+}
+</style>
+{% endblock %}
+

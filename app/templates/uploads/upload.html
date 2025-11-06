@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block title %}Upload Content - BHV{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+    <h2>Upload New Content</h2>
+    <form method="POST" action="{{ url_for('uploads.upload') }}" enctype="multipart/form-data" class="upload-form">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control", placeholder="Enter a title") }}
+            {% if form.title.errors %}
+                <div class="form-errors">
+                    {% for error in form.title.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows="5", placeholder="Enter description (sentiment will be analyzed automatically)") }}
+            {% if form.description.errors %}
+                <div class="form-errors">
+                    {% for error in form.description.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.image.label(class="form-label") }}
+            {{ form.image(class="form-control-file") }}
+            <small class="form-text">Supported formats: JPG, JPEG, PNG, GIF</small>
+            {% if form.image.errors %}
+                <div class="form-errors">
+                    {% for error in form.image.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.audio.label(class="form-label") }}
+            {{ form.audio(class="form-control-file") }}
+            <small class="form-text">Optional - Supported formats: MP3, WAV, M4A, OGG</small>
+            {% if form.audio.errors %}
+                <div class="form-errors">
+                    {% for error in form.audio.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('uploads.gallery') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

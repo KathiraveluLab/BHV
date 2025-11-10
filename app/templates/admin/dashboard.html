@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Dashboard - BHV{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h2>Admin Dashboard</h2>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Uploads</h3>
+            <p class="stat-number">{{ total_uploads }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Users</h3>
+            <p class="stat-number">{{ total_users }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Positive Sentiments</h3>
+            <p class="stat-number">{{ sentiment_counts.positive }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Neutral Sentiments</h3>
+            <p class="stat-number">{{ sentiment_counts.neutral }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Negative Sentiments</h3>
+            <p class="stat-number">{{ sentiment_counts.negative }}</p>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <h3>Sentiment Distribution</h3>
+        <canvas id="sentimentChart"></canvas>
+    </div>
+    
+    <div class="recent-uploads">
+        <h3>Recent Uploads</h3>
+        {% if recent_uploads %}
+            <div class="uploads-list">
+                {% for upload in recent_uploads %}
+                    <div class="upload-item">
+                        <img src="{{ upload.image_url }}" alt="{{ upload.title }}" class="upload-thumb">
+                        <div class="upload-details">
+                            <h4>{{ upload.title }}</h4>
+                            <span class="sentiment-badge sentiment-{{ upload.sentiment }}">
+                                {{ upload.sentiment|title }}
+                            </span>
+                            <span class="upload-date">{{ upload.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No uploads yet.</p>
+        {% endif %}
+    </div>
+    
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.all_uploads') }}" class="btn btn-primary">View All Uploads</a>
+        <a href="{{ url_for('admin.users') }}" class="btn btn-primary">View All Users</a>
+        <a href="{{ url_for('admin.chats') }}" class="btn btn-primary">View All Chats</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('sentimentChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_data.labels|tojson }},
+            datasets: [{
+                label: 'Sentiment Count',
+                data: {{ chart_data.data|tojson }},
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(255, 99, 132, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

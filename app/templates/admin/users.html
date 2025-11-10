@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block title %}Users - Admin Dashboard - BHV{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h2>All Users</h2>
+    <div class="admin-actions">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+    
+    {% if users %}
+        <div class="users-table">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Verified</th>
+                        <th>Uploads</th>
+                        <th>Chats</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <span class="role-badge role-{{ user.role }}">
+                                    {{ user.role|title }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if user.is_verified %}
+                                    <span class="verified-badge">✓ Verified</span>
+                                {% else %}
+                                    <span class="unverified-badge">✗ Unverified</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.upload_count }}</td>
+                            <td>{{ user.chat_count }}</td>
+                            <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.user_detail', user_id=user._id) }}" class="btn btn-primary btn-sm">View Details</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background-color: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gray);
+}
+
+.admin-table th {
+    background-color: var(--primary-yellow);
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.admin-table tr:hover {
+    background-color: var(--yellow-light);
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.role-badge.role-admin {
+    background-color: var(--error);
+    color: var(--white);
+}
+
+.role-badge.role-user {
+    background-color: var(--success);
+    color: var(--white);
+}
+
+.verified-badge {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.unverified-badge {
+    color: var(--error);
+    font-weight: 600;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+</style>
+{% endblock %}
+

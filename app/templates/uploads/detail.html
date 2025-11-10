@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ upload.title }} - BHV{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <div class="detail-header">
+        <a href="{{ url_for('uploads.gallery') }}" class="btn btn-secondary">← Back to Gallery</a>
+        <h2>{{ upload.title }}</h2>
+    </div>
+    
+    <div class="detail-content">
+        <div class="detail-image">
+            <img src="{{ upload.image_url }}" alt="{{ upload.title }}">
+        </div>
+        
+        <div class="detail-info">
+            <div class="detail-meta">
+                <span class="sentiment-badge sentiment-{{ upload.sentiment }}">
+                    Sentiment: {{ upload.sentiment|title }}
+                </span>
+                <span class="detail-date">{{ upload.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+            
+            <div class="detail-description">
+                <h3>Description</h3>
+                <p>{{ upload.description }}</p>
+            </div>
+            
+            {% if upload.audio_url %}
+                <div class="detail-audio">
+                    <h3>Audio</h3>
+                    <audio controls>
+                        <source src="{{ upload.audio_url }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if current_user.is_authenticated %}
+<div class="chat-section">
+    <h3>Chat</h3>
+    <div class="chat-container">
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="chat-input-field" placeholder="Type your message..." />
+            <button id="chat-send-btn" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const userId = '{{ current_user.id }}';
+    const chatEndpoint = '/chat/send';
+    const messagesEndpoint = '/chat/list/' + userId;
+    
+    function loadMessages() {
+        fetch(messagesEndpoint)
+            .then(response => response.json())
+            .then(data => {
+                const messagesDiv = document.getElementById('chat-messages');
+                messagesDiv.innerHTML = '';
+                data.messages.forEach(msg => {
+                    const msgEl = document.createElement('div');
+                    msgEl.className = 'chat-message ' + (msg.sender_role === 'admin' ? 'admin' : 'user');
+                    msgEl.textContent = msg.message;
+                    messagesDiv.appendChild(msgEl);
+                });
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+    }
+    
+    function sendMessage() {
+        const input = document.getElementById('chat-input-field');
+        const message = input.value.trim();
+        if (!message) return;
+        
+        fetch(chatEndpoint, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: message, user_id: userId})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                input.value = '';
+                loadMessages();
+            }
+        });
+    }
+    
+    document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
+    document.getElementById('chat-input-field').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+    
+    loadMessages();
+    setInterval(loadMessages, 3000); // Refresh every 3 seconds
+</script>
+{% endblock %}
+

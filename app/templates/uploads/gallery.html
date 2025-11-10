@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}Gallery - BHV{% endblock %}
+
+{% block content %}
+<div class="gallery-container">
+    <div class="gallery-header">
+        <h2>{% if admin_view %}All Uploads{% else %}My Gallery{% endif %}</h2>
+        {% if not admin_view %}
+            <a href="{{ url_for('uploads.upload') }}" class="btn btn-primary">Upload New</a>
+        {% endif %}
+    </div>
+    
+    {% if uploads %}
+        <div class="gallery-grid">
+            {% for upload in uploads %}
+                <div class="gallery-item">
+                    <a href="{{ url_for('uploads.detail', upload_id=upload._id) }}">
+                        <div class="gallery-thumbnail">
+                            <img src="{{ upload.image_url }}" alt="{{ upload.title }}">
+                            <div class="gallery-overlay">
+                                <span class="sentiment-badge sentiment-{{ upload.sentiment }}">
+                                    {{ upload.sentiment|title }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>{{ upload.title }}</h3>
+                            <p class="gallery-date">{{ upload.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No uploads yet. <a href="{{ url_for('uploads.upload') }}">Upload your first item!</a></p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

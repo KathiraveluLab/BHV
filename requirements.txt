@@ -1,0 +1,9 @@
+Flask==3.0.0
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+bcrypt==4.1.2
+python-dotenv==1.0.0
+Pillow==10.2.0
+pytest==7.4.4
+pytest-cov==4.1.0

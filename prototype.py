@@ -18,7 +18,7 @@ DB_NAME = 'bhv_prototype'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = 'supersecretkey'  
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev_key_do_not_use_in_prod')  
 
 # Flask-Login Setup
 login_manager = LoginManager()
@@ -199,6 +199,9 @@ def authorize_google():
     username = email.split('@')[0]
     user_data = users_collection.find_one({'email': email})
     if not user_data:
+        if users_collection.find_one({'username': username}):
+            username = email
+
         users_collection.insert_one({
             'username': username,
             'email': email,
@@ -253,4 +256,4 @@ def uploaded_file(filename):
 if __name__ == '__main__':
     print(f" * Database initialized: MongoDB ({DB_NAME})")
     print(f" * Upload folder: {UPLOAD_FOLDER}")
-    app.run(debug=True, port=5001, host='0.0.0.0')
+    app.run(debug=os.getenv('FLASK_DEBUG', 'False').lower() in ('true', '1'), port=5001, host='0.0.0.0')

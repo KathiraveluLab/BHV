@@ -1,19 +1,74 @@
-# BHV: Behavioral Health Vault
+# BHV Prototype (Architectural Prototype)
+**Proof of Concept for Alaska BHV: Flask + MongoDB + Docker**
 
-The goal of this project is to provide a digitization approach to record the journey of recovery of people with serious mental illnesses and other social determinants. BHV (pronounced Beehive or Behave) aims to complement traditional Electronic Health Records (EHRs) by storing patient-provided images (photographs and scanned drawings) along with associated textual narratives, which may be provided by the patient or recorded by a social worker during an interview.
+This repository serves as a **Proof of Concept (POC)** for the "Beehive-2.0" architecture.
 
-BHV is a minimal, Python-based application that enables healthcare networks to store and retrieve patient-provided images.
+It demonstrates a minimal, monolithic implementation of the Behavioral Health Vault (BHV) designed to solve the installation complexity of the original Beehive project.
 
-It provides them access to upload, view, and edit their own images and narratives.
+## Goal
+The primary goal of this prototype is to validate the **"Single Command Installation"** requirement using a containerized **Flask + MongoDB** stack, while also demonstrating secure OAuth authentication and automatic private repository creation.
 
-It also provides admin-level access for system administrators to view the entire ecosystem, upload images on behalf of users, along with the narrative, edit images on behalf of users, and delete images or narrations on behalf of users or as a moderation action.
+## Features
+*   **Single Command Install**: Fully containerized with Docker Compose.
+*   **MongoDB Backend**: Swapped from SQLite to MongoDB for scalable metadata storage.
+*   **User Authentication**: OAuth integration (GitHub, Google) + Local Login.
+*   **Private Vault**: Automatically creates a private GitHub repository (`bhv-vault-<username>`) for each user.
+*   **Minimal Stack**: Flask + Jinja2 + Vanilla CSS (No complex frontend build steps).
 
-The system should be secure. But the signup process should be pretty straightforward. Email-based signups are ok. 
+## Quick Start
 
-Log-ins should be straightforward. A simple username and password should be sufficient.
+### Option 1: The "Single Command" (Recommended)
+This method uses Docker to spin up the entire stack (App + Database) with one command.
 
-The system should avoid unnecessary bloat to enable easy installation in healthcare networks.
+1.  **Configure Environment**:
+    Create a `.env` file in the root directory:
+    ```env
+    # Docker uses the service name 'mongodb' as the host
+    MONGO_URI=mongodb://mongodb:27017/
+    
+    # OAuth Credentials
+    GITHUB_CLIENT_ID=your_github_id
+    GITHUB_CLIENT_SECRET=your_github_secret
+    GOOGLE_CLIENT_ID=your_google_id
+    GOOGLE_CLIENT_SECRET=your_google_secret
+    ```
 
-The front-end should be kept minimal to allow the entire system to be run from a single command (rather than expecting the front-end, backend, and database to be run separately).
+2.  **Run with Docker Compose**:
+    ```bash
+    docker-compose up --build
+    ```
 
-The storage of the images could be in a file system with an index to retrieve them easily. The index itself could be in a database to allow easy queries.
+3.  **Open in Browser**:
+    Visit `http://localhost:5001`
+
+---
+
+### Option 2: Manual Installation
+If you prefer to run locally without Docker:
+
+1.  **Prerequisites**:
+    - Python 3.8+
+    - MongoDB installed and running locally (default port 27017)
+
+2.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Configure Environment**:
+    Update `.env` to point to localhost:
+    ```env
+    MONGO_URI=mongodb://localhost:27017/
+    ... (OAuth credentials)
+    ```
+
+4.  **Run the App**:
+    ```bash
+    python prototype.py
+    ```
+
+## Roadmap & Status
+*   [x] **Core Architecture**: Flask + MongoDB + Docker (Completed)
+*   [x] **Authentication**: GitHub & Google OAuth (Completed)
+*   [x] **Vault Creation**: Automatic private repo creation via PyGithub (Completed)
+*   [ ] **Analytics**: Advanced Research Analytics Module (Planned)

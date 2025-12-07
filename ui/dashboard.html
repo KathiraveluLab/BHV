@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>My Recovery Timeline</h2>
+
+{% for img in images %}
+<div class="card">
+    <img src="{{ img.path }}" width="240">
+    <h3>{{ img.title }}</h3>
+    <p>{{ img.description }}</p>
+    <a href="/image/{{ img.id }}">View</a>
+</div>
+{% endfor %}
+
+{% endblock %}

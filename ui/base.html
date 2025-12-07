@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BHV</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        body { font-family: Arial; background: #f6f7f9; margin: 0; }
+        nav { background: #1f2937; color: white; padding: 12px; }
+        nav a { color: white; margin-right: 16px; text-decoration: none; }
+        .container { padding: 24px; }
+        .card { background: white; padding: 20px; border-radius: 8px; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 6px; }
+        button { margin-top: 12px; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/upload">Upload</a>
+    <a href="/logout">Logout</a>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

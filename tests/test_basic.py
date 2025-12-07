@@ -4,11 +4,7 @@ import pytest
 
 def test_imports():
     """Test that bhv package can be imported."""
-    try:
-        import bhv
-        assert True
-    except ImportError:
-        assert False, "bhv package should be importable"
+    import bhv
 
 
 def test_python_version():

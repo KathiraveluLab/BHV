@@ -13,20 +13,39 @@ Set up your environment - See Installation Guide
 Find an issue - Look for issues labeled good first issue or help wanted
 Ask questions - Open a discussion or comment on an issue if anything is unclear
 
-Development Setup
-bash# Clone your fork
+### Development Setup
+
+#### Clone your fork
+```bash
 git clone https://github.com/YOUR_USERNAME/BHV.git
 cd BHV
+```
 
-# Create a virtual environment
+#### Create a virtual environment
+```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-# Install dependencies
+#### Activate the virtual environment
+On Windows:
+```bash
+venv\Scripts\activate
+```
+
+On macOS/Linux:
+```bash
+source venv/bin/activate
+```
+
+#### Install dependencies
+```bash
 pip install -r requirements.txt
+```
 
-# Run tests to make sure everything works
+#### Run tests to make sure everything works
+```bash
 pytest
+```
 How to Contribute
 Reporting Bugs
 Found a bug? Help us fix it:

@@ -15,8 +15,12 @@ dependencies = [
     "python-multipart"
 ]
 
+
 [project.scripts]
 bhv = "bhv.main:run"
+
+[tool.setuptools]
+packages = ["bhv"]
 
 [tool.setuptools.package-data]
 bhv = ["../static/**", "../ui/**"]

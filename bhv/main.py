@@ -9,10 +9,10 @@ import uvicorn
 
 app = FastAPI()
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+APP_DIR = Path(__file__).resolve().parent.parent
 
-STATIC_DIR = BASE_DIR / "static"
-TEMPLATE_DIR = BASE_DIR / "ui"
+STATIC_DIR = APP_DIR / "static"
+TEMPLATE_DIR = APP_DIR / "ui"
 UPLOAD_DIR = STATIC_DIR / "uploads"
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)

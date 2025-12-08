@@ -55,7 +55,7 @@ def upload_image(
     description: str = Form(""),
     emotion: str = Form("")
 ):
-    path = f"{UPLOAD_DIR}/{image.filename}"
+    path = UPLOAD_DIR / f"{uuid.uuid4().hex}{Path(image.filename).suffix}"
 
     with open(path, "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)

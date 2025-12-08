@@ -23,4 +23,4 @@ bhv = "bhv.main:run"
 packages = ["bhv"]
 
 [tool.setuptools.package-data]
-bhv = ["../static/**", "../ui/**"]
+bhv = ["/static/**", "/ui/**"]

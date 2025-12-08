@@ -6,7 +6,7 @@
 
 ###  Signup Requirements
 - Email Address (**must be unique**)
-- Password (**minimum 6 characters**)
+- Password (**minimum 12 characters**)
 
 > No username, no phone number, and no extra verification steps are required.
 

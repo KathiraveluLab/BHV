@@ -1,0 +1,5 @@
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+bcrypt==4.1.2
+Pillow==10.2.0
+Werkzeug==3.0.0

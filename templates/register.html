@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Register - BHV{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <h2>Create Account</h2>
+    <p style="margin-bottom: 20px; color: #666;">Join BHV to start your recovery journey.</p>
+    
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <small style="color: #666; display: block; margin-top: 5px;">
+                Must be at least 8 characters with uppercase, lowercase, digit, and special character
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+        </div>
+        
+        <button type="submit">Register</button>
+    </form>
+    
+    <p style="margin-top: 20px; text-align: center;">
+        Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+    </p>
+</div>
+{% endblock %}

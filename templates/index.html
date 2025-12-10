@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Home - BHV{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Welcome to Behavioral Health Vault (BHV)</h2>
+    <p style="margin: 20px 0;">
+        BHV is a secure platform for recording and managing the recovery journey of individuals with serious mental illnesses and substance-use disorders.
+    </p>
+    
+    {% if user %}
+        <p>Welcome back, <strong>{{ user.email }}</strong>!</p>
+        <a href="{{ url_for('dashboard') }}" class="btn">Go to Dashboard</a>
+    {% else %}
+        <h3 style="margin-top: 30px;">Get Started</h3>
+        <p>Create an account or login to start your recovery journey.</p>
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('register') }}" class="btn">Create Account</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary" style="margin-left: 10px;">Login</a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Features</h3>
+    <ul style="margin-left: 20px; margin-top: 10px;">
+        <li>Secure password-based authentication</li>
+        <li>Personal image and narrative storage</li>
+        <li>Track your recovery journey over time</li>
+        <li>HIPAA-compliant data protection</li>
+    </ul>
+</div>
+{% endblock %}

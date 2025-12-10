@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Login - BHV{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <h2>Login</h2>
+    <p style="margin-bottom: 20px; color: #666;">Welcome back! Please login to your account.</p>
+    
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required autofocus>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <button type="submit">Login</button>
+    </form>
+    
+    <p style="margin-top: 20px; text-align: center;">
+        Don't have an account? <a href="{{ url_for('register') }}">Register here</a>
+    </p>
+</div>
+{% endblock %}

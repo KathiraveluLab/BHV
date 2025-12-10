@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - BHV{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Dashboard</h2>
+    <p>Welcome, <strong>{{ user.email }}</strong>!</p>
+    <p style="margin-top: 10px;">Role: <strong>{{ user.role.value }}</strong></p>
+    <p>Member since: {{ user.created_at.strftime('%B %d, %Y') }}</p>
+</div>
+
+<div class="card">
+    <h3>Quick Actions</h3>
+    <p style="margin-bottom: 15px;">More features coming soon...</p>
+    <ul style="margin-left: 20px;">
+        <li>Image upload (Coming in PR #5)</li>
+        <li>View recovery timeline (Coming soon)</li>
+        <li>Add narratives (Coming soon)</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>Account Information</h3>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Account Type:</strong> {{ user.role.value.replace('_', ' ').title() }}</p>
+    <p><strong>Account ID:</strong> {{ user.id }}</p>
+</div>
+{% endblock %}

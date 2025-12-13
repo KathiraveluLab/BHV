@@ -68,6 +68,7 @@ def register():
             flash('Registration successful! Please login.', 'success')
             return redirect(url_for('login'))
         except Exception as e:
+            app.logger.error(f"Registration failed: {e}")
             db.session.rollback()
             flash('Registration failed. Please try again.', 'error')
             return render_template('register.html')

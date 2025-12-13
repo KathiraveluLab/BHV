@@ -85,6 +85,7 @@ def test_register_weak_password(client):
     }, follow_redirects=True)
     
     assert response.status_code == 200
+    assert b"Password must be at least 8 characters long" in response.data
 
 
 def test_login_page_get(client):

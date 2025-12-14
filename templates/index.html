@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BHV</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>BHV</h1>
+      {% if user %}
+      <div class="nav">{{ user.email }} | <a href="/upload">Upload</a> | <a href="/logout">Logout</a></div>
+      {% else %}
+      <div class="nav"><a href="/login">Login</a> | <a href="/signup">Sign up</a></div>
+      {% endif %}
+    </header>
+    <main>
+      <section class="gallery">
+        {% for img in images %}
+        <article>
+          <a href="/images/{{ img.filename }}"><img src="/images/thumb-{{ img.filename }}" alt="img"></a>
+          <p>{{ img.narrative }}</p>
+        </article>
+        {% endfor %}
+      </section>
+    </main>
+  </body>
+</html>

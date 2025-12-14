@@ -1,0 +1,17 @@
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;background:#fafafa;color:#111}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #eee;background:#fff;position:sticky;top:0}
+header h1{font-size:18px;margin:0}
+.container{max-width:1000px;margin:0 auto;padding:20px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.card img{width:100%;height:auto;display:block}
+.card p{padding:12px 12px 16px;margin:0;font-size:14px;color:#333}
+button, input, textarea{font-family:inherit}
+button{background:#111;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:600;cursor:pointer}
+button:hover{opacity:.9}
+input[type="file"], textarea{width:100%;border:1px solid #ddd;border-radius:8px;padding:10px;background:#fff}
+textarea{min-height:100px;resize:vertical}
+.form{display:grid;gap:12px;background:#fff;border:1px solid #eee;border-radius:12px;padding:16px}
+.error{color:#b00020}

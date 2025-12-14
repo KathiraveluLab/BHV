@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Upload</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <h2>Upload Image</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label>Image <input name="file" type="file" accept="image/*" required></label>
+      <label>Narrative <textarea name="narrative"></textarea></label>
+      <button type="submit">Upload</button>
+    </form>
+    <a href="/">Home</a>
+  </body>
+</html>

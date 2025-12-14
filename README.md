@@ -17,3 +17,37 @@ The system should avoid unnecessary bloat to enable easy installation in healthc
 The front-end should be kept minimal to allow the entire system to be run from a single command (rather than expecting the front-end, backend, and database to be run separately).
 
 The storage of the images could be in a file system with an index to retrieve them easily. The index itself could be in a database to allow easy queries.
+
+## Changes Implemented
+
+- Frontend migrated to React using Vite in `frontend/` with a modern layout, Inter font, and simple card gallery.
+- Backend updated to serve built React assets from `frontend/dist` and provide JSON APIs.
+- New JSON endpoints: `GET /api/images`, `POST /api/login`, `POST /api/logout`, `POST /api/upload`, `POST /api/signup`.
+- Minimal FastAPI app scaffolded: `app.py`, models in `bhv/models.py`, storage in `bhv/storage.py`, auth in `bhv/auth.py`, and DB helpers in `bhv/db.py`.
+- Static fallback retained; images served from `data/images` with thumbnails.
+- Project dependencies added in `requirements.txt`; `.gitignore` updated for frontend build and node modules.
+
+## Run Instructions
+
+- Backend:
+	- `python -m venv .venv`
+	- `\.venv\Scripts\Activate`
+	- `pip install -r requirements.txt`
+	- `python app.py`
+
+- Frontend (development):
+	- `cd frontend`
+	- `npm install`
+	- `npm run dev`
+
+- Frontend (production build served by backend):
+	- `cd frontend`
+	- `npm install`
+	- `npm run build`
+	- `cd ..`
+	- `python app.py`
+
+## Notes
+
+- React UI focuses on simplicity and minimal bloat while keeping a clean look suitable for healthcare environments.
+- For separate dev servers, add CORS to FastAPI or use Vite proxy as needed.

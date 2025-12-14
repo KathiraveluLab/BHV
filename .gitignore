@@ -1,4 +1,7 @@
-# Byte-compiled / optimized / DLL files
+data/
+.venv/
+__pycache__/
+*.pyc# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
@@ -195,6 +198,9 @@ cython_debug/
 .pypirc
 
 # Cursor
+
+frontend/node_modules/
+frontend/dist/
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
 #  refer to https://docs.cursor.com/context/ignore-files

@@ -1,0 +1,7 @@
+body{font-family:Arial,Helvetica,sans-serif;margin:20px}
+header{display:flex;justify-content:space-between;align-items:center}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.gallery img{width:100%;height:auto;border:1px solid #ddd}
+.nav{font-size:14px}
+form label{display:block;margin:8px 0}
+.error{color:#900}

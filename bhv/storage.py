@@ -1,7 +1,10 @@
 import os
 import uuid
+import logging
 from PIL import Image as PILImage
 import aiofiles
+
+logger = logging.getLogger(__name__)
 
 def _secure_name(name):
     uid = uuid.uuid4().hex
@@ -21,6 +24,8 @@ def save_upload(upload):
         img.thumbnail((300, 300))
         thumb = os.path.join('data', 'images', f'thumb-{fname}')
         img.save(thumb)
-    except Exception:
-        pass
+    except (IOError, OSError, PILImage.UnidentifiedImageError) as e:
+        logger.warning(f"Failed to create thumbnail for {fname}: {e}")
+    except Exception as e:
+        logger.error(f"Unexpected error while processing image {fname}: {e}")
     return fname

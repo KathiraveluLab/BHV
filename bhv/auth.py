@@ -22,7 +22,7 @@ def authenticate_user(db, email, password):
 def require_user(request: Request):
     u = request.session.get('user')
     if not u:
-        raise HTTPException(status_code=303, detail='login required')
+        raise HTTPException(status_code=401, detail='Not authenticated')
     return u
 
 def logout_user(request: Request):

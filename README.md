@@ -27,12 +27,31 @@ The storage of the images could be in a file system with an index to retrieve th
 - Static fallback retained; images served from `data/images` with thumbnails.
 - Project dependencies added in `requirements.txt`; `.gitignore` updated for frontend build and node modules.
 
+## Security Configuration
+
+**IMPORTANT:** Before running the application, you must set the `BHV_SECRET` environment variable with a strong, random secret key. This is used to secure session data and prevent tampering.
+
+1. Generate a secure secret key:
+   ```
+   python -c "import secrets; print(secrets.token_urlsafe(32))"
+   ```
+
+2. Set the environment variable with the generated key:
+   - **Windows (PowerShell):** `$env:BHV_SECRET = "your-generated-key"`
+   - **Windows (CMD):** `set BHV_SECRET=your-generated-key`
+   - **Linux/Mac:** `export BHV_SECRET="your-generated-key"`
+
+3. Alternatively, create a `.env` file by copying `.env.example` and filling in your secret key.
+
+The application will fail to start if `BHV_SECRET` is not set, preventing accidental use of insecure defaults.
+
 ## Run Instructions
 
 - Backend:
 	- `python -m venv .venv`
 	- `\.venv\Scripts\Activate`
 	- `pip install -r requirements.txt`
+	- Set `BHV_SECRET` environment variable (see Security Configuration above)
 	- `python app.py`
 
 - Frontend (development):

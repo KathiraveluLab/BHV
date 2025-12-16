@@ -5,55 +5,137 @@ export default function App(){
   const [images,setImages]=React.useState([])
   const [file,setFile]=React.useState(null)
   const [narrative,setNarrative]=React.useState('')
+  const [error,setError]=React.useState('')
 
-  React.useEffect(()=>{fetch('/api/images').then(r=>r.json()).then(setImages)},[])
+  React.useEffect(()=>{
+    fetch('/api/images')
+      .then(r=>r.json())
+      .then(setImages)
+      .catch(err=>{
+        console.error('Failed to load images:', err)
+        setError('Failed to load images')
+      })
+  },[])
 
-  function logout(){fetch('/api/logout',{method:'POST'}).then(()=>setUser(null))}
+  function logout(){
+    fetch('/api/logout',{method:'POST'})
+      .then(()=>setUser(null))
+      .catch(err=>{
+        console.error('Logout failed:', err)
+        setError('Logout failed')
+      })
+  }
 
   function submitUpload(ev){
     ev.preventDefault()
-    if(!file) return
+    if(!file){
+      setError('Please select a file')
+      return
+    }
+    setError('')
     const fd=new FormData()
     fd.append('file',file)
     fd.append('narrative',narrative)
-    fetch('/api/upload',{method:'POST',body:fd}).then(()=>{fetch('/api/images').then(r=>r.json()).then(setImages)})
+    fetch('/api/upload',{method:'POST',body:fd})
+      .then(r=>{
+        if(!r.ok) throw new Error('Upload failed')
+        return r.json()
+      })
+      .then(d=>{
+        setFile(null)
+        setNarrative('')
+        return fetch('/api/images').then(r=>r.json()).then(setImages)
+      })
+      .catch(err=>{
+        console.error('Upload failed:', err)
+        setError('Upload failed: '+err.message)
+      })
   }
 
   function login(ev){
     ev.preventDefault()
+    setError('')
     const form=new FormData(ev.target)
     const body={email:form.get('email'),password:form.get('password')}
-    fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).then(d=>{if(!d.error) setUser(d)})
+    fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(r=>{
+        if(!r.ok){
+          if(r.status===401) throw new Error('Invalid email or password')
+          throw new Error('Login failed')
+        }
+        return r.json()
+      })
+      .then(d=>{
+        if(d.error){
+          setError(d.error)
+        } else {
+          setUser(d)
+          ev.target.reset()
+        }
+      })
+      .catch(err=>{
+        console.error('Login error:', err)
+        setError(err.message)
+      })
   }
 
   return (
-    React.createElement('div',null,
-      React.createElement('header',null,
-        React.createElement('h1',null,'Behavioral Health Vault'),
-        user?React.createElement('div',null,user.email,' ',React.createElement('button',{onClick:logout,style:{marginLeft:8}},'Logout')):React.createElement('div',null)
-      ),
-      React.createElement('div',{className:'container'},
-        React.createElement('section',{className:'form'},
-          React.createElement('h3',null,'Upload'),
-          user?React.createElement('form',{onSubmit:submitUpload},
-            React.createElement('input',{type:'file',onChange:(ev)=>setFile(ev.target.files[0])}),
-            React.createElement('textarea',{placeholder:'Narrative',value:narrative,onChange:(ev)=>setNarrative(ev.target.value)}),
-            React.createElement('div',null,React.createElement('button',{type:'submit'},'Upload'))
-          ):React.createElement('div',null,'Login to upload')
-        ),
-        React.createElement('section',{style:{marginTop:20}},
-          React.createElement('h3',null,'Gallery'),
-          React.createElement('div',{className:'gallery'},images.map(img=>React.createElement('article',{key:img.id,className:'card'},React.createElement('a',{href:img.url},React.createElement('img',{src:img.thumb})),React.createElement('p',null,img.narrative))))
-        ),
-        React.createElement('section',{style:{marginTop:20}},
-          React.createElement('h3',null,'Login'),
-          React.createElement('form',{onSubmit:login, className:'form'},
-            React.createElement('input',{name:'email',placeholder:'Email',type:'email'}),
-            React.createElement('input',{name:'password',type:'password',placeholder:'Password'}),
-            React.createElement('div',null,React.createElement('button',null,'Login'))
-          )
-        )
-      )
-    )
+    <div>
+      <header>
+        <h1>Behavioral Health Vault</h1>
+        {user ? (
+          <div>
+            {user.email}
+            <button onClick={logout} style={{marginLeft: 8}}>Logout</button>
+          </div>
+        ) : (
+          <div></div>
+        )}
+      </header>
+      {error && (
+        <div style={{color: 'red', padding: '10px', backgroundColor: '#ffe0e0', margin: '10px'}}>
+          {error}
+        </div>
+      )}
+      <div className='container'>
+        <section className='form'>
+          <h3>Upload</h3>
+          {user ? (
+            <form onSubmit={submitUpload}>
+              <input type='file' onChange={(ev)=>setFile(ev.target.files[0])} />
+              <textarea placeholder='Narrative' value={narrative} onChange={(ev)=>setNarrative(ev.target.value)} />
+              <div>
+                <button type='submit'>Upload</button>
+              </div>
+            </form>
+          ) : (
+            <div>Login to upload</div>
+          )}
+        </section>
+        <section style={{marginTop: 20}}>
+          <h3>Gallery</h3>
+          <div className='gallery'>
+            {images.map(img => (
+              <article key={img.id} className='card'>
+                <a href={img.url}>
+                  <img src={img.thumb} />
+                </a>
+                <p>{img.narrative}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        <section style={{marginTop: 20}}>
+          <h3>Login</h3>
+          <form onSubmit={login} className='form'>
+            <input name='email' placeholder='Email' type='email' />
+            <input name='password' type='password' placeholder='Password' />
+            <div>
+              <button>Login</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
   )
 }

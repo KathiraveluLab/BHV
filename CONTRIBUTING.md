@@ -93,20 +93,21 @@ Keep functions small and focused
 Add docstrings to functions and classes
 
 Example:
-pythondef upload_image(user_id, image_file, narrative):
-    """
-    Upload a patient image with associated narrative.
-    
-    Args:
-        user_id (int): ID of the user uploading the image
-        image_file: File object containing the image
-        narrative (str): Text narrative associated with the image
+
+    def upload_image(user_id, image_file, narrative):
+        """
+        Upload a patient image with associated narrative.
         
-    Returns:
-        dict: Contains success status and image ID
-    """
-    # Your code here
-    pass
+        Args:
+            user_id (int): ID of the user uploading the image
+            image_file: File object containing the image
+            narrative (str): Text narrative associated with the image
+            
+        Returns:
+            dict: Contains success status and image ID
+        """
+        # Your code here
+        pass
 Security First
 Since BHV handles sensitive healthcare data:
 

@@ -15,7 +15,7 @@ class Image(db.Model):
     file_path = db.Column(db.String(500), nullable=False)
     storage_type = db.Column(db.Enum(StorageType), default=StorageType.LOCAL, nullable=False)
     upload_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
-    file_size = db.Column(db.Integer)  # in bytes
+    file_size = db.Column(db.Integer, nullable=False)  # in bytes
     file_hash = db.Column(db.String(64), index=True)  # SHA-256 for duplicate detection
     thumbnail_path = db.Column(db.String(500))
     

@@ -170,10 +170,9 @@ def create_app():
         images = Image.query.order_by(Image.uploaded_at.desc()).all()
         return render_template('gallery.html', images=images)
     
-    @app.route('/uploads/<filename>')
+    @app.route('/uploads/<path:filename>')
     def serve_upload(filename):
-        upload_folder = Path(app.config['UPLOAD_FOLDER'])
-        return send_file(upload_folder / filename)
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     
     @app.route('/health')
     def health():

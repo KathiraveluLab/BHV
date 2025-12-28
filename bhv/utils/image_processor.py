@@ -10,8 +10,8 @@ def get_image_metadata(file_path):
                 'format': img.format,
                 'mode': img.mode
             }
-    except Exception as e:
-        print(f"Error extracting metadata: {e}")
+    except IOError as e:
+        print(f"Error extracting metadata: {e}") # Consider using app logging
         return None
 
 def get_file_size(file_path):

@@ -17,5 +17,5 @@ def get_image_metadata(file_path):
 def get_file_size(file_path):
     try:
         return os.path.getsize(file_path)
-    except Exception:
+    except OSError:
         return 0

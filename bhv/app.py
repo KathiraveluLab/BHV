@@ -151,10 +151,10 @@ def create_app():
                 title=form.title.data,
                 description=form.description.data,
                 file_size=file_size,
-                mime_type='image/jpeg',
-                width=0,
-                height=0,
-                user_id=1
+                mime_type=file.mimetype,
+                width=0,  # TODO: Get from image metadata
+                height=0,  # TODO: Get from image metadata
+                user_id=1  # TODO: Replace with current_user.id
             )
             
             db.session.add(image)

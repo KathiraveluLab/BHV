@@ -16,7 +16,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum(UserRole), default=UserRole.PATIENT, nullable=False)
     github_repo_url = db.Column(db.String(500), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     
     # Relationships
     images = db.relationship('Image', backref='user', lazy=True, cascade='all, delete-orphan')

@@ -9,8 +9,8 @@ class Narrative(db.Model):
     image_id = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    last_modified = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
+    last_modified = db.Column(db.DateTime, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
     
     # Relationship to user who created the narrative
     creator = db.relationship('User', foreign_keys=[created_by], backref='created_narratives')

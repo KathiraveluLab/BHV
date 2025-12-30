@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}BHV - Behavioral Health Vault{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Hero Section -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary mb-3">
+                <i class="bi bi-heart-pulse"></i> Behavioral Health Vault
+            </h1>
+            <p class="lead text-muted">
+                A secure, healthcare-compliant platform for storing and managing patient-provided images and narratives to support recovery journeys.
+            </p>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-check text-primary" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h5 class="card-title">Secure & Compliant</h5>
+                        <p class="card-text text-muted">
+                            HIPAA-compliant storage with role-based access control and comprehensive audit trails.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-images text-success" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h5 class="card-title">Image & Narrative Storage</h5>
+                        <p class="card-text text-muted">
+                            Store patient photographs, drawings, and associated textual narratives in one secure location.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-people text-info" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h5 class="card-title">Multi-Role Access</h5>
+                        <p class="card-text text-muted">
+                            Support for patients, social workers, and administrators with appropriate access levels.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        {% if not session.user_id %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header card-header-bhv">
+                <h5 class="mb-0">
+                    <i class="bi bi-rocket-takeoff"></i> Get Started
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6>New User?</h6>
+                        <p class="text-muted mb-3">Create an account to start storing your recovery journey images and narratives.</p>
+                        <a href="{{ url_for('register') }}" class="btn btn-bhv-primary">
+                            <i class="bi bi-person-plus"></i> Register Now
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h6>Existing User?</h6>
+                        <p class="text-muted mb-3">Sign in to access your personal gallery and upload new content.</p>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Sign In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header card-header-bhv">
+                <h5 class="mb-0">
+                    <i class="bi bi-speedometer2"></i> Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-bhv-primary w-100">
+                            <i class="bi bi-grid"></i> View Dashboard
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('upload') }}" class="btn btn-success w-100">
+                            <i class="bi bi-cloud-upload"></i> Upload Image
+                        </a>
+                    </div>
+                    {% if session.role == 'admin' %}
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('admin_panel') }}" class="btn btn-info w-100">
+                            <i class="bi bi-gear"></i> Admin Panel
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- System Information -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header card-header-bhv">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle"></i> About BHV
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Purpose</h6>
+                        <p class="text-muted">
+                            BHV complements traditional Electronic Health Records (EHRs) by providing a secure platform 
+                            for storing patient-provided visual content and narratives that document recovery journeys.
+                        </p>
+                        
+                        <h6>Key Features</h6>
+                        <ul class="text-muted">
+                            <li>Secure image upload and storage</li>
+                            <li>Narrative text association</li>
+                            <li>Role-based access control</li>
+                            <li>Comprehensive audit trails</li>
+                            <li>Healthcare compliance (HIPAA)</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>User Roles</h6>
+                        <div class="mb-3">
+                            <span class="badge bg-primary me-2">Patient</span>
+                            <small class="text-muted">Upload and manage personal images and narratives</small>
+                        </div>
+                        <div class="mb-3">
+                            <span class="badge bg-success me-2">Social Worker</span>
+                            <small class="text-muted">View patient content and add clinical notes</small>
+                        </div>
+                        <div class="mb-3">
+                            <span class="badge bg-info me-2">Admin</span>
+                            <small class="text-muted">Full system access and user management</small>
+                        </div>
+                        
+                        <h6 class="mt-4">Security</h6>
+                        <p class="text-muted">
+                            All data is encrypted at rest and in transit. Access is logged for compliance 
+                            and security monitoring.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Status (for logged-in admins) -->
+        {% if session.role == 'admin' %}
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header card-header-bhv">
+                <h5 class="mb-0">
+                    <i class="bi bi-activity"></i> System Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <span class="health-indicator health-excellent"></span>
+                            <strong>Application</strong>
+                        </div>
+                        <small class="text-muted">Running</small>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <span class="health-indicator health-good"></span>
+                            <strong>Database</strong>
+                        </div>
+                        <small class="text-muted">Connected</small>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <span class="health-indicator health-excellent"></span>
+                            <strong>Storage</strong>
+                        </div>
+                        <small class="text-muted">Available</small>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <span class="health-indicator health-good"></span>
+                            <strong>Security</strong>
+                        </div>
+                        <small class="text-muted">Secure</small>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('diagnostics') }}" class="btn btn-sm btn-outline-info">
+                        <i class="bi bi-activity"></i> View Detailed Diagnostics
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -335,11 +335,11 @@ if __name__ == '__main__':
     server_config = config.get_server_config()
     
     print("=" * 50)
-    print("🏥 BHV: Behavioral Health Vault")
+    print("BHV: Behavioral Health Vault")
     print("=" * 50)
-    print(f"🌐 Server: http://{server_config['host']}:{server_config['port']}")
-    print(f"🔧 Debug Mode: {server_config['debug']}")
-    print(f"📁 Upload Directory: {app.config['UPLOAD_FOLDER']}")
+    print(f"Server: http://{server_config['host']}:{server_config['port']}")
+    print(f"Debug Mode: {server_config['debug']}")
+    print(f"Upload Directory: {app.config['UPLOAD_FOLDER']}")
     print("=" * 50)
     
     try:
@@ -349,7 +349,7 @@ if __name__ == '__main__':
             debug=server_config['debug']
         )
     except KeyboardInterrupt:
-        print("\n👋 BHV application stopped by user")
+        print("\nBHV application stopped by user")
     except Exception as e:
-        print(f"❌ Failed to start BHV application: {e}")
+        print(f"Failed to start BHV application: {e}")
         sys.exit(1)

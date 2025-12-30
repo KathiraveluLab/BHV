@@ -16,8 +16,8 @@ from pathlib import Path
 def print_banner():
     """Print BHV startup banner."""
     print("=" * 60)
-    print("🏥 BHV: Behavioral Health Vault")
-    print("   Healthcare Image & Narrative Storage System")
+    print("BHV: Behavioral Health Vault")
+    print("Healthcare Image & Narrative Storage System")
     print("=" * 60)
 
 
@@ -130,14 +130,14 @@ def start_application():
         config = Config()
         server_config = config.get_server_config()
         
-        print(f"🌐 Server: http://{server_config['host']}:{server_config['port']}")
-        print(f"🔧 Debug Mode: {server_config['debug']}")
-        print(f"📁 Upload Directory: {app.config['UPLOAD_FOLDER']}")
-        print("\n💡 Default admin credentials:")
+        print(f"Server: http://{server_config['host']}:{server_config['port']}")
+        print(f"Debug Mode: {server_config['debug']}")
+        print(f"Upload Directory: {app.config['UPLOAD_FOLDER']}")
+        print("\nDefault admin credentials:")
         print("   Username: admin")
         print("   Password: admin123")
-        print("   ⚠️  CHANGE THESE IMMEDIATELY!")
-        print("\n🛑 Press Ctrl+C to stop the server")
+        print("   WARNING: CHANGE THESE IMMEDIATELY!")
+        print("\nPress Ctrl+C to stop the server")
         print("=" * 60)
         
         # Start the server

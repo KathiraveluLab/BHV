@@ -129,11 +129,11 @@ def init_db():
         create_default_admin(conn)
         
         conn.commit()
-        print("✅ Database initialized successfully")
+        print("Database initialized successfully")
         
     except Exception as e:
         conn.rollback()
-        print(f"❌ Database initialization failed: {e}")
+        print(f"Database initialization failed: {e}")
         raise
     finally:
         conn.close()
@@ -224,10 +224,10 @@ def create_default_admin(conn: sqlite3.Connection):
             VALUES (?, ?, ?, ?)
         ''', ('admin@bhv.local', 'admin', password_hash, 'admin'))
         
-        print("⚠️  Default admin user created:")
+        print("Default admin user created:")
         print("   Username: admin")
         print("   Password: admin123")
-        print("   ⚠️  CHANGE THIS PASSWORD IMMEDIATELY!")
+        print("   CHANGE THIS PASSWORD IMMEDIATELY!")
 
 
 class DatabaseManager:

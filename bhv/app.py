@@ -15,6 +15,8 @@ import uuid
 
 db = SQLAlchemy()
 
+# ==================== MODELS ====================
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
@@ -50,6 +52,8 @@ class Image(db.Model):
     height = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+# ==================== FORMS ====================
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[
@@ -102,6 +106,8 @@ class ImageUploadForm(FlaskForm):
     
     submit = SubmitField('Upload Image')
 
+# ==================== HELPER FUNCTIONS ====================
+
 def allowed_file(filename, allowed_extensions):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
@@ -126,6 +132,8 @@ def get_file_size(file_path):
         return os.path.getsize(file_path)
     except Exception:
         return 0
+
+# ==================== APP FACTORY ====================
 
 def create_app():
     BASE_DIR = Path(__file__).parent.parent
@@ -159,9 +167,27 @@ def create_app():
     with app.app_context():
         db.create_all()
     
+    # ==================== PUBLIC ROUTES ====================
+    
     @app.route('/')
     def index():
         return render_template('index.html')
+    
+    @app.route('/gallery')
+    def gallery():
+        images = Image.query.order_by(Image.uploaded_at.desc()).all()
+        return render_template('gallery.html', images=images)
+    
+    @app.route('/uploads/<filename>')
+    def serve_upload(filename):
+        upload_folder = Path(app.config['UPLOAD_FOLDER'])
+        return send_file(upload_folder / filename)
+    
+    @app.route('/health')
+    def health():
+        return jsonify({'status': 'ok', 'service': 'BHV'}), 200
+    
+    # ==================== AUTH ROUTES ====================
     
     @app.route('/register', methods=['GET', 'POST'])
     def register():
@@ -235,6 +261,8 @@ def create_app():
         user_images = Image.query.filter_by(user_id=current_user.id).order_by(Image.uploaded_at.desc()).all()
         return render_template('profile.html', user=current_user, images=user_images)
     
+    # ==================== UPLOAD ROUTES ====================
+    
     @app.route('/upload', methods=['GET', 'POST'])
     @login_required
     def upload():
@@ -282,19 +310,157 @@ def create_app():
         
         return render_template('upload.html', form=form)
     
-    @app.route('/gallery')
-    def gallery():
-        images = Image.query.order_by(Image.uploaded_at.desc()).all()
-        return render_template('gallery.html', images=images)
+    # ==================== ADMIN ROUTES ====================
     
-    @app.route('/uploads/<filename>')
-    def serve_upload(filename):
-        upload_folder = Path(app.config['UPLOAD_FOLDER'])
-        return send_file(upload_folder / filename)
+    from functools import wraps
     
-    @app.route('/health')
-    def health():
-        return jsonify({'status': 'ok', 'service': 'BHV'}), 200
+    def admin_required(f):
+        @wraps(f)
+        @login_required
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_admin:
+                flash('You need administrator privileges to access this page.', 'error')
+                return redirect(url_for('index'))
+            return f(*args, **kwargs)
+        return decorated_function
+    
+    @app.route('/admin')
+    @admin_required
+    def admin_dashboard():
+        total_users = User.query.count()
+        total_images = Image.query.count()
+        
+        total_storage = db.session.query(db.func.sum(Image.file_size)).scalar() or 0
+        total_storage_mb = round(total_storage / (1024 * 1024), 2)
+        
+        recent_users = User.query.order_by(User.created_at.desc()).limit(5).all()
+        recent_images = Image.query.order_by(Image.uploaded_at.desc()).limit(10).all()
+        
+        top_uploaders = db.session.query(
+            User, db.func.count(Image.id).label('upload_count')
+        ).join(Image).group_by(User.id).order_by(db.text('upload_count DESC')).limit(5).all()
+        
+        return render_template('admin/dashboard.html',
+                             total_users=total_users,
+                             total_images=total_images,
+                             total_storage_mb=total_storage_mb,
+                             recent_users=recent_users,
+                             recent_images=recent_images,
+                             top_uploaders=top_uploaders)
+    
+    @app.route('/admin/users')
+    @admin_required
+    def admin_users():
+        page = request.args.get('page', 1, type=int)
+        search = request.args.get('search', '', type=str)
+        
+        query = User.query
+        
+        if search:
+            query = query.filter(
+                db.or_(
+                    User.username.like(f'%{search}%'),
+                    User.email.like(f'%{search}%')
+                )
+            )
+        
+        users = query.order_by(User.created_at.desc()).paginate(page=page, per_page=20, error_out=False)
+        
+        return render_template('admin/users.html', users=users, search=search)
+    
+    @app.route('/admin/users/<int:user_id>')
+    @admin_required
+    def admin_user_detail(user_id):
+        user = User.query.get_or_404(user_id)
+        user_images = Image.query.filter_by(user_id=user_id).order_by(Image.uploaded_at.desc()).all()
+        
+        total_storage = db.session.query(db.func.sum(Image.file_size)).filter_by(user_id=user_id).scalar() or 0
+        total_storage_mb = round(total_storage / (1024 * 1024), 2)
+        
+        return render_template('admin/user_detail.html', 
+                             user=user, 
+                             images=user_images,
+                             total_storage_mb=total_storage_mb)
+    
+    @app.route('/admin/users/<int:user_id>/delete', methods=['POST'])
+    @admin_required
+    def admin_delete_user(user_id):
+        user = User.query.get_or_404(user_id)
+        
+        if user.id == current_user.id:
+            flash('You cannot delete your own account!', 'error')
+            return redirect(url_for('admin_users'))
+        
+        for image in user.images:
+            try:
+                image_path = Path(app.config['UPLOAD_FOLDER']) / image.filename
+                if image_path.exists():
+                    os.remove(image_path)
+            except Exception as e:
+                print(f"Error deleting file {image.filename}: {e}")
+        
+        username = user.username
+        db.session.delete(user)
+        db.session.commit()
+        
+        flash(f'User {username} and all their images have been deleted.', 'success')
+        return redirect(url_for('admin_users'))
+    
+    @app.route('/admin/images')
+    @admin_required
+    def admin_images():
+        page = request.args.get('page', 1, type=int)
+        search = request.args.get('search', '', type=str)
+        
+        query = Image.query
+        
+        if search:
+            query = query.filter(
+                db.or_(
+                    Image.title.like(f'%{search}%'),
+                    Image.description.like(f'%{search}%')
+                )
+            )
+        
+        images = query.order_by(Image.uploaded_at.desc()).paginate(page=page, per_page=24, error_out=False)
+        
+        return render_template('admin/images.html', images=images, search=search)
+    
+    @app.route('/admin/images/<int:image_id>/delete', methods=['POST'])
+    @admin_required
+    def admin_delete_image(image_id):
+        image = Image.query.get_or_404(image_id)
+        
+        try:
+            image_path = Path(app.config['UPLOAD_FOLDER']) / image.filename
+            if image_path.exists():
+                os.remove(image_path)
+        except Exception as e:
+            flash(f'Error deleting file: {e}', 'error')
+            return redirect(url_for('admin_images'))
+        
+        image_title = image.title
+        db.session.delete(image)
+        db.session.commit()
+        
+        flash(f'Image "{image_title}" has been deleted.', 'success')
+        return redirect(url_for('admin_images'))
+    
+    @app.route('/admin/users/<int:user_id>/toggle-admin', methods=['POST'])
+    @admin_required
+    def admin_toggle_admin(user_id):
+        user = User.query.get_or_404(user_id)
+        
+        if user.id == current_user.id:
+            flash('You cannot change your own admin status!', 'error')
+            return redirect(url_for('admin_users'))
+        
+        user.is_admin = not user.is_admin
+        db.session.commit()
+        
+        status = "granted" if user.is_admin else "revoked"
+        flash(f'Admin privileges {status} for {user.username}.', 'success')
+        return redirect(url_for('admin_user_detail', user_id=user_id))
     
     return app
 

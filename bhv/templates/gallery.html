@@ -13,6 +13,7 @@
                 <p style="color: #666; margin-bottom: 10px;">{{ image.description[:150] }}{% if image.description|length > 150 %}...{% endif %}</p>
                 {% endif %}
                 <div style="font-size: 0.9rem; color: #999; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
+                    <p><strong>By:</strong> {{ image.owner.username }}</p>
                     <p><strong>Size:</strong> {{ (image.file_size / 1024)|round(1) }} KB</p>
                     <p><strong>Uploaded:</strong> {{ image.uploaded_at.strftime('%Y-%m-%d') }}</p>
                 </div>

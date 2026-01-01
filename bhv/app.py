@@ -399,7 +399,7 @@ def create_app():
                 if image_path.exists():
                     os.remove(image_path)
             except Exception as e:
-                print(f"Error deleting file {image.filename}: {e}")
+                current_app.logger.error(f"Error deleting file {image.filename}: {e}")
         
         username = user.username
         db.session.delete(user)

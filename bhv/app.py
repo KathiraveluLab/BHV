@@ -214,7 +214,7 @@ def create_app():
                 flash(f'Welcome back, {user.username}!', 'success')
                 
                 next_page = request.args.get('next')
-                return redirect(next_page) if next_page else redirect(url_for('index'))
+                return redirect(next_page) if next_page and next_page.startswith('/') else redirect(url_for('index'))
             else:
                 flash('Invalid username or password. Please try again.', 'error')
                 return redirect(url_for('login'))

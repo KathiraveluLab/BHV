@@ -289,8 +289,7 @@ def create_app():
     
     @app.route('/uploads/<filename>')
     def serve_upload(filename):
-        upload_folder = Path(app.config['UPLOAD_FOLDER'])
-        return send_file(upload_folder / filename)
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     
     @app.route('/health')
     def health():

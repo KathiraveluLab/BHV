@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Login - BHV{% endblock %}
+{% block content %}
+<div style="max-width: 450px; margin: 50px auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Welcome Back! 👋</h2>
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.username.label(style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;") }}
+            {{ form.username(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="Enter your username") }}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <p style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+            {{ form.password.label(style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;") }}
+            {{ form.password(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="Enter your password") }}
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <p style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div>
+            {{ form.submit(style="width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s;") }}
+        </div>
+    </form>
+    
+    <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="color: #666;">Don't have an account? 
+            <a href="{{ url_for('register') }}" style="color: #2ecc71; text-decoration: none; font-weight: bold;">Register here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

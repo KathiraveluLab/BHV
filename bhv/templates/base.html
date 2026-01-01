@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BHV - Behavioral Health Vault{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: #2c3e50; color: white; padding: 20px 0; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        header h1 { text-align: center; font-size: 2rem; }
+        nav { text-align: center; margin-top: 15px; }
+        nav a { color: white; text-decoration: none; padding: 10px 20px; margin: 0 5px; border-radius: 5px; transition: background 0.3s; display: inline-block; }
+        nav a:hover { background: #34495e; }
+        nav a.logout { background: #e74c3c; }
+        nav a.logout:hover { background: #c0392b; }
+        .flash { padding: 15px; border-radius: 5px; margin-bottom: 10px; }
+        .flash.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .flash.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        footer { text-align: center; margin-top: 50px; padding: 20px; background: #2c3e50; color: white; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐝 BHV - Behavioral Health Vault</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('gallery') }}">Gallery</a>
+            
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('upload') }}">Upload</a>
+                <a href="{{ url_for('profile') }}">My Profile</a>
+                <a href="{{ url_for('logout') }}" class="logout">Logout ({{ current_user.username }})</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" style="background: #3498db;">Login</a>
+                <a href="{{ url_for('register') }}" style="background: #2ecc71;">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    <footer>
+        <p>BHV - A simplified approach to behavioral health documentation</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            {% if current_user.is_authenticated %}
+                Logged in as <strong>{{ current_user.username }}</strong>
+            {% else %}
+                Please <a href="{{ url_for('login') }}" style="color: #3498db;">login</a> or <a href="{{ url_for('register') }}" style="color: #2ecc71;">register</a>
+            {% endif %}
+        </p>
+    </footer>
+</body>
+</html>

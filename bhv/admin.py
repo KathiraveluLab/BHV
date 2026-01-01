@@ -103,11 +103,10 @@ def delete_user(user_id):
     # Delete all user's image files
     for image in user.images:
         try:
-            image_path = Path('static/uploads') / image.filename
-            if image_path.exists():
-                os.remove(image_path)
-        except Exception as e:
-            print(f"Error deleting file {image.filename}: {e}")
+            image_path = Path(current_app.config['UPLOAD_FOLDER']) / image.filename
+            image_path.unlink(missing_ok=True)
+        except OSError as e:
+            current_app.logger.error(f"Error deleting file {image.filename}: {e}")
     
     username = user.username
     db.session.delete(user)
@@ -145,11 +144,11 @@ def delete_image(image_id):
     
     # Delete file from disk
     try:
-        image_path = Path('static/uploads') / image.filename
-        if image_path.exists():
-            os.remove(image_path)
-    except Exception as e:
-        flash(f'Error deleting file: {e}', 'error')
+        image_path = Path(current_app.config['UPLOAD_FOLDER']) / image.filename
+        image_path.unlink(missing_ok=True)
+    except OSError as e:
+        current_app.logger.error(f"Error deleting file {image.filename}: {e}")
+        flash('Error deleting file from storage.', 'error')
         return redirect(url_for('admin.images'))
     
     image_title = image.title

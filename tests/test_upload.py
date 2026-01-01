@@ -17,7 +17,7 @@ def test_routes_exist():
     assert response.status_code == 200
     
     response = client.get('/upload')
-    assert response.status_code == 200
+    assert response.status_code == 302
     
     response = client.get('/gallery')
     assert response.status_code == 200

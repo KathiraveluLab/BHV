@@ -268,7 +268,7 @@ def create_app():
                 title=form.title.data,
                 description=form.description.data,
                 file_size=file_size,
-                mime_type='image/jpeg',
+                mime_type=file.mimetype,
                 width=0,
                 height=0,
                 user_id=current_user.id

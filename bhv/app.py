@@ -142,12 +142,14 @@ def create_app():
                 static_folder=str(BASE_DIR / 'static'),
                 static_url_path='/static')
     
-    app.config['SECRET_KEY'] = 'dev-secret-key-change-in-production'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{BASE_DIR / "bhv.db"}'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['UPLOAD_FOLDER'] = BASE_DIR / 'static' / 'uploads'
-    app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
-    app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+    # app.config['SECRET_KEY'] = 'dev-secret-key-change-in-production'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{BASE_DIR / "bhv.db"}'
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # app.config['UPLOAD_FOLDER'] = BASE_DIR / 'static' / 'uploads'
+    # app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+    # app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+    config_name = os.environ.get('FLASK_CONFIG', 'default')
+    app.config.from_object(config[config_name])
     
     db.init_app(app)
     

@@ -58,3 +58,41 @@ python -m pytest -v
 ## CI/CD
 
 This project uses GitHub Actions for automated testing on every push and pull request.
+
+## Docker Deployment
+
+BHV can be easily deployed using Docker!
+
+### Quick Start
+```bash
+# Clone and run
+git clone https://github.com/KathiraveluLab/BHV.git
+cd BHV
+docker-compose up -d
+```
+
+**Access:** http://localhost:5000
+
+### What's Included
+
+✅ Pre-configured Docker setup
+✅ Persistent database and uploads
+✅ Automatic health checks
+✅ One-command deployment
+✅ Works on Windows, Mac, Linux
+
+### Full Documentation
+
+See [DOCKER.md](DOCKER.md) for complete Docker deployment guide including:
+- Development setup
+- Production deployment
+- Nginx configuration
+- Backup/restore procedures
+- Troubleshooting
+
+### Requirements
+
+- Docker (Get it: https://docs.docker.com/get-docker/)
+- Docker Compose (included with Docker Desktop)
+
+No Python installation needed! 🐳

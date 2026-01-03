@@ -28,17 +28,17 @@ reference and may evolve as the project matures.
 ### Core MVP (Must-Have)
 The initial focus of BHV is on:
 - Secure image upload and storage
-- Privacy-first access control (user vs admin roles)
+- Privacy-first access control (defining core user and admin roles/permissions)
 - Simple, minimal architecture suitable for community clinics
 - Local filesystem storage with metadata indexed in a lightweight database
 - Easy local setup and a single-command run where possible
 
 ### Optional / Modular Extensions
 The following features are considered valuable but optional for the initial MVP:
-- Admin dashboards and moderation tools
+- User-facing admin dashboards and moderation tools
 - Containerized deployment (e.g., Docker)
-- Research-oriented modules such as fuzzy color–emotion analysis for
-  images without explicit tags or narratives
+- Research-oriented modules for analyzing potential color–emotion associations
+  in images without explicit tags or narratives
 
 ### Guiding Principles
 - Prefer simplicity over feature completeness

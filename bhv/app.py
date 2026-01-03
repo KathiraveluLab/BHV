@@ -296,9 +296,9 @@ def create_app():
                 title=form.title.data,
                 description=form.description.data,
                 file_size=file_size,
-                mime_type='image/jpeg',
-                width=0,
-                height=0,
+                mime_type=file.mimetype,
+                width=0, # TODO: Extract image width
+                height=0, # TODO: Extract image height
                 user_id=current_user.id
             )
             

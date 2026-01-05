@@ -166,7 +166,9 @@ def create_app():
     
     with app.app_context():
         db.create_all()
-    
+    from bhv.admin import admin_bp
+    app.register_blueprint(admin_bp)
+
     # ==================== PUBLIC ROUTES ====================
     
     @app.route('/')

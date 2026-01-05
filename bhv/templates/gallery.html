@@ -1,30 +1,67 @@
 {% extends "base.html" %}
-{% block title %}Gallery - BHV{% endblock %}
+{% block title %}My Gallery - BHV{% endblock %}
 {% block content %}
-<h2 style="text-align: center; margin-bottom: 30px;">Image Gallery</h2>
-{% if images %}
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+<div style="max-width: 1400px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h2 style="margin-bottom: 10px; color: #2c3e50;">📸 My Gallery</h2>
+            <p style="color: #666; margin: 0;">Your uploaded images ({{ images|length }} total)</p>
+        </div>
+        <a href="{{ url_for('upload') }}" style="background: #3498db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">+ Upload New Image</a>
+    </div>
+
+    {% if images %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
         {% for image in images %}
-        <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <img src="{{ url_for('serve_upload', filename=image.filename) }}" alt="{{ image.title }}" style="width: 100%; height: 250px; object-fit: cover;">
-            <div style="padding: 15px;">
-                <h3 style="margin-bottom: 10px;">{{ image.title }}</h3>
-                {% if image.description %}
-                <p style="color: #666; margin-bottom: 10px;">{{ image.description[:150] }}{% if image.description|length > 150 %}...{% endif %}</p>
-                {% endif %}
-                <div style="font-size: 0.9rem; color: #999; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
-                    <p><strong>By:</strong> {{ image.owner.username }}</p>
-                    <p><strong>Size:</strong> {{ (image.file_size / 1024)|round(1) }} KB</p>
-                    <p><strong>Uploaded:</strong> {{ image.uploaded_at.strftime('%Y-%m-%d') }}</p>
+        <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;" 
+             onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.15)'"
+             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+            
+            <div style="position: relative; height: 220px; overflow: hidden; background: #f8f9fa;">
+                <img src="{{ url_for('serve_upload', filename=image.filename) }}" 
+                     alt="{{ image.title }}" 
+                     style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                     onclick="window.open('{{ url_for('serve_upload', filename=image.filename) }}', '_blank')">
+                
+                <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">
+                    {{ (image.file_size / 1024)|round(1) }} KB
                 </div>
+            </div>
+            
+            <div style="padding: 20px;">
+                <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 1.1rem;">{{ image.title }}</h3>
+                
+                {% if image.description %}
+                <p style="color: #666; font-size: 0.9rem; margin: 0 0 15px 0; line-height: 1.5;">
+                    {{ image.description[:100] }}{% if image.description|length > 100 %}...{% endif %}
+                </p>
+                {% else %}
+                <p style="color: #999; font-size: 0.9rem; margin: 0 0 15px 0; font-style: italic;">No description</p>
+                {% endif %}
+                
+                <div style="display: flex; align-items: center; gap: 8px; color: #999; font-size: 0.85rem; margin-bottom: 15px;">
+                    <span>{{ image.uploaded_at.strftime('%B %d, %Y') }}</span>
+                </div>
+                
+                <a href="{{ url_for('serve_upload', filename=image.filename) }}" 
+                   target="_blank"
+                   style="display: block; width: 100%; padding: 10px; background: #3498db; color: white; text-align: center; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                    View Full Size
+                </a>
             </div>
         </div>
         {% endfor %}
     </div>
-{% else %}
-    <div style="text-align: center; padding: 50px; background: white; border-radius: 10px;">
-        <p style="font-size: 1.2rem; color: #666;">No images uploaded yet.</p>
-        <a href="{{ url_for('upload') }}" style="display: inline-block; margin-top: 20px; background: #3498db; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px;">Upload Your First Image</a>
+    {% else %}
+    <div style="text-align: center; padding: 80px 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div style="font-size: 4rem; margin-bottom: 20px;">📷</div>
+        <h3 style="color: #2c3e50; margin-bottom: 15px;">No Images Yet</h3>
+        <p style="color: #666; margin-bottom: 30px; font-size: 1.1rem;">Start building your gallery by uploading your first image!</p>
+        <a href="{{ url_for('upload') }}" 
+           style="display: inline-block; padding: 15px 35px; background: #3498db; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem;">
+            Upload Your First Image
+        </a>
     </div>
-{% endif %}
+    {% endif %}
+</div>
 {% endblock %}

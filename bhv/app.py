@@ -474,7 +474,7 @@ def admin_delete_image(image_id):
     flash(f'Image "{image.title}" has been deleted.', 'success')
     
     # Redirect back to referring page
-    return redirect(request.referrer or url_for('admin_images'))
+    return redirect(url_for('admin_images'))
 
 
 # ==================== ERROR HANDLERS ====================

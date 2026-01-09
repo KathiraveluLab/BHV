@@ -65,8 +65,8 @@ def users():
     if search:
         query = query.filter(
             db.or_(
-                User.username.like(f'%{search}%'),
-                User.email.like(f'%{search}%')
+                User.username.like(f"%{search}%"),
+                User.email.like(f"%{search}%")
             )
         )
     

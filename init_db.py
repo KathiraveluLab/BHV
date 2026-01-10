@@ -6,9 +6,9 @@ with app.app_context():
     db.create_all()
     
     admins = [
-        ('yadavchiragg', 'yadav@bhv.com', 'Demo2024!'),
-        ('pradeeban', 'pradeeban@bhv.com', 'BHV2024!'),
-        ('mdxabu', 'mdxabu@bhv.com', 'BHV2024!')
+        (os.environ.get('ADMIN_USER_1', 'yadavchiragg'), os.environ.get('ADMIN_EMAIL_1', 'yadav@bhv.com'), os.environ.get('ADMIN_PASS_1')),
+        (os.environ.get('ADMIN_USER_2', 'pradeeban'), os.environ.get('ADMIN_EMAIL_2', 'pradeeban@bhv.com'), os.environ.get('ADMIN_PASS_2')),
+        (os.environ.get('ADMIN_USER_3', 'mdxabu'), os.environ.get('ADMIN_EMAIL_3', 'mdxabu@bhv.com'), os.environ.get('ADMIN_PASS_3'))
     ]
     
     for username, email, password in admins:

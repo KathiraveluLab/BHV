@@ -521,18 +521,16 @@ if __name__ == '__main__':
         db.create_all()
         
         # Create admin accounts if they don't exist (for local development)
-        admins = [
-            ('yadavchiragg', 'yadav@bhv.com', 'Demo2024!'),
-            ('pradeeban', 'pradeeban@bhv.com', 'BHV2024!'),
-            ('mdxabu', 'mdxabu@bhv.com', 'BHV2024!')
-        ]
-        
-        for username, email, password in admins:
-            if not User.query.filter_by(username=username).first():
-                user = User(username=username, email=email, is_admin=True)
-                user.set_password(password)
-                db.session.add(user)
-                print(f'✅ Created admin: {username}')
+        # Load from environment variables for security
+        admin_user = os.environ.get('ADMIN_USER', 'yadavchiragg')
+        admin_email = os.environ.get('ADMIN_EMAIL', 'yadav@bhv.com')
+        admin_pass = os.environ.get('ADMIN_PASS')
+
+        if admin_pass and not User.query.filter_by(username=admin_user).first():
+            user = User(username=admin_user, email=admin_email, is_admin=True)
+            user.set_password(admin_pass)
+            db.session.add(user)
+            print(f'✅ Created admin: {admin_user}')
         
         db.session.commit()
     

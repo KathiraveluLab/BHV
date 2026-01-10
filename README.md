@@ -21,7 +21,7 @@ The storage of the images could be in a file system with an index to retrieve th
 
 # BHV - Behavioral Health Vault
 
-![Tests](https://github.com/yadavchiragg/BHV/workflows/Tests/badge.svg)
+![Tests](https://github.com/KathiraveluLab/BHV/workflows/Tests/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11-blue)
 ![License](https://img.shields.io/badge/license-BSD--3--Clause-green)
 

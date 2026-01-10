@@ -320,15 +320,16 @@ def upload():
 @login_required
 def gallery():
     """
-    Gallery page - shows only current user's uploaded images
+    Gallery page - shows only current user's uploaded images with performance optimization
     Users can only see their own images
     Admins can see all images in the admin dashboard
     """
-    # Get only current user's images, ordered by most recent first
-    images = Image.query.filter_by(user_id=current_user.id).order_by(Image.uploaded_at.desc()).all()
+    # Performance optimization: Limit initial load to 50 most recent images
+    images = Image.query.filter_by(user_id=current_user.id)\
+        .order_by(Image.uploaded_at.desc())\
+        .limit(50).all()
     
     return render_template('gallery.html', images=images)
-
 
 @app.route('/uploads/<filename>')
 def serve_upload(filename):

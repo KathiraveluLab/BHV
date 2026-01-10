@@ -35,7 +35,7 @@ docker run -d \
   -p 5000:5000 \
   -v $(pwd)/bhv.db:/app/bhv.db \
   -v $(pwd)/static/uploads:/app/static/uploads \
-  --name bhv \
+  --name bhv-app \
   bhv-app
 
 # View logs

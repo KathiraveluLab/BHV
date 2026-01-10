@@ -325,7 +325,7 @@ def gallery():
     Admins can see all images in the admin dashboard
     """
     # Get only current user's images, ordered by most recent first
-    images = Image.query.filter_by(user_id=current_user.id).order_by(Image.uploaded_at.desc()).all()
+    images = Image.query.filter_by(user_id=current_user.id).order_by(Image.uploaded_at.desc()).paginate(page=request.args.get('page', 1, type=int), per_page=50, error_out=False)
     
     return render_template('gallery.html', images=images)
 

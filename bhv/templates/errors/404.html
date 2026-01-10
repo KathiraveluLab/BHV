@@ -1,0 +1,30 @@
+{% extends "errors/base_error.html" %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block icon %}🔍{% endblock %}
+
+{% block code %}404{% endblock %}
+
+{% block error_title %}Page Not Found{% endblock %}
+
+{% block message %}
+The page you're looking for doesn't exist or has been moved. Don't worry, it happens to the best of us!
+{% endblock %}
+
+{% block actions %}
+<a href="{{ url_for('index') }}" class="btn btn-primary">🏠 Go Home</a>
+<a href="{{ url_for('gallery') if current_user.is_authenticated else url_for('login') }}" class="btn btn-secondary">
+    {% if current_user.is_authenticated %}📸 My Gallery{% else %}🔐 Login{% endif %}
+</a>
+{% endblock %}
+
+{% block details %}
+<div class="error-details">
+    <strong>💡 What you can do:</strong><br>
+    • Check the URL for typos<br>
+    • Go back to the previous page<br>
+    • Visit our homepage<br>
+    • Use the search function (coming soon!)
+</div>
+{% endblock %}

@@ -481,15 +481,28 @@ def admin_delete_image(image_id):
 
 @app.errorhandler(404)
 def not_found_error(error):
-    """Handle 404 errors"""
-    return render_template('404.html'), 404
+    """Handle 404 errors with custom page"""
+    return render_template('errors/404.html'), 404
 
 
 @app.errorhandler(500)
 def internal_error(error):
-    """Handle 500 errors"""
+    """Handle 500 errors with custom page"""
     db.session.rollback()
-    return render_template('500.html'), 500
+    return render_template('errors/500.html'), 500
+
+
+@app.errorhandler(403)
+def forbidden_error(error):
+    """Handle 403 Forbidden errors"""
+    return render_template('errors/403.html'), 403
+
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    """Handle file too large errors"""
+    flash('File is too large! Maximum size is 5MB.', 'danger')
+    return redirect(request.referrer or url_for('upload'))
 
 
 # ==================== APPLICATION FACTORY ====================

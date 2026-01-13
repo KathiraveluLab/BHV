@@ -2,14 +2,90 @@
 {% block title %}My Gallery - BHV{% endblock %}
 {% block content %}
 <div style="max-width: 1400px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
         <div>
             <h2 style="margin-bottom: 10px; color: #2c3e50;">📸 My Gallery</h2>
-            <p style="color: #666; margin: 0;">Your uploaded images ({{ images|length }} total)</p>
+            <p style="color: #666; margin: 0;">
+                {% if search_query %}
+                    Found {{ images|length }} of {{ total_count }} images
+                {% else %}
+                    Your uploaded images ({{ images|length }} total)
+                {% endif %}
+            </p>
         </div>
-        <a href="{{ url_for('upload') }}" style="background: #3498db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">+ Upload New Image</a>
+        <a href="{{ url_for('upload') }}" style="background: #3498db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; white-space: nowrap;">+ Upload New Image</a>
     </div>
 
+    <!-- Search and Filter Bar -->
+    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <form method="GET" action="{{ url_for('gallery') }}" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+            
+            <!-- Search Box -->
+            <div style="flex: 1; min-width: 250px;">
+                <div style="position: relative;">
+                    <input type="text" 
+                           name="search" 
+                           value="{{ search_query }}"
+                           placeholder="🔍 Search by title or description..." 
+                           style="width: 100%; padding: 12px 40px 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border 0.3s;"
+                           onfocus="this.style.borderColor='#3498db'"
+                           onblur="this.style.borderColor='#ddd'">
+                    
+                    {% if search_query %}
+                    <a href="{{ url_for('gallery') }}" 
+                       style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #999; text-decoration: none; font-size: 1.2rem;"
+                       title="Clear search">✕</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Sort Dropdown -->
+            <div style="min-width: 180px;">
+                <select name="sort" 
+                        style="width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; background: white; cursor: pointer;"
+                        onchange="this.form.submit()">
+                    <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>📅 Newest First</option>
+                    <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>📅 Oldest First</option>
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>🔤 Name (A-Z)</option>
+                    <option value="size" {% if sort_by == 'size' %}selected{% endif %}>💾 Largest First</option>
+                </select>
+            </div>
+            
+            <!-- Search Button -->
+            <button type="submit" 
+                    style="padding: 12px 30px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; white-space: nowrap;"
+                    onmouseover="this.style.background='#2980b9'"
+                    onmouseout="this.style.background='#3498db'">
+                🔍 Search
+            </button>
+            
+            {% if search_query or sort_by != 'newest' %}
+            <!-- Clear Filters Button -->
+            <a href="{{ url_for('gallery') }}" 
+               style="padding: 12px 20px; background: #e74c3c; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; white-space: nowrap; transition: background 0.3s; display: inline-block;"
+               onmouseover="this.style.background='#c0392b'"
+               onmouseout="this.style.background='#e74c3c'">
+                ✕ Clear
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Active Filters Display -->
+    {% if search_query %}
+    <div style="margin-bottom: 20px;">
+        <div style="display: inline-flex; align-items: center; gap: 10px; background: #e8f4f8; padding: 10px 20px; border-radius: 8px; border-left: 4px solid #3498db;">
+            <span style="color: #2c3e50; font-weight: bold;">🔍 Searching for:</span>
+            <span style="color: #3498db; font-weight: bold;">"{{ search_query }}"</span>
+            <a href="{{ url_for('gallery') }}" 
+               style="color: #e74c3c; text-decoration: none; font-weight: bold; margin-left: 10px;"
+               title="Clear search">✕</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Image Grid -->
     {% if images %}
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
         {% for image in images %}
@@ -20,7 +96,9 @@
             <div style="position: relative; height: 220px; overflow: hidden; background: #f8f9fa;">
                 <img src="{{ url_for('serve_upload', filename=image.filename) }}" 
                      alt="{{ image.title }}" 
-                     style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                     loading="lazy"
+                     style="width: 100%; height: 100%; object-fit: cover; cursor: pointer; opacity: 0; transition: opacity 0.3s;"
+                     onload="this.style.opacity='1'"
                      onclick="window.open('{{ url_for('serve_upload', filename=image.filename) }}', '_blank')">
                 
                 <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">
@@ -29,18 +107,30 @@
             </div>
             
             <div style="padding: 20px;">
-                <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 1.1rem;">{{ image.title }}</h3>
+                <h3 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 1.1rem;">
+                    {% if search_query and search_query.lower() in image.title.lower() %}
+                        {{ image.title|replace(search_query, '<mark style="background: #ffe066; padding: 2px 4px; border-radius: 3px;">' + search_query + '</mark>')|safe }}
+                    {% else %}
+                        {{ image.title }}
+                    {% endif %}
+                </h3>
                 
                 {% if image.description %}
                 <p style="color: #666; font-size: 0.9rem; margin: 0 0 15px 0; line-height: 1.5;">
-                    {{ image.description[:100] }}{% if image.description|length > 100 %}...{% endif %}
+                    {% if search_query and search_query.lower() in image.description.lower() %}
+                        {% set desc_preview = image.description[:100] %}
+                        {{ desc_preview|replace(search_query, '<mark style="background: #ffe066; padding: 2px 4px; border-radius: 3px;">' + search_query + '</mark>')|safe }}
+                        {% if image.description|length > 100 %}...{% endif %}
+                    {% else %}
+                        {{ image.description[:100] }}{% if image.description|length > 100 %}...{% endif %}
+                    {% endif %}
                 </p>
                 {% else %}
                 <p style="color: #999; font-size: 0.9rem; margin: 0 0 15px 0; font-style: italic;">No description</p>
                 {% endif %}
                 
                 <div style="display: flex; align-items: center; gap: 8px; color: #999; font-size: 0.85rem; margin-bottom: 15px;">
-                    <span>{{ image.uploaded_at.strftime('%B %d, %Y') }}</span>
+                    <span>📅 {{ image.uploaded_at.strftime('%B %d, %Y') }}</span>
                 </div>
                 
                 <a href="{{ url_for('serve_upload', filename=image.filename) }}" 
@@ -53,14 +143,27 @@
         {% endfor %}
     </div>
     {% else %}
+    <!-- No Results -->
     <div style="text-align: center; padding: 80px 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-        <div style="font-size: 4rem; margin-bottom: 20px;">📷</div>
-        <h3 style="color: #2c3e50; margin-bottom: 15px;">No Images Yet</h3>
-        <p style="color: #666; margin-bottom: 30px; font-size: 1.1rem;">Start building your gallery by uploading your first image!</p>
-        <a href="{{ url_for('upload') }}" 
-           style="display: inline-block; padding: 15px 35px; background: #3498db; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem;">
-            Upload Your First Image
-        </a>
+        {% if search_query %}
+            <div style="font-size: 4rem; margin-bottom: 20px;">🔍</div>
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">No images found</h3>
+            <p style="color: #666; margin-bottom: 30px; font-size: 1.1rem;">
+                No images match your search for "<strong>{{ search_query }}</strong>"
+            </p>
+            <a href="{{ url_for('gallery') }}" 
+               style="display: inline-block; padding: 15px 35px; background: #3498db; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem;">
+                View All Images
+            </a>
+        {% else %}
+            <div style="font-size: 4rem; margin-bottom: 20px;">📷</div>
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">No Images Yet</h3>
+            <p style="color: #666; margin-bottom: 30px; font-size: 1.1rem;">Start building your gallery by uploading your first image!</p>
+            <a href="{{ url_for('upload') }}" 
+               style="display: inline-block; padding: 15px 35px; background: #3498db; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem;">
+                Upload Your First Image
+            </a>
+        {% endif %}
     </div>
     {% endif %}
 </div>

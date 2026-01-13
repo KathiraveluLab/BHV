@@ -320,14 +320,47 @@ def upload():
 @login_required
 def gallery():
     """
-    Gallery page - shows only current user's uploaded images
-    Users can only see their own images
-    Admins can see all images in the admin dashboard
+    Gallery page with search and filter functionality
+    Users can search by title/description and sort images
     """
-    # Get only current user's images, ordered by most recent first
-    images = Image.query.filter_by(user_id=current_user.id).order_by(Image.uploaded_at.desc()).all()
+    # Get search query from URL parameters
+    search_query = request.args.get('search', '').strip()
+    sort_by = request.args.get('sort', 'newest')  # newest, oldest, name, size
     
-    return render_template('gallery.html', images=images)
+    # Base query - only current user's images
+    query = Image.query.filter_by(user_id=current_user.id)
+    
+    # Apply search filter if provided
+    if search_query:
+        search_filter = f"%{search_query}%"
+        query = query.filter(
+            db.or_(
+                Image.title.ilike(search_filter),
+                Image.description.ilike(search_filter)
+            )
+        )
+    
+    # Apply sorting
+    if sort_by == 'newest':
+        query = query.order_by(Image.uploaded_at.desc())
+    elif sort_by == 'oldest':
+        query = query.order_by(Image.uploaded_at.asc())
+    elif sort_by == 'name':
+        query = query.order_by(Image.title.asc())
+    elif sort_by == 'size':
+        query = query.order_by(Image.file_size.desc())
+    
+    # Limit to 50 images for performance
+    images = query.limit(50).all()
+    
+    # Get total count for display
+    total_count = Image.query.filter_by(user_id=current_user.id).count()
+    
+    return render_template('gallery.html', 
+                         images=images, 
+                         search_query=search_query,
+                         sort_by=sort_by,
+                         total_count=total_count)
 
 
 @app.route('/uploads/<filename>')

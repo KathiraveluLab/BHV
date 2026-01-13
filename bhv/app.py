@@ -407,9 +407,10 @@ def admin_users():
     
     query = User.query
     if search:
-        query = query.filter(
-            (User.username.contains(search)) | (User.email.contains(search))
-        )
+            db.or_(
+                User.username.ilike(f'%{search}%'),
+                User.email.ilike(f'%{search}%')
+            )
     
     users = query.order_by(User.created_at.desc()).paginate(page=page, per_page=20, error_out=False)
     

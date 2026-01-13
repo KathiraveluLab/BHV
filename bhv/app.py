@@ -480,9 +480,10 @@ def admin_images():
     
     query = Image.query
     if search:
-        query = query.filter(
-            (Image.title.contains(search)) | (Image.description.contains(search))
-        )
+            db.or_(
+                Image.title.ilike(f'%{search}%'),
+                Image.description.ilike(f'%{search}%')
+            )
     
     images = query.order_by(Image.uploaded_at.desc()).paginate(page=page, per_page=24, error_out=False)
     

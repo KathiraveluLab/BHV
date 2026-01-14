@@ -33,8 +33,8 @@ docker build -t bhv-app .
 # Run container
 docker run -d \
   -p 5000:5000 \
-  -v $(pwd)/bhv.db:/app/bhv.db \
-  -v $(pwd)/static/uploads:/app/static/uploads \
+  -v ./bhv.db:/app/bhv.db \
+  -v ./static/uploads:/app/static/uploads \
   --name bhv \
   bhv-app
 

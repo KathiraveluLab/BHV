@@ -351,7 +351,7 @@ def gallery():
         query = query.order_by(Image.file_size.desc())
     
     # Limit to 50 images for performance
-    images = query.limit(50).all()
+    images = query.paginate(page=request.args.get('page', 1, type=int), per_page=20, error_out=False)
     
     # Get total count for display
     total_count = Image.query.filter_by(user_id=current_user.id).count()

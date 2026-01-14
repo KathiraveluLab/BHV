@@ -1,76 +1,365 @@
 {% extends "base.html" %}
 {% block title %}Admin Dashboard - BHV{% endblock %}
+
 {% block content %}
 <div style="max-width: 1400px; margin: 0 auto;">
-    <h2 style="margin-bottom: 30px; color: #2c3e50;">⚙️ Admin Dashboard</h2>
-    
-    <!-- Statistics Cards -->
+    <!-- Header -->
+    <div style="margin-bottom: 30px;">
+        <h1 style="margin: 0 0 10px 0; color: #2c3e50;">⚙️ Admin Dashboard</h1>
+        <p style="color: #666; margin: 0;">System overview and analytics</p>
+    </div>
+
+    <!-- Stats Cards -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-            <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px;">Total Users</p>
-            <p style="font-size: 2.5rem; font-weight: bold;">{{ total_users }}</p>
-            <a href="{{ url_for('admin_users') }}" style="color: white; font-size: 0.9rem; text-decoration: underline;">View All →</a>
-        </div>
-        
-        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 30px; border-radius: 10px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-            <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px;">Total Images</p>
-            <p style="font-size: 2.5rem; font-weight: bold;">{{ total_images }}</p>
-            <a href="{{ url_for('admin_images') }}" style="color: white; font-size: 0.9rem; text-decoration: underline;">View All →</a>
-        </div>
-        
-        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 30px; border-radius: 10px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-            <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px;">Storage Used</p>
-            <p style="font-size: 2.5rem; font-weight: bold;">{{ total_storage_mb }} MB</p>
-            <p style="font-size: 0.9rem; opacity: 0.8;">Across all users</p>
-        </div>
-    </div>
-    
-    <!-- Top Uploaders -->
-    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px;">
-        <h3 style="margin-bottom: 20px; color: #2c3e50;">🏆 Top Uploaders</h3>
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background: #f8f9fa; text-align: left;">
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Rank</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Username</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Email</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Uploads</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user, count in top_uploaders %}
-                <tr style="border-bottom: 1px solid #dee2e6;">
-                    <td style="padding: 12px;">{{ loop.index }}</td>
-                    <td style="padding: 12px;">
-                        <strong>{{ user.username }}</strong>
-                        {% if user.is_admin %}<span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.8rem; margin-left: 5px;">Admin</span>{% endif %}
-                    </td>
-                    <td style="padding: 12px; color: #666;">{{ user.email }}</td>
-                    <td style="padding: 12px;"><span style="background: #3498db; color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold;">{{ count }}</span></td>
-                    <td style="padding: 12px;">
-                        <a href="{{ url_for('admin_user_detail', user_id=user.id) }}" style="color: #3498db; text-decoration: none;">View Details →</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
-    <!-- Recent Images -->
-    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h3 style="margin-bottom: 20px; color: #2c3e50;">📸 Recent Uploads</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
-            {% for image in recent_images %}
-            <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <img src="{{ url_for('serve_upload', filename=image.filename) }}" alt="{{ image.title }}" style="width: 100%; height: 150px; object-fit: cover;">
-                <div style="padding: 10px; background: #f8f9fa;">
-                    <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">{{ image.title[:30] }}</p>
-                    <p style="font-size: 0.8rem; color: #666;">by {{ image.owner.username }}</p>
-                </div>
+        <!-- Total Users Card -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); color: white; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.1;">👥</div>
+            <div style="position: relative; z-index: 1;">
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Total Users</p>
+                <h2 style="margin: 10px 0 0 0; font-size: 3rem; font-weight: bold;">{{ total_users }}</h2>
             </div>
-            {% endfor %}
+        </div>
+
+        <!-- Total Images Card -->
+        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3); color: white; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.1;">📸</div>
+            <div style="position: relative; z-index: 1;">
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Total Images</p>
+                <h2 style="margin: 10px 0 0 0; font-size: 3rem; font-weight: bold;">{{ total_images }}</h2>
+            </div>
+        </div>
+
+        <!-- Storage Used Card -->
+        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3); color: white; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.1;">💾</div>
+            <div style="position: relative; z-index: 1;">
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Storage Used</p>
+                <h2 style="margin: 10px 0 0 0; font-size: 3rem; font-weight: bold;">{{ total_storage_mb }} MB</h2>
+            </div>
+        </div>
+
+        <!-- Average per User Card -->
+        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(250, 112, 154, 0.3); color: white; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.1;">📊</div>
+            <div style="position: relative; z-index: 1;">
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Avg Images/User</p>
+                <h2 style="margin: 10px 0 0 0; font-size: 3rem; font-weight: bold;">
+                    {% if total_users > 0 %}
+                        {{ (total_images / total_users)|round(1) }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 40px;">
+        
+        <!-- Uploads Over Time Chart -->
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 20px 0; color: #2c3e50;">📈 Uploads Over Last 7 Days</h3>
+            <canvas id="uploadsChart" width="400" height="250"></canvas>
+        </div>
+
+        <!-- Top Uploaders Chart -->
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 20px 0; color: #2c3e50;">🏆 Top 5 Uploaders</h3>
+            <canvas id="topUploadersChart" width="400" height="250"></canvas>
+        </div>
+
+        <!-- Storage Distribution Chart -->
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 20px 0; color: #2c3e50;">💾 Storage Distribution</h3>
+            <canvas id="storageChart" width="400" height="250"></canvas>
+        </div>
+
+        <!-- User Activity Chart -->
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 20px 0; color: #2c3e50;">👥 User Activity Status</h3>
+            <canvas id="userActivityChart" width="400" height="250"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+        
+        <!-- Top Uploaders List -->
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 20px 0; color: #2c3e50;">🌟 Top Uploaders</h3>
+            {% if top_uploaders %}
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                {% for user, count in top_uploaders %}
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #f8f9fa; border-radius: 10px; transition: transform 0.2s;"
+                     onmouseover="this.style.transform='translateX(5px)'"
+                     onmouseout="this.style.transform='translateX(0)'">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                            {{ loop.index }}
+                        </div>
+                        <div>
+                            <p style="margin: 0; font-weight: bold; color: #2c3e50;">{{ user.username }}</p>
+                            <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #999;">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="margin: 0; font-size: 1.5rem; font-weight: bold; color: #667eea;">{{ count }}</p>
+                        <p style="margin: 0; font-size: 0.85rem; color: #999;">uploads</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="text-align: center; color: #999; padding: 40px 0;">No uploads yet</p>
+            {% endif %}
+        </div>
+
+        <!-- Recent Images -->
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="margin: 0 0 20px 0; color: #2c3e50;">📸 Recent Uploads</h3>
+            {% if recent_images %}
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                {% for image in recent_images %}
+                <div style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.2s;"
+                     onmouseover="this.style.transform='scale(1.05)'"
+                     onmouseout="this.style.transform='scale(1)'">
+                    <img src="{{ url_for('serve_upload', filename=image.filename) }}" 
+                         alt="{{ image.title }}"
+                         style="width: 100%; height: 120px; object-fit: cover; cursor: pointer;"
+                         onclick="window.open('{{ url_for('serve_upload', filename=image.filename) }}', '_blank')">
+                    <div style="padding: 10px; background: #f8f9fa;">
+                        <p style="margin: 0; font-size: 0.85rem; font-weight: bold; color: #2c3e50; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ image.title }}</p>
+                        <p style="margin: 5px 0 0 0; font-size: 0.75rem; color: #999;">{{ image.owner.username }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="text-align: center; color: #999; padding: 40px 0;">No recent uploads</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h3 style="margin: 0 0 20px 0; color: #2c3e50;">⚡ Quick Actions</h3>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <a href="{{ url_for('admin_users') }}" style="padding: 15px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 10px; font-weight: bold; transition: transform 0.2s;"
+               onmouseover="this.style.transform='translateY(-3px)'"
+               onmouseout="this.style.transform='translateY(0)'">
+                👥 Manage Users
+            </a>
+            <a href="{{ url_for('admin_images') }}" style="padding: 15px 30px; background: #f093fb; color: white; text-decoration: none; border-radius: 10px; font-weight: bold; transition: transform 0.2s;"
+               onmouseover="this.style.transform='translateY(-3px)'"
+               onmouseout="this.style.transform='translateY(0)'">
+                📸 Manage Images
+            </a>
+            <a href="{{ url_for('index') }}" style="padding: 15px 30px; background: #4facfe; color: white; text-decoration: none; border-radius: 10px; font-weight: bold; transition: transform 0.2s;"
+               onmouseover="this.style.transform='translateY(-3px)'"
+               onmouseout="this.style.transform='translateY(0)'">
+                🏠 Back to Home
+            </a>
         </div>
     </div>
 </div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Chart.js Configuration and Data
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Chart Colors
+    const colors = {
+        primary: 'rgba(102, 126, 234, 0.8)',
+        secondary: 'rgba(240, 147, 251, 0.8)',
+        success: 'rgba(79, 172, 254, 0.8)',
+        warning: 'rgba(254, 225, 64, 0.8)',
+        danger: 'rgba(245, 87, 108, 0.8)'
+    };
+    
+    // 1. Uploads Over Time Chart (Line Chart)
+    const uploadsCtx = document.getElementById('uploadsChart');
+    if (uploadsCtx) {
+        new Chart(uploadsCtx, {
+            type: 'line',
+            data: {
+                labels: {{ uploads_dates|tojson }},
+                datasets: [{
+                    label: 'Uploads',
+                    data: {{ uploads_counts|tojson }},
+                    borderColor: colors.primary,
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: colors.primary,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 2. Top Uploaders Chart (Bar Chart)
+    const topUploadersCtx = document.getElementById('topUploadersChart');
+    if (topUploadersCtx) {
+        new Chart(topUploadersCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ top_uploaders_names|tojson }},
+                datasets: [{
+                    label: 'Images Uploaded',
+                    data: {{ top_uploaders_counts|tojson }},
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(240, 147, 251, 0.8)',
+                        'rgba(79, 172, 254, 0.8)',
+                        'rgba(250, 112, 154, 0.8)',
+                        'rgba(254, 225, 64, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(102, 126, 234, 1)',
+                        'rgba(240, 147, 251, 1)',
+                        'rgba(79, 172, 254, 1)',
+                        'rgba(250, 112, 154, 1)',
+                        'rgba(254, 225, 64, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 3. Storage Distribution Chart (Doughnut Chart)
+    const storageCtx = document.getElementById('storageChart');
+    if (storageCtx) {
+        new Chart(storageCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ storage_users|tojson }},
+                datasets: [{
+                    data: {{ storage_sizes|tojson }},
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(240, 147, 251, 0.8)',
+                        'rgba(79, 172, 254, 0.8)',
+                        'rgba(250, 112, 154, 0.8)',
+                        'rgba(254, 225, 64, 0.8)'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.toFixed(2) + ' MB';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 4. User Activity Chart (Pie Chart)
+    const userActivityCtx = document.getElementById('userActivityChart');
+    if (userActivityCtx) {
+        new Chart(userActivityCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Active Users', 'Inactive Users'],
+                datasets: [{
+                    data: {{ user_activity|tojson }},
+                    backgroundColor: [
+                        'rgba(79, 172, 254, 0.8)',
+                        'rgba(245, 87, 108, 0.8)'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

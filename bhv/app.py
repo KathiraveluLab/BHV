@@ -340,7 +340,10 @@ def serve_upload(filename):
 @app.route('/admin')
 @admin_required
 def admin_dashboard():
-    """Admin dashboard with statistics"""
+    """Admin dashboard with statistics and charts"""
+    from datetime import datetime, timedelta
+    
+    # Basic stats
     total_users = User.query.count()
     total_images = Image.query.count()
     
@@ -356,12 +359,57 @@ def admin_dashboard():
     # Recent images
     recent_images = Image.query.order_by(Image.uploaded_at.desc()).limit(6).all()
     
+    # === CHART DATA ===
+    
+    # 1. Uploads over last 7 days (for line chart)
+    uploads_dates = []
+    uploads_counts = []
+    for i in range(6, -1, -1):  # Last 7 days
+        date = datetime.now().date() - timedelta(days=i)
+        count = Image.query.filter(
+            db.func.date(Image.uploaded_at) == date
+        ).count()
+        uploads_dates.append(date.strftime('%b %d'))
+        uploads_counts.append(count)
+    
+    # 2. Top uploaders data (for bar chart)
+    top_uploaders_names = []
+    top_uploaders_counts = []
+    for user, count in top_uploaders[:5]:
+        top_uploaders_names.append(user.username)
+        top_uploaders_counts.append(count)
+    
+    # 3. Storage distribution by top users (for doughnut chart)
+    storage_users = []
+    storage_sizes = []
+    top_storage_users = db.session.query(
+        User,
+        db.func.sum(Image.file_size).label('total_size')
+    ).join(Image).group_by(User.id).order_by(db.desc('total_size')).limit(5).all()
+    
+    for user, total_size in top_storage_users:
+        storage_users.append(user.username)
+        storage_sizes.append(round(total_size / (1024 * 1024), 2))  # Convert to MB
+    
+    # 4. User activity (for pie chart) - users with uploads vs without
+    users_with_uploads = db.session.query(User.id).join(Image).distinct().count()
+    users_without_uploads = total_users - users_with_uploads
+    user_activity = [users_with_uploads, users_without_uploads]
+    
     return render_template('admin/dashboard.html',
                          total_users=total_users,
                          total_images=total_images,
                          total_storage_mb=total_storage_mb,
                          top_uploaders=top_uploaders,
-                         recent_images=recent_images)
+                         recent_images=recent_images,
+                         # Chart data
+                         uploads_dates=uploads_dates,
+                         uploads_counts=uploads_counts,
+                         top_uploaders_names=top_uploaders_names,
+                         top_uploaders_counts=top_uploaders_counts,
+                         storage_users=storage_users,
+                         storage_sizes=storage_sizes,
+                         user_activity=user_activity)
 
 
 @app.route('/admin/users')

@@ -3,72 +3,83 @@
 {% block content %}
 <div style="max-width: 1200px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <h2 style="color: #2c3e50;">👥 Manage Users</h2>
-        <a href="{{ url_for('admin_dashboard') }}" style="background: #95a5a6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">← Back to Dashboard</a>
+        <h2 style="color: #2c3e50;">Manage Users</h2>
+        <a href="{{ url_for('admin_dashboard') }}" style="background: #95a5a6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Back to Dashboard</a>
     </div>
     
-    <!-- Search -->
+    <!-- Stats -->
     <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
-        <form method="GET" style="display: flex; gap: 10px;">
-            <input type="text" name="search" value="{{ search }}" placeholder="Search by username or email..." style="flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;">
-            <button type="submit" style="padding: 12px 30px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Search</button>
-            {% if search %}
-            <a href="{{ url_for('admin_users') }}" style="padding: 12px 20px; background: #95a5a6; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Clear</a>
-            {% endif %}
-        </form>
+        <p style="margin: 0; color: #666;">Total: <strong>{{ user_stats|length }}</strong> users</p>
     </div>
     
     <!-- Users Table -->
-    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <p style="margin-bottom: 20px; color: #666;">Total: <strong>{{ users.total }}</strong> users</p>
-        
+    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto;">
+        {% if user_stats %}
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="background: #f8f9fa; text-align: left;">
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">ID</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Username</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Email</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Images</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Joined</th>
-                    <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Actions</th>
+                    <th style="padding: 15px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #2c3e50;">ID</th>
+                    <th style="padding: 15px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #2c3e50;">Username</th>
+                    <th style="padding: 15px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #2c3e50;">Email</th>
+                    <th style="padding: 15px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #2c3e50;">Images</th>
+                    <th style="padding: 15px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #2c3e50;">Storage</th>
+                    <th style="padding: 15px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #2c3e50;">Joined</th>
+                    <th style="padding: 15px; border-bottom: 2px solid #dee2e6; font-weight: 600; color: #2c3e50;">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for user in users.items %}
-                <tr style="border-bottom: 1px solid #dee2e6;">
-                    <td style="padding: 12px;">{{ user.id }}</td>
-                    <td style="padding: 12px;">
-                        <strong>{{ user.username }}</strong>
-                        {% if user.is_admin %}<span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.8rem; margin-left: 5px;">Admin</span>{% endif %}
-                    </td>
-                    <td style="padding: 12px; color: #666;">{{ user.email }}</td>
-                    <td style="padding: 12px;">{{ user.images.count() }}</td>
-                    <td style="padding: 12px; color: #666;">{{ user.created_at.strftime('%Y-%m-%d') }}</td>
-                    <td style="padding: 12px;">
-                        <a href="{{ url_for('admin_user_detail', user_id=user.id) }}" style="color: #3498db; text-decoration: none; margin-right: 10px;">View</a>
-                        {% if user.id != current_user.id %}
-                        <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                            <button type="submit" style="background: none; border: none; color: #e74c3c; cursor: pointer; text-decoration: underline;">Delete</button>
-                        </form>
+                {% for stat in user_stats %}
+                <tr style="border-bottom: 1px solid #dee2e6; transition: background 0.2s;"
+                    onmouseover="this.style.background='#f8f9fa'"
+                    onmouseout="this.style.background='white'">
+                    <td style="padding: 15px; color: #666;">{{ stat.user.id }}</td>
+                    <td style="padding: 15px;">
+                        <strong style="color: #2c3e50;">{{ stat.user.username }}</strong>
+                        {% if stat.user.is_admin %}
+                        <span style="background: #e74c3c; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.75rem; margin-left: 8px; font-weight: bold;">ADMIN</span>
                         {% endif %}
+                    </td>
+                    <td style="padding: 15px; color: #666;">{{ stat.user.email }}</td>
+                    <td style="padding: 15px;">
+                        <span style="background: #3498db; color: white; padding: 4px 10px; border-radius: 5px; font-weight: bold; font-size: 0.9rem;">
+                            {{ stat.image_count }}
+                        </span>
+                    </td>
+                    <td style="padding: 15px; color: #666;">{{ stat.storage_mb }} MB</td>
+                    <td style="padding: 15px; color: #666;">{{ stat.user.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td style="padding: 15px;">
+                        <div style="display: flex; gap: 10px;">
+                            {% if stat.user.id != current_user.id %}
+                            <form method="POST" action="{{ url_for('admin_toggle_admin', user_id=stat.user.id) }}" style="display: inline;">
+                                <button type="submit" 
+                                        style="padding: 8px 15px; background: {% if stat.user.is_admin %}#95a5a6{% else %}#f39c12{% endif %}; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: opacity 0.2s;"
+                                        onmouseover="this.style.opacity='0.8'"
+                                        onmouseout="this.style.opacity='1'">
+                                    {% if stat.user.is_admin %}Remove Admin{% else %}Make Admin{% endif %}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin_delete_user', user_id=stat.user.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user and all their images?');">
+                                <button type="submit" 
+                                        style="padding: 8px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: opacity 0.2s;"
+                                        onmouseover="this.style.opacity='0.8'"
+                                        onmouseout="this.style.opacity='1'">
+                                    Delete
+                                </button>
+                            </form>
+                            {% else %}
+                            <span style="color: #999; font-style: italic; font-size: 0.85rem;">You (Current Admin)</span>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
-        <!-- Pagination -->
-        {% if users.pages > 1 %}
-        <div style="margin-top: 20px; text-align: center;">
-            {% if users.has_prev %}
-            <a href="{{ url_for('admin_users', page=users.prev_num, search=search) }}" style="padding: 8px 16px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 0 5px;">← Previous</a>
-            {% endif %}
-            
-            <span style="margin: 0 15px; color: #666;">Page {{ users.page }} of {{ users.pages }}</span>
-            
-            {% if users.has_next %}
-            <a href="{{ url_for('admin_users', page=users.next_num, search=search) }}" style="padding: 8px 16px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 0 5px;">Next →</a>
-            {% endif %}
+        {% else %}
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 4rem; margin-bottom: 20px; opacity: 0.3;">USERS</div>
+            <h3 style="color: #666; margin-bottom: 15px;">No Users Yet</h3>
+            <p style="color: #999;">Users will appear here once they register.</p>
         </div>
         {% endif %}
     </div>

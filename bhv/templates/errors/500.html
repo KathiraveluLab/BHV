@@ -1,32 +1,19 @@
-{% extends "errors/base_error.html" %}
-
-{% block title %}Server Error{% endblock %}
-
-{% block icon %}⚠️{% endblock %}
-
-{% block code %}500{% endblock %}
-
-{% block error_title %}Internal Server Error{% endblock %}
-
-{% block message %}
-Oops! Something went wrong on our end. Our team has been notified and we're working to fix it. Please try again in a few moments.
-{% endblock %}
-
-{% block actions %}
-<a href="{{ url_for('index') }}" class="btn btn-primary">🏠 Go Home</a>
-<a href="javascript:location.reload()" class="btn btn-secondary">🔄 Try Again</a>
-{% endblock %}
-
-{% block details %}
-<div class="error-details">
-    <strong>💡 What happened?</strong><br>
-    The server encountered an unexpected error and couldn't complete your request. This could be due to:<br>
-    • Temporary server overload<br>
-    • Database connection issues<br>
-    • A bug in our code (we're on it!)<br><br>
-    <strong>What you can do:</strong><br>
-    • Wait a few moments and try again<br>
-    • Clear your browser cache<br>
-    • Contact support if the problem persists
+{% extends "base.html" %}
+{% block title %}Server Error - BHV{% endblock %}
+{% block content %}
+<div style="max-width: 600px; margin: 100px auto; text-align: center;">
+    <div style="background: white; padding: 60px 40px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <div style="font-size: 8rem; font-weight: bold; color: #9b59b6; margin-bottom: 20px;">500</div>
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">Internal Server Error</h2>
+        <p style="color: #666; font-size: 1.1rem; margin-bottom: 40px;">
+            Something went wrong on our end. We're working to fix it!
+        </p>
+        <a href="{{ url_for('index') }}" 
+           style="display: inline-block; padding: 15px 40px; background: #3498db; color: white; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 1.1rem; transition: background 0.3s;"
+           onmouseover="this.style.background='#2980b9'"
+           onmouseout="this.style.background='#3498db'">
+            Go to Homepage
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -1,99 +1,144 @@
 {% extends "base.html" %}
 {% block title %}Upload Image - BHV{% endblock %}
 {% block content %}
-<div style="max-width: 700px; margin: 0 auto;">
-    <div style="margin-bottom: 30px;">
-        <h2 style="margin-bottom: 10px; color: #2c3e50;">📤 Upload Image</h2>
-        <p style="color: #666; margin: 0;">Share your histology images with the community</p>
-    </div>
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-        <form method="POST" enctype="multipart/form-data" novalidate>
-            {{ form.hidden_tag() }}
+<div style="max-width: 700px; margin: 0 auto;">
+    <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+        <h2 style="margin: 0 0 10px 0; color: #2c3e50;"><i class="fas fa-cloud-upload-alt"></i> Upload New Image</h2>
+        <p style="color: #666; margin-bottom: 30px;">Share your behavioral health journey</p>
+        
+        <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 25px;">
             
             <!-- Title Field -->
-            <div style="margin-bottom: 25px;">
-                {{ form.title.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50;") }}
-                {{ form.title(class="form-control", style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="Enter image title") }}
-                {% if form.title.errors %}
-                    <div style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">
-                        {% for error in form.title.errors %}
-                            <p style="margin: 0;">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+            <div>
+                <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 600;">
+                    <i class="fas fa-heading"></i> Title <span style="color: #e74c3c;">*</span>
+                </label>
+                <input type="text" 
+                       name="title" 
+                       required 
+                       placeholder="Give your image a descriptive title"
+                       style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; transition: border 0.3s;"
+                       onfocus="this.style.borderColor='#667eea'"
+                       onblur="this.style.borderColor='#e0e0e0'">
             </div>
-
+            
             <!-- Description Field -->
-            <div style="margin-bottom: 25px;">
-                {{ form.description.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50;") }}
-                {{ form.description(class="form-control", style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; min-height: 120px; font-family: inherit;", placeholder="Describe your image (optional)", rows="5") }}
-                {% if form.description.errors %}
-                    <div style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">
-                        {% for error in form.description.errors %}
-                            <p style="margin: 0;">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+            <div>
+                <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 600;">
+                    <i class="fas fa-align-left"></i> Description
+                </label>
+                <textarea name="description" 
+                          rows="4"
+                          placeholder="Add details about this image (optional)"
+                          style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; resize: vertical; transition: border 0.3s;"
+                          onfocus="this.style.borderColor='#667eea'"
+                          onblur="this.style.borderColor='#e0e0e0'"></textarea>
             </div>
-
+            
             <!-- File Upload Field -->
-            <div style="margin-bottom: 25px;">
-                {{ form.file.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50;") }}
-                <div style="border: 2px dashed #ddd; border-radius: 8px; padding: 30px; text-align: center; background: #f8f9fa;">
-                    {{ form.file(style="display: block; margin: 0 auto;", accept="image/png,image/jpeg,image/jpg,image/gif") }}
-                    <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">Allowed formats: PNG, JPG, JPEG, GIF</p>
-                    <p style="margin: 5px 0 0 0; color: #999; font-size: 0.85rem;">Max file size: 5MB</p>
+            <div>
+                <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 600;">
+                    <i class="fas fa-file-image"></i> Image File <span style="color: #e74c3c;">*</span>
+                </label>
+                <div style="border: 2px dashed #e0e0e0; border-radius: 12px; padding: 40px; text-align: center; background: #f8f9fa; transition: all 0.3s;"
+                     id="dropZone"
+                     onmouseover="this.style.borderColor='#667eea'; this.style.background='#f0f2ff'"
+                     onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='#f8f9fa'">
+                    <div style="font-size: 3rem; margin-bottom: 15px; color: #667eea;"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <input type="file" 
+                           id="fileInput"
+                           name="file" 
+                           accept="image/png,image/jpeg,image/jpg,image/gif"
+                           required
+                           style="display: none;"
+                           onchange="updateFileName(this)">
+                    <label for="fileInput" style="cursor: pointer; color: #667eea; font-weight: 600; text-decoration: underline;">
+                        Click to select file
+                    </label>
+                    <p style="margin: 10px 0; color: #999;">or drag and drop</p>
+                    <p id="fileName" style="margin: 10px 0 5px 0; color: #667eea; font-weight: 600;">No file selected</p>
+                    <p style="margin: 0; color: #999; font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i> PNG, JPG, JPEG, GIF - Max 5MB
+                    </p>
                 </div>
-                {% if form.file.errors %}
-                    <div style="color: #e74c3c; margin-top: 10px; font-size: 0.9rem;">
-                        {% for error in form.file.errors %}
-                            <p style="margin: 0;">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
-
-            <!-- Submit Button -->
-            <div style="margin-top: 30px;">
-                {{ form.submit(style="width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer;") }}
+            
+            <!-- Upload Guidelines -->
+            <div style="background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%); padding: 25px; border-radius: 10px; border-left: 4px solid #667eea;">
+                <h4 style="margin: 0 0 15px 0; color: #2c3e50; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-clipboard-list" style="font-size: 1.5rem;"></i> Upload Guidelines
+                </h4>
+                <ul style="margin: 0; padding-left: 20px; color: #666; line-height: 1.8;">
+                    <li><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Only image files are allowed (PNG, JPG, JPEG, GIF)</li>
+                    <li><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Maximum file size is 5MB</li>
+                    <li><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Give your image a clear, descriptive title</li>
+                    <li><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Add context in the description to help others understand</li>
+                    <li><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Ensure the image is appropriate and follows community guidelines</li>
+                </ul>
+            </div>
+            
+            <!-- Buttons -->
+            <div style="display: flex; gap: 15px;">
+                <button type="submit" 
+                        style="flex: 1; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(102,126,234,0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102,126,234,0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102,126,234,0.3)'">
+                    <i class="fas fa-upload"></i> Upload Image
+                </button>
+                <a href="{{ url_for('gallery') }}" 
+                   style="flex: 0 0 auto; padding: 15px 30px; background: #f8f9fa; color: #2c3e50; text-decoration: none; border-radius: 10px; font-weight: bold; text-align: center; transition: background 0.2s; border: 2px solid #e0e0e0; display: flex; align-items: center; justify-content: center;"
+                   onmouseover="this.style.background='#e9ecef'"
+                   onmouseout="this.style.background='#f8f9fa'">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
             </div>
         </form>
-
-        <!-- Info Box -->
-        <div style="margin-top: 30px; padding: 20px; background: #e8f4f8; border-left: 4px solid #3498db; border-radius: 5px;">
-            <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📋 Upload Guidelines</h4>
-            <ul style="margin: 0; padding-left: 20px; color: #666; line-height: 1.8;">
-                <li>Images should be clear and properly focused</li>
-                <li>Provide descriptive titles for easy identification</li>
-                <li>Add detailed descriptions when possible</li>
-                <li>Ensure images meet file size requirements</li>
-                <li>Only upload images you have rights to share</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Back Link -->
-    <div style="text-align: center; margin-top: 30px;">
-        <a href="{{ url_for('gallery') }}" style="color: #3498db; text-decoration: none; font-weight: bold;">
-            ← Back to Gallery
-        </a>
     </div>
 </div>
 
-<style>
-    input[type="file"]::-webkit-file-upload-button {
-        padding: 10px 20px;
-        background: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
+<script>
+function updateFileName(input) {
+    const fileName = document.getElementById('fileName');
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        fileName.innerHTML = '<i class="fas fa-file-image"></i> ' + file.name + ' (' + sizeMB + ' MB)';
+        fileName.style.color = '#2ecc71';
+    } else {
+        fileName.innerHTML = 'No file selected';
+        fileName.style.color = '#667eea';
     }
+}
+
+// Drag and drop functionality
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.style.borderColor = '#667eea';
+    this.style.background = '#f0f2ff';
+});
+
+dropZone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    this.style.borderColor = '#e0e0e0';
+    this.style.background = '#f8f9fa';
+});
+
+dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.style.borderColor = '#e0e0e0';
+    this.style.background = '#f8f9fa';
     
-    input[type="file"]::-webkit-file-upload-button:hover {
-        background: #2980b9;
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        updateFileName(fileInput);
     }
-</style>
+});
+</script>
 {% endblock %}

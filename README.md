@@ -96,3 +96,4 @@ See [DOCKER.md](DOCKER.md) for complete Docker deployment guide including:
 - Docker Compose (included with Docker Desktop)
 
 No Python installation needed! 🐳
+"# Force deploy" 

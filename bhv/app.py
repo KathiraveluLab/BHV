@@ -668,19 +668,19 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         
-        admins = [
-            ('yadavchiragg', 'yadav@bhv.com', 'Demo2024!'),
-            ('pradeeban', 'pradeeban@bhv.com', 'BHV2024!'),
-            ('mdxabu', 'mdxabu@bhv.com', 'BHV2024!')
-        ]
-        
-        for username, email, password in admins:
-            if not User.query.filter_by(username=username).first():
-                admin = User(username=username, email=email, is_admin=True)
-                admin.set_password(password)
+        # Example of loading from environment variables
+        admin_user = os.environ.get('ADMIN_USER')
+        admin_email = os.environ.get('ADMIN_EMAIL')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+
+        if admin_user and admin_email and admin_password:
+            if not User.query.filter_by(username=admin_user).first():
+                admin = User(username=admin_user, email=admin_email, is_admin=True)
+                admin.set_password(admin_password)
                 db.session.add(admin)
+                print(f"Created admin user: {admin_user}")
         
         db.session.commit()
-        print("Database initialized with admin accounts")
+        print("Database initialized")
     
     app.run(debug=True, host='0.0.0.0', port=5000)

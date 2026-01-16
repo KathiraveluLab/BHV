@@ -4,9 +4,9 @@ services:
     env: python
     region: oregon
     plan: free
-    branch: main
+    branch: feature/add-render-deployment
     buildCommand: "./build.sh"
-    startCommand: "gunicorn 'bhv.app:create_app()' --bind 0.0.0.0:$PORT"
+    startCommand: "gunicorn bhv.app:app --bind 0.0.0.0:$PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

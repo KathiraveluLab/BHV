@@ -1,6 +1,4 @@
-from bhv.app import create_app, db, User
-
-app = create_app()
+from bhv.app import app, db, User
 
 with app.app_context():
     db.create_all()
@@ -13,10 +11,9 @@ with app.app_context():
     
     for username, email, password in admins:
         if not User.query.filter_by(username=username).first():
-            user = User(username=username, email=email, is_admin=True)
-            user.set_password(password)
-            db.session.add(user)
-            print(f'Created: {username}')
+            admin = User(username=username, email=email, is_admin=True)
+            admin.set_password(password)
+            db.session.add(admin)
     
     db.session.commit()
-    print('Done!')
+    print("Database initialized successfully!")

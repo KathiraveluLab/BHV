@@ -4,7 +4,7 @@ services:
     env: python
     region: oregon
     plan: free
-    branch: feature/add-render-deployment
+    branch: main
     buildCommand: "./build.sh"
     startCommand: "gunicorn bhv.app:app --bind 0.0.0.0:$PORT"
     envVars:

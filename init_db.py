@@ -1,60 +1,47 @@
-import os
-import sys
+from bhv.app import app, db, User
 
-def init_database():
-    """Initialize database with proper error handling"""
-    try:
-        print("=== Starting database initialization ===")
-        
-        # Fix DATABASE_URL for SQLAlchemy 1.4+ (postgres:// -> postgresql://)
-        database_url = os.environ.get('DATABASE_URL')
-        if database_url and database_url.startswith('postgres://'):
-            os.environ['DATABASE_URL'] = database_url.replace('postgres://', 'postgresql://', 1)
-            print(f"✓ Fixed DATABASE_URL: postgres:// -> postgresql://")
-        
-        from bhv.app import app, db, User
-        
-        with app.app_context():
-            print("Creating all database tables...")
-            db.create_all()
-            print("✓ Tables created successfully!")
-            
-            # Verify tables exist
-            from sqlalchemy import inspect
-            inspector = inspect(db.engine)
-            tables = inspector.get_table_names()
-            print(f"✓ Tables in database: {tables}")
-            
-            if 'user' not in tables:
-                raise Exception("ERROR: User table was not created!")
-            
-            print("\nCreating admin accounts...")
-            admins = [
-                ('yadavchiragg', 'yadav@bhv.com', 'Demo2024!'),
-                ('pradeeban', 'pradeeban@bhv.com', 'BHV2024!'),
-                ('mdxabu', 'mdxabu@bhv.com', 'BHV2024!')
-            ]
-            
-            for username, email, password in admins:
-                existing = User.query.filter_by(username=username).first()
-                if not existing:
-                    admin = User(username=username, email=email, is_admin=True)
-                    admin.set_password(password)
-                    db.session.add(admin)
-                    print(f"✓ Created admin: {username}")
-                else:
-                    print(f"✓ Admin already exists: {username}")
-            
-            db.session.commit()
-            print("\n=== Database initialization COMPLETE ===")
-            return True
-            
-    except Exception as e:
-        print(f"\n❌ ERROR during database initialization:", file=sys.stderr)
-        print(f"❌ {str(e)}", file=sys.stderr)
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+print("=" * 50)
+print("Starting BHV Database Initialization")
+print("=" * 50)
 
-if __name__ == "__main__":
-    init_database()
+with app.app_context():
+    print("\n[1/3] Creating database tables...")
+    db.create_all()
+    print("✓ Database tables created successfully!")
+    
+    print("\n[2/3] Creating admin accounts...")
+    admins = [
+        ('yadavchiragg', 'yadav@bhv.com', 'Demo2024!'),
+        ('pradeeban', 'pradeeban@bhv.com', 'BHV2024!'),
+        ('mdxabu', 'mdxabu@bhv.com', 'BHV2024!')
+    ]
+    
+    created_count = 0
+    existing_count = 0
+    
+    for username, email, password in admins:
+        existing_user = User.query.filter_by(username=username).first()
+        if not existing_user:
+            admin = User(username=username, email=email, is_admin=True)
+            admin.set_password(password)
+            db.session.add(admin)
+            print(f"  ✓ Created admin: {username}")
+            created_count += 1
+        else:
+            print(f"  - Admin already exists: {username}")
+            existing_count += 1
+    
+    print("\n[3/3] Committing changes to database...")
+    db.session.commit()
+    print("✓ Database commit successful!")
+    
+    print("\n" + "=" * 50)
+    print("Database Initialization Complete!")
+    print(f"  - Admin accounts created: {created_count}")
+    print(f"  - Admin accounts existing: {existing_count}")
+    print(f"  - Total admin accounts: {created_count + existing_count}")
+    print("=" * 50)
+    print("\nYou can now login with:")
+    print("  Username: yadavchiragg")
+    print("  Password: Demo2024!")
+    print("=" * 50)

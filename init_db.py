@@ -1,10 +1,11 @@
 from bhv.app import app, db, User
 
-print("Starting database initialization...")
+print("=== Starting database initialization ===")
 
 with app.app_context():
-    print("Creating database tables...")
+    print("Creating all database tables...")
     db.create_all()
+    print("Tables created successfully!")
     
     print("Creating admin accounts...")
     admins = [
@@ -14,14 +15,14 @@ with app.app_context():
     ]
     
     for username, email, password in admins:
-        existing_user = User.query.filter_by(username=username).first()
-        if not existing_user:
+        existing = User.query.filter_by(username=username).first()
+        if not existing:
             admin = User(username=username, email=email, is_admin=True)
             admin.set_password(password)
             db.session.add(admin)
-            print(f"Created admin: {username}")
+            print(f"✓ Created admin: {username}")
         else:
-            print(f"Admin already exists: {username}")
+            print(f"✓ Admin exists: {username}")
     
     db.session.commit()
-    print("Database initialization completed successfully!")
+    print("=== Database initialization COMPLETE ===")

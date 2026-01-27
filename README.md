@@ -1,19 +1,74 @@
-# BHV: Behavioral Health Vault
+# Behavioral Health Vault (BHV) Prototype
 
-The goal of this project is to provide a digitization approach to record the journey of recovery of people with serious mental illnesses and other social determinants. BHV (pronounced Beehive or Behave) aims to complement traditional Electronic Health Records (EHRs) by storing patient-provided images (photographs and scanned drawings) along with associated textual narratives, which may be provided by the patient or recorded by a social worker during an interview.
+A secure, calming web application for documenting your behavioral health journey. Built with React, Flask, and SQLite.
 
-BHV is a minimal, Python-based application that enables healthcare networks to store and retrieve patient-provided images.
+## Project Structure
 
-It provides them access to upload, view, and edit their own images and narratives.
+- `frontend/`: React application (Vite, Tailwind CSS)
+- `backend/`: Flask REST API (SQLAlchemy, SQLite, JWT)
 
-It also provides admin-level access for system administrators to view the entire ecosystem, upload images on behalf of users, along with the narrative, edit images on behalf of users, and delete images or narrations on behalf of users or as a moderation action.
+## Prerequisites
 
-The system should be secure. But the signup process should be pretty straightforward. Email-based signups are ok. 
+- Python 3.8+
+- Node.js 16+
 
-Log-ins should be straightforward. A simple username and password should be sufficient.
+## Setup & Run
 
-The system should avoid unnecessary bloat to enable easy installation in healthcare networks.
+### Backend
 
-The front-end should be kept minimal to allow the entire system to be run from a single command (rather than expecting the front-end, backend, and database to be run separately).
+1. Navigate to the `backend` directory:
+   ```bash
+   cd backend
+   ```
 
-The storage of the images could be in a file system with an index to retrieve them easily. The index itself could be in a database to allow easy queries.
+2. Create a virtual environment (optional but recommended):
+   ```bash
+   python -m venv venv
+   # Windows
+   venv\Scripts\activate
+   # macOS/Linux
+   source venv/bin/activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Run the server:
+   ```bash
+   python app.py
+   ```
+   The API will run at `http://localhost:5000`.
+
+### Frontend
+
+1. Navigate to the `frontend` directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+   The app will open at `http://localhost:5173`.
+
+## Features
+
+- **Authentication**: Secure signup and login with email/password (Bcrypt hashing, JWT).
+- **Dashboard**: Personal overview of your vault.
+- **Image Upload**: Upload images with narrative descriptions stored locally.
+- **Gallery**: View your journey timeline.
+- **Privacy**: Data is stored locally in SQLite and the filesystem.
+
+## Tech Stack
+
+- **Frontend**: React, Vite, Tailwind CSS, Lucide Icons, Axios
+- **Backend**: Flask, Flask-SQLAlchemy, Flask-Bcrypt, PyJWT
+- **Database**: SQLite

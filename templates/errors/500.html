@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/errors.css') }}">
+{% endblock %}
+{% block content %}
+<div class="error-container">
+    <div class="error-icon">⚙️</div>
+    <div class="error-code">500</div>
+    <h1 class="fw-bold">Oops! Something went wrong.</h1>
+    <p class="error-message">
+        Our servers are having a bit of trouble right now. <br>
+        Don't worry, it's not you—it's us. Our team has been notified.
+    </p>
+    <div class="mt-2">
+        <a href="{{ url_for('main.index') }}" class="btn btn-dark px-4 me-2">Return Home</a>
+        <button onclick="location.reload()" class="btn btn-outline-secondary px-4">Try Again</button>
+    </div>
+</div>
+{% endblock %}

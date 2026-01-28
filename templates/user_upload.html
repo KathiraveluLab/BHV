@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_upload.css') }}">
+
+{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+    <div class="upload-panel">
+        <div class="panel-header">
+            <span class="badge-secure"><i class="fas fa-lock"></i>Encrypted</span>
+            <h2>Upload Images</h2>
+        </div>
+
+        <form action="{{ url_for('upload.upload_page') }}" method="POST" enctype="multipart/form-data"
+            id="userUploadForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="drop-zone" id="dropZone">
+                <input type="file" name="file" id="userFileInput" accept="image/*" required hidden>
+                <div id="uPreviewContainer" class="preview-placeholder">
+                    <div class="icon-circle"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <p class="strong">Click or Drag Image Here</p>
+                    <p class="small">Supports JPG, PNG, DICOM</p>
+                </div>
+                <img id="uImagePreview" src="" class="preview-img" style="display: none;">
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe your image here..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Sentiment</label>
+                <div class="sentiment-toggles">
+                    <label class="toggle-option">
+                        <input type="radio" name="sentiment" value="Positive">
+                        <span class="pill pos">Positive</span>
+                    </label>
+                    <label class="toggle-option">
+                        <input type="radio" name="sentiment" value="Neutral" checked>
+                        <span class="pill neu">Neutral</span>
+                    </label>
+                    <label class="toggle-option">
+                        <input type="radio" name="sentiment" value="Negative">
+                        <span class="pill neg">Negative</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="userSubmitBtn">
+                <span id="uText">Upload</span>
+                <span id="uLoading" style="display:none;">
+                    <i class="fas fa-spinner fa-spin"></i> Processing...
+                </span>
+            </button>
+        </form>
+    </div>
+
+    <div class="history-panel">
+        <div class="history-header">
+            <h3>Recent Uploads</h3>
+            <span class="count">{{ images|length }} Images</span>
+        </div>
+
+        <div class="history-list">
+            {% for img in images %}
+            <div class="history-item">
+                <div class="h-thumb">
+                    {% if img.github_url %}
+                    <img src="{{ img.github_url }}">
+                    {% else %}
+                    <div class="h-placeholder"><i class="fas fa-image"></i></div>
+                    {% endif %}
+                </div>
+                <div class="h-info">
+                    <span class="h-date">{{ img.created_at.strftime('%H:%M · %b %d') }}</span>
+                    <p class="h-desc" id="desc-{{ img.upload_id }}">{{ img.description or 'No notes' }}</p>
+                    <div class="h-tags">
+                        <span class="tag {{ img.sentiment|lower }}" id="sent-{{ img.upload_id }}">{{ img.sentiment
+                            }}</span>
+                    </div>
+                    <div class="h-actions">
+                        <button class="btn-edit"
+                            onclick="openEditModal('{{ img.upload_id }}', '{{ img.description|replace("'", "\\'") }}', '{{ img.sentiment }}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="no-history">
+                <p>No recent uploads found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div id="editModalOverlay" class="modal-overlay">
+    <div class="edit-modal">
+        <div class="modal-header">
+            <h3>Edit Metadata</h3>
+            <button class="close-modal" onclick="closeEditModal()">&times;</button>
+        </div>
+        <form id="editForm" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" id="editDescription"
+                    style="width: 100%; min-height: 100px; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Sentiment</label>
+                <select name="sentiment" id="editSentiment"
+                    style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd;">
+                    <option value="Positive">Positive</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Negative">Negative</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit" style="margin-top: 20px;">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('userFileInput');
+    const preview = document.getElementById('uImagePreview');
+    const previewContainer = document.getElementById('uPreviewContainer');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
+    ['dragleave', 'drop'].forEach(type => { dropZone.addEventListener(type, () => dropZone.classList.remove('active')); });
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; updatePreview(fileInput.files[0]); }
+    });
+    fileInput.addEventListener('change', () => { if (fileInput.files.length) updatePreview(fileInput.files[0]); });
+
+    function updatePreview(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            previewContainer.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    const modalOverlay = document.getElementById('editModalOverlay');
+    const editForm = document.getElementById('editForm');
+    const editDesc = document.getElementById('editDescription');
+    const editSent = document.getElementById('editSentiment');
+
+    function openEditModal(id, currentDesc, currentSent) {
+        editForm.action = `/edit/${id}`;
+        editDesc.value = currentDesc;
+        editSent.value = currentSent;
+        modalOverlay.style.display = 'flex';
+    }
+
+    function closeEditModal() {
+        modalOverlay.style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modalOverlay) closeEditModal();
+    }
+
+    document.getElementById('userUploadForm').onsubmit = function () {
+        document.getElementById('uText').style.display = 'none';
+        document.getElementById('uLoading').style.display = 'inline-block';
+        document.getElementById('userSubmitBtn').disabled = true;
+    };
+</script>
+{% endblock %}

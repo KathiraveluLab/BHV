@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="about-wrapper">
+
+    <header class="about-hero">
+        <span class="badge-pill">Our Mission</span>
+        <h1>Understanding the Human Journey</h1>
+        <p class="hero-text">
+            The Behavioral Health Vault (BHV) bridges the gap between patient experience and Health insight.
+            We provide a secure, compassionate space to document and understand behavioral health over time.
+        </p>
+    </header>
+
+    <hr class="divider-soft">
+
+    <div class="values-grid">
+        <article class="value-card">
+            <div class="icon-box icon-shield">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <h3>Uncompromising Privacy</h3>
+            <p>
+                Trust is the foundation of therapy. We use industry-leading security to ensure that
+                every patient story, image, and note remains confidential and accessible only to the care team.
+            </p>
+        </article>
+
+        <article class="value-card">
+            <div class="icon-box icon-time">
+                <i class="fas fa-history"></i>
+            </div>
+            <h3>The Long-Term View</h3>
+            <p>
+                Healing isn't linear. Our timeline approach allows researchers to look back at weeks, months, or years
+                of data to spot patterns and progress that might otherwise be missed.
+            </p>
+        </article>
+
+        <article class="value-card">
+            <div class="icon-box icon-heart">
+                <i class="fas fa-heart-pulse"></i>
+            </div>
+            <h3>Emotional Context</h3>
+            <p>
+                Beyond standard clinical notes, BHV helps track emotional sentiment. This adds a layer of
+                empathy to the data, turning raw observations into actionable understanding.
+            </p>
+        </article>
+    </div>
+
+    <div class="cta-section">
+        <div class="cta-content">
+            <h4>Join the Initiative</h4>
+            <p>Help us build a more insightful future for behavioral health research.</p>
+        </div>
+        <div class="cta-buttons">
+            <a href="{{ url_for('main.index') }}" class="btn-outline">Back to Home</a>
+            {% if not session.user_id %}
+            <a href="{{ url_for('auth.signup') }}" class="btn-solid">Register Now</a>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

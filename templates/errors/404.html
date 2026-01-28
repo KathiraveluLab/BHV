@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/errors.css') }}">
+{% endblock %}
+{% block content %}
+<div class="error-container">
+    <div class="error-icon">🔍</div>
+    <div class="error-code">404</div>
+    <h1 class="fw-bold">Lost in Space?</h1>
+    <p class="error-message">We couldn't find the page you were looking for.</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-dark px-4">Go Back Home</a>
+</div>
+{% endblock %}

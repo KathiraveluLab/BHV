@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="home-wrapper">
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <span class="badge-new">Healthcare and Research Platform</span>
+            <h1>
+                Behavioral Insights <br>
+                <span class="text-gradient">Through Secure Media</span>
+            </h1>
+            <p class="hero-lead">
+                A secure, clinical-grade vault for capturing and analyzing patient history.
+                Designed to bridge the gap between daily experiences and clinical outcomes.
+            </p>
+
+            <div class="hero-btns">
+                {% if session.user_id %}
+                {% if session.role == 'admin' %}
+                <a href="{{ url_for('dash.admin_dashboard') }}" class="btn-main">
+                    <i class="fas fa-chart-pie"></i> Go to Dashboard
+                </a>
+                {% else %}
+                <a href="{{ url_for('dash.dashboard') }}" class="btn-main">
+                    <i class="fas fa-folder-open"></i> Go to Dashboard
+                </a>
+                {% endif %}
+                {% else %}
+                <a href="{{ url_for('auth.signup') }}" class="btn-main">Register </a>
+                <a href="{{ url_for('main.about') }}" class="btn-ghost">About Us</a>
+                {% endif %}
+                </div>
+                </div>
+                </section>
+
+    <section class="feature-overview">
+        <div class="feature-card">
+            <div class="icon-wrap icon-shield">
+            
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <h3>Secure & Private</h3>
+            <p>
+                Patient confidentiality is our priority. All data is encrypted at rest and in transit,
+                ensuring that personal health information remains protected.
+            </p>
+            </div>
+
+        <div class="feature-card">
+            <div class="icon-wrap icon-scope">
+                <i class="fas fa-microscope"></i>
+            </div>
+            <h3>Track Progress</h3>
+            <p>
+                View the bigger picture. Our longitudinal timeline helps researchers and clinicians
+                visualize behavioral trends and milestones over weeks or months.
+            </p>
+            </div>
+
+        <div class="feature-card">
+            <div class="icon-wrap icon-chart">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Insightful Metrics</h3>
+            <p>
+                Go beyond simple notes. Integrated sentiment indicators allow you to quantify
+                emotional patterns, providing data-driven support for clinical decisions.
+            </p>
+            </div>
+            </section>
+</div>
+{% endblock %}

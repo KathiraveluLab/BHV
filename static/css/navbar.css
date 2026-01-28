@@ -1,0 +1,143 @@
+/* Navbar Styles - FULLY RESPONSIVE */
+
+.navbar {
+    height: var(--nav-height);
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    width: 100%;
+    position: relative;
+}
+
+.nav-wrapper {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--clinical-dark);
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    z-index: 1001;
+}
+
+.brand-icon {
+    width: 12px; height: 12px;
+    background: var(--clinical-blue);
+    border-radius: 2px;
+    box-shadow: 14px 0 0 var(--clinical-blue), 7px 7px 0 var(--clinical-dark);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+/* Links Styling */
+.link-item {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.admin-link {
+    color: #d97706; background: #fffbeb;
+    padding: 6px 12px; border-radius: 6px;
+    font-size: 0.8rem; font-weight: 700;
+    text-decoration: none; border: 1px solid #fde68a;
+}
+
+
+.btn-logout {
+    color: var(--danger-red);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.btn-logout:hover {
+    background: #fee2e2;
+}
+
+.btn-signup {
+    background: var(--clinical-dark);
+    color: white; padding: 8px 18px;
+    border-radius: 6px; text-decoration: none;
+    font-size: 0.9rem; font-weight: 600;
+}
+
+/* MOBILE RESPONSIVENESS */
+
+/* Hamburger Icon */
+.nav-toggler {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.nav-toggler span {
+    width: 25px;
+    height: 3px;
+    background: var(--clinical-dark);
+    border-radius: 3px;
+    transition: 0.3s;
+}
+
+@media (max-width: 992px) {
+    .nav-toggler {
+        display: flex;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Hidden by default */
+        width: 280px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        padding: 100px 2rem;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.05);
+        align-items: flex-start;
+        gap: 2rem;
+    }
+
+    /* When the checkbox (in your HTML logic) is checked, show menu */
+    /* Note: Since you use a label/checkbox hack in HTML, we trigger it here */
+    #nav-check:checked ~ .nav-links {
+        right: 0;
+    }
+
+    .admin-link, .btn-signup {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar { padding: 0 1rem; }
+    .brand { font-size: 1.1rem; }
+}

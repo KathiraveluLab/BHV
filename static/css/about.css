@@ -1,0 +1,170 @@
+/* about.css — Clean & Responsive */
+
+.about-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 1.5rem;
+}
+
+.about-hero {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.badge-pill {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 6px 18px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+.about-hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.hero-text {
+    font-size: 1.25rem;
+    color: #475569;
+    line-height: 1.7;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.divider-soft {
+    border: 0;
+    height: 1px;
+    background: radial-gradient(circle, #e2e8f0 0%, transparent 100%);
+    margin: 4rem 0;
+}
+
+/* --- Values Grid --- */
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+}
+
+.value-card {
+    text-align: left;
+    padding: 1rem;
+}
+
+.icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.icon-shield { background: #f0fdf4; color: #16a34a; }
+.icon-time   { background: #f5f3ff; color: #7c3aed; }
+.icon-heart  { background: #fff1f2; color: #e11d48; }
+
+.value-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    color: #0f172a;
+    margin-bottom: 1rem;
+}
+
+.value-card p {
+    color: #64748b;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+/* --- CTA SECTION --- */
+.cta-section {
+    margin-top: 6rem;
+    background: #0f172a;
+    border-radius: 32px;
+    padding: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Adds a subtle glow effect to the CTA */
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 300px;
+    height: 300px;
+    background: rgba(37, 99, 235, 0.2);
+    filter: blur(80px);
+    border-radius: 50%;
+}
+
+.cta-content { position: relative; z-index: 1; }
+.cta-content h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.cta-content p { color: #94a3b8; font-size: 1.1rem; }
+
+.cta-buttons {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-solid {
+    background: #0052ff;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* --- Mobile Responsive --- */
+@media (max-width: 900px) {
+    .cta-section {
+        flex-direction: column;
+        text-align: center;
+        padding: 3rem 2rem;
+    }
+    .cta-buttons {
+        width: 100%;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .about-hero { margin-bottom: 3rem; }
+    .values-grid { gap: 2rem; }
+}

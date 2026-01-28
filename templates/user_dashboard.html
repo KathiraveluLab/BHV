@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1 class="welcome-text">Overview</h1>
+            <p class="sub-text">Welcome back, <span class="user-highlight">{{ user.name }}</span></p>
+        </div>
+
+        <div class="header-actions">
+            <div class="stat-pill">
+                <span class="label">Total Images</span>
+                <span class="value">{{ images|length }}</span>
+            </div>
+            <a href="{{ url_for('upload.upload_page') }}" class="btn-primary-action">
+                <i class="fas fa-plus"></i> Add New Image
+            </a>
+        </div>
+    </header>
+
+    <div class="vault-grid-wrapper">
+        {% if images %}
+        <div class="vault-grid">
+            {% for img in images %}
+            <div class="clinical-card">
+                <div class="card-media">
+                    {% if img.github_url %}
+                    <img src="{{ img.github_url }}" alt="Clinical Record" loading="lazy">
+                    {% else %}
+                    <div class="media-placeholder">
+                        <i class="fas fa-file-image"></i>
+                    </div>
+                    {% endif %}
+
+                    <div class="status-badge {{ img.sentiment|lower if img.sentiment else 'neutral' }}">
+                        {{ img.sentiment or 'Neutral' }}
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="meta-row">
+                        <span class="date"><i class="far fa-calendar-alt"></i> {{ img.created_at.strftime('%b %d, %Y')
+                            }}</span>
+                    </div>
+                    <p class="description">
+                        {{ img.description or 'No description provided.' }}
+                    </p>
+
+                    <div class="card-actions">
+                        <form method="POST" action="{{ url_for('upload.delete', upload_id=img.upload_id) }}"
+                            onsubmit="return confirm('Permanently remove this record from the vault?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-text-danger">
+                                <i class="fas fa-trash-alt"></i> Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3>No Images Found</h3>
+            <p>No Images have been uploaded yet.</p>
+            <a href="{{ url_for('upload.upload_page') }}" class="btn-ghost">Upload New Image</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

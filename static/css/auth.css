@@ -1,0 +1,237 @@
+/* auth.css — Premium Healthcare Authentication */
+
+.auth-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem 1.25rem;
+    width: 100%;
+    /* Subtle background pattern can be added here if desired */
+    background: radial-gradient(circle at top right, #f1f5f9, #f8fafc);
+}
+
+.auth-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 440px;
+    padding: clamp(2rem, 5vw, 3rem);
+    border-radius: 24px;
+    /* Soft, layered shadows for a "floating" effect */
+    box-shadow: 
+        0 10px 15px -3px rgba(0, 0, 0, 0.05),
+        0 20px 25px -5px rgba(0, 0, 0, 0.03),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    animation: authCardSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authCardSlide {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Header & Branding --- */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.auth-icon {
+    width: 60px;
+    height: 60px;
+    background: #eff6ff;
+    color: #0052ff;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1.25rem;
+    box-shadow: inset 0 0 0 1px rgba(0, 82, 255, 0.1);
+}
+
+.auth-header h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.auth-header p {
+    font-size: 0.95rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* --- Form Elements --- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    color: #0f172a;
+    transition: all 0.2s ease;
+    background-color: #fcfcfd;
+}
+
+.form-group input::placeholder {
+    color: #94a3b8;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0052ff;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.08);
+}
+
+.input-hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.75rem;
+    line-height: 1.4;
+}
+
+/* --- Divider --- */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.auth-divider:not(:empty)::before { margin-right: 1.5rem; }
+.auth-divider:not(:empty)::after { margin-left: 1.5rem; }
+
+/* --- Buttons --- */
+.btn-auth {
+    width: 100%;
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-auth:hover {
+    background: #1e293b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2);
+}
+
+.btn-auth:active {
+    transform: translateY(0);
+}
+
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-google:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+}
+
+/* --- Footer --- */
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.95rem;
+    color: #64748b;
+}
+
+.auth-footer a {
+    color: #0052ff;
+    text-decoration: none;
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Responsive Behavior --- */
+@media (max-width: 480px) {
+    .auth-wrapper {
+        padding: 1rem;
+        background: #ffffff; /* Remove gradient on small screens */
+    }
+    
+    .auth-card {
+        padding: 1.5rem;
+        box-shadow: none; 
+        border: none;
+    }
+
+    .auth-icon {
+        width: 52px;
+        height: 52px;
+    }
+
+    .btn-auth, .btn-google {
+        padding: 14px;
+    }
+}

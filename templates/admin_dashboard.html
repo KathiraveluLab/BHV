@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+
+    <nav class="top-navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i> Admin Panel
+            </div>
+
+            <div class="nav-menu">
+                <span class="user-info">Welcome, Admin</span>
+                <a href="{{ url_for('auth.logout') }}" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="icon-box blue-bg">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="text-box">
+                    <h3>Total Users</h3>
+                    <span class="number">{{ users|length }}</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon-box green-bg">
+                    <i class="fas fa-images"></i>
+                </div>
+                <div class="text-box">
+                    <h3>Total Images</h3>
+                    <span class="number">{{ images|length }}</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="gallery-section">
+            <div class="section-header">
+                <h2>User Uploads</h2>
+                <span class="badge">{{ images|length }} Images</span>
+            </div>
+
+            <div class="image-grid">
+                {% if images %}
+                {% for img in images %}
+                <div class="image-card">
+                    <div class="card-media">
+                        {% if img.github_url %}
+                        <img src="{{ img.github_url }}" alt="Upload" loading="lazy">
+                        {% else %}
+                        <div class="no-image"><i class="fas fa-image"></i></div>
+                        {% endif %}
+                        <div class="timestamp-tag">
+                           
+                                <i class="fas fa-clock"></i>
+                            
+                            <span class="date">{{ img.created_at.strftime('%b %d, %Y')
+                                }}</span>
+                        </div>
+                       
+                    </div>
+
+                    <div class="card-content">
+                        <div class="user-row">
+                            <i class="fas fa-user-circle"></i>
+                            <strong>{{ img.username or img.uploader_name or 'Unknown User' }}</strong>
+                        </div>
+                        <div class="status-badge {{ img.sentiment|lower if img.sentiment else 'neutral' }}">
+                            {{ img.sentiment or 'Neutral' }}
+                        </div>
+                        <p class="desc-text">
+                            {{ img.description or 'No description available.' }}
+                        </p>
+                    </div>
+
+                    <div class="card-actions">
+                        <form method="POST"
+                            action="{{ url_for('admin_upload.admin_delete_image', upload_id=img.upload_id) }}"
+                            onsubmit="return confirm('Delete this record?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-delete">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No records found.</p>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

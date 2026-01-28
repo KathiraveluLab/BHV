@@ -1,0 +1,29 @@
+name: GSoC CI Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Run Basic Tests
+      env:
+        SECRET_KEY: "dummy_test_key_for_github_actions"
+        MONGO_URI: "mongodb://localhost:27017/test_db"
+        GOOGLE_CLIENT_ID: "dummy_google_id"
+        GOOGLE_CLIENT_SECRET: "dummy_google_secret"
+        ADMIN_EMAIL: "admin@test.com"
+        ADMIN_PASSWORD: "testpassword"
+      run: python -m unittest discover tests

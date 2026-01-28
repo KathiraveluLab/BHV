@@ -1,0 +1,232 @@
+/* User Upload - Finalized Premium Layout */
+
+:root {
+    --clinical-blue: #0052ff;
+    --clinical-dark: #0f172a;
+    --border-color: #e2e8f0;
+    --text-muted: #64748b;
+    --success-green: #10b981;
+    --danger-red: #ef4444;
+    --nav-height: 70px; 
+}
+
+.upload-container {
+    display: flex;
+    height: calc(100vh - var(--nav-height)); 
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+/* --- LEFT PANEL: UPLOAD SECTION --- */
+.upload-panel {
+    flex: 1;
+    padding: clamp(1.5rem, 5vw, 3rem);
+    overflow-y: auto;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    max-width: 650px;
+    border-right: 1px solid var(--border-color);
+}
+
+.badge-secure {
+    display: inline-block;
+    width: fit-content;
+    font-size: 0.7rem;
+    color: var(--success-green);
+    background: #ecfdf5;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.panel-header h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--clinical-dark);
+    margin-bottom: 1.5rem;
+}
+
+/* Drop Zone */
+.drop-zone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    min-height: 250px;
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.drop-zone:hover, .drop-zone.active {
+    border-color: var(--clinical-blue);
+    background: #eff6ff;
+    transform: translateY(-2px);
+}
+
+.preview-placeholder { text-align: center; padding: 20px; }
+.icon-circle { 
+    font-size: 2.5rem; 
+    color: var(--clinical-blue); 
+    margin-bottom: 1rem; 
+    opacity: 0.6;
+}
+.strong { font-weight: 700; color: var(--clinical-dark); margin-bottom: 5px; }
+.small { font-size: 0.85rem; color: var(--text-muted); }
+
+.preview-img { 
+    max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;
+}
+
+/* Form Elements */
+.form-group { margin-bottom: 1.5rem; }
+.form-group label {
+    display: block; font-weight: 700; font-size: 0.9rem;
+    margin-bottom: 0.6rem; color: var(--clinical-dark);
+}
+
+textarea, select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+textarea { min-height: 100px; resize: vertical; }
+
+textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--clinical-blue);
+    box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
+}
+
+/* Sentiment Toggles */
+.sentiment-toggles { display: flex; gap: 12px; margin-top: 5px;}
+.toggle-option { flex: 1; }
+.toggle-option input { display: none; }
+.toggle-option .pill {
+    display: block; text-align: center; padding: 10px 5px;
+    border-radius: 8px; font-size: 0.85rem; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--border-color);
+    color: var(--text-muted); transition: all 0.2s; background: white;
+}
+
+.toggle-option input:checked + .pill.pos { background: #ecfdf5; color: var(--success-green); border-color: var(--success-green); }
+.toggle-option input:checked + .pill.neu { background: #f1f5f9; color: var(--clinical-dark); border-color: var(--clinical-dark); }
+.toggle-option input:checked + .pill.neg { background: #fef2f2; color: var(--danger-red); border-color: var(--danger-red); }
+
+.btn-submit {
+    width: 100%; background: var(--clinical-dark); color: white; 
+    border: none; padding: 16px; border-radius: 12px; 
+    font-weight: 700; font-size: 1rem; cursor: pointer;
+    margin-top: 1rem; transition: all 0.2s;
+}
+.btn-submit:hover { background: #1e293b; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+/* --- RIGHT PANEL: HISTORY --- */
+.history-panel {
+    flex: 1; background: #f8fafc; padding: 2.5rem; overflow-y: auto;
+}
+.history-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+}
+.history-header h3 { font-family: 'Outfit'; font-size: 1.3rem; font-weight: 700;}
+.count { font-size: 0.8rem; font-weight: 700; background: #e2e8f0; color: var(--clinical-dark); padding: 6px 12px; border-radius: 8px; }
+
+.history-item {
+    background: white; padding: 1.25rem; border-radius: 12px;
+    border: 1px solid var(--border-color); margin-bottom: 1.25rem;
+    display: flex; gap: 1.25rem; align-items: flex-start; transition: transform 0.2s;
+}
+.history-item:hover { transform: scale(1.02); }
+
+.h-thumb { width: 70px; height: 70px; border-radius: 10px; overflow: hidden; flex-shrink: 0; background: #eee; }
+.h-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.h-info { flex: 1; }
+.h-date { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px; }
+.h-desc { font-size: 0.95rem; color: var(--clinical-dark); margin-bottom: 10px; line-height: 1.4; font-weight: 600;}
+
+.h-actions { display: flex; gap: 10px; margin-top: 12px; }
+.btn-edit {
+    background: #f0f7ff; color: var(--clinical-blue); border: none;
+    padding: 6px 14px; border-radius: 6px; font-weight: 700;
+    font-size: 0.8rem; cursor: pointer; transition: 0.2s;
+}
+.btn-edit:hover { background: #e0efff; }
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media (max-width: 1100px) {
+    .upload-container { flex-direction: column; height: auto; overflow: visible; }
+    .upload-panel { max-width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); padding: 2rem; }
+    .history-panel { padding: 2rem; }
+}
+@media (max-width: 600px) {
+    .sentiment-toggles { flex-direction: column; }
+    .history-item { flex-direction: column; align-items: stretch; }
+    .h-thumb { width: 100%; height: 180px; }
+}
+
+/* --- PREMIUM MODAL & FIX FOR "WRONG SIGN" --- */
+.modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+    z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+}
+
+.edit-modal {
+    background: white; padding: 30px; border-radius: 20px;
+    width: 100%; max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+}
+.modal-header h3 { font-family: 'Outfit'; font-size: 1.5rem; color: var(--clinical-dark); }
+
+/* --- THE FIX FOR THE "WRONG SIGN" --- */
+.close-modal {
+    /* Reset default button styles */
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+
+    /* Make it a perfect circle */
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #f1f5f9; /* Soft gray background */
+
+    /* Center the '×' character perfectly */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Typography for the character */
+    font-size: 1.5rem;
+    line-height: 1;
+    font-family: sans-serif; /* Cleaner than serif default */
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.close-modal:hover {
+    background-color: #e2e8f0; /* Darker gray on hover */
+    color: var(--clinical-dark);
+    transform: rotate(90deg); /* Subtle rotation effect */
+}

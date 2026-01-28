@@ -1,0 +1,112 @@
+/* BHV — Behavioral Health Vault - Global Base Styles */
+
+:root {
+    --clinical-blue: #0052ff;
+    --clinical-dark: #0f172a;
+    --success-green: #10b981;
+    --danger-red: #ef4444;
+    --bg-app: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-muted: #64748b;
+    --nav-height: 72px;
+    --footer-height: 60px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    color: var(--clinical-dark);
+    background-color: var(--bg-app);
+    /* Changed from hidden to allow vertical scrolling on mobile */
+    overflow-x: hidden; 
+}
+
+.fa, .fas, .far, .fab, .fa-solid, .fa-regular {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    display: inline-block;
+    font-style: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.nav-container {
+    flex: 0 0 auto; 
+    z-index: 1000;
+    position: sticky;
+    top: 0;
+}
+
+.main-content {
+    flex: 1 1 auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem; /* Added padding for mobile safety */
+}
+
+/* Footer Adjustments */
+.footer {
+    flex: 0 0 auto; /* Allow height to adjust on mobile */
+    min-height: var(--footer-height);
+    background: white;
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+}
+
+.footer-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allows stacking if content is long */
+    gap: 10px;
+    font-size: 0.85rem;
+}
+
+/* Alert Toasts Responsiveness */
+.alert-zone {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 350px;
+    max-width: calc(100% - 40px); /* Ensures it doesn't overflow mobile screen */
+}
+
+@media (max-width: 480px) {
+    .alert-zone {
+        right: 10px;
+        left: 10px;
+        width: auto;
+    }
+}
+
+.alert {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-left: 4px solid var(--clinical-blue);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}

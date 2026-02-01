@@ -16,7 +16,6 @@ flask
 pymongo
 python-dotenv
 flask-wtf
-flask-limiter
 flask-talisman
 email-validator
 uuid6

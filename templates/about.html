@@ -1,26 +1,24 @@
 {% extends "base.html" %}
 
-
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
 {% endblock %}
 
 {% block content %}
 <div class="about-wrapper">
-
-    <header class="about-hero">
+    <header class="about-hero animate-fade-in">
         <span class="badge-pill">Our Mission</span>
         <h1>Understanding the Human Journey</h1>
         <p class="hero-text">
-            The Behavioral Health Vault (BHV) bridges the gap between patient experience and Health insight.
-            We provide a secure, compassionate space to document and understand behavioral health over time.
+            The Behavioral Health Vault (BHV) bridges the gap between patient experience and Health insight. We provide a secure,
+            compassionate space to document and understand behavioral health over time.
         </p>
     </header>
 
     <hr class="divider-soft">
 
     <div class="values-grid">
-        <article class="value-card">
+        <article class="value-card js-value-card">
             <div class="icon-box icon-shield">
                 <i class="fas fa-shield-halved"></i>
             </div>
@@ -31,7 +29,7 @@
             </p>
         </article>
 
-        <article class="value-card">
+        <article class="value-card js-value-card">
             <div class="icon-box icon-time">
                 <i class="fas fa-history"></i>
             </div>
@@ -42,7 +40,7 @@
             </p>
         </article>
 
-        <article class="value-card">
+        <article class="value-card js-value-card">
             <div class="icon-box icon-heart">
                 <i class="fas fa-heart-pulse"></i>
             </div>
@@ -54,7 +52,7 @@
         </article>
     </div>
 
-    <div class="cta-section">
+    <div class="cta-section js-cta-section">
         <div class="cta-content">
             <h4>Join the Initiative</h4>
             <p>Help us build a more insightful future for behavioral health research.</p>
@@ -66,6 +64,7 @@
             {% endif %}
         </div>
     </div>
-
 </div>
+
+<script src="{{ url_for('static', filename='js/about.js') }}"></script>
 {% endblock %}

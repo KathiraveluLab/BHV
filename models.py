@@ -89,33 +89,30 @@ class User:
 class Image:
     @staticmethod
     def save_metadata(user_id, username, uploaded_by, uploader_name, filename, 
-                     description, sentiment, github_url, ai_description="", file_size=0, file_type="image/jpeg",is_verified=False,uploader_role="user"):
-        if is_verified:
-            db = Database.get_db()
-            image_data = {
-                "upload_id":  str(uuid6.uuid7()),
-                "uploader_role":uploader_role,
-                "user_id": user_id, 
-                "username": username,
-                "uploaded_by": uploaded_by,
-                "uploader_name": uploader_name,
-                "filename": filename,
-                "github_url": github_url, 
-                "file_size": file_size, 
-                "file_type": file_type, 
-                "description": description,
-                "sentiment": sentiment,
-                "ai_description": ai_description,
-                "created_at": datetime.now(),
-                "updated_at": datetime.now(),
-                "updated_by": uploaded_by,
-                "updated_by_name": uploader_name,
-                "is_active": True 
-            }
-            db.uploads.insert_one(image_data)
-            return True
-        else:
-            return False
+                     description, sentiment, github_url, ai_description="", file_size=0, file_type="image/jpeg", uploader_role="user"):
+        db = Database.get_db()
+        image_data = {
+            "upload_id":  str(uuid6.uuid7()),
+            "uploader_role":uploader_role,
+            "user_id": user_id, 
+            "username": username,
+            "uploaded_by": uploaded_by,
+            "uploader_name": uploader_name,
+            "filename": filename,
+            "github_url": github_url, 
+            "file_size": file_size, 
+            "file_type": file_type, 
+            "description": description,
+            "sentiment": sentiment,
+            "ai_description": ai_description,
+            "created_at": datetime.now(),
+            "updated_at": datetime.now(),
+            "updated_by": uploaded_by,
+            "updated_by_name": uploader_name,
+            "is_active": True 
+        }
+        db.uploads.insert_one(image_data)
+        return True
 
     @staticmethod
     def get_user_images(user_id):

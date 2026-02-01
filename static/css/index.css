@@ -1,33 +1,29 @@
-/* index.css — Premium & Responsive */
-
 .home-wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
 }
 
-/* --- Hero Section --- */
 .hero-section {
-    padding: 100px 1rem;
+    padding: 80px 1rem;
     text-align: center;
-    animation: fadeIn 0.8s ease-out;
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .badge-new {
     display: inline-flex;
-    align-items: center;
     background: #eef2ff;
     color: #4338ca;
     font-size: 0.75rem;
     font-weight: 700;
     padding: 8px 20px;
     border-radius: 100px;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     border: 1px solid #e0e7ff;
@@ -35,12 +31,11 @@
 
 .hero-content h1 {
     font-family: 'Outfit', sans-serif;
-    font-size: clamp(2.2rem, 8vw, 4.5rem);
+    font-size: clamp(2.2rem, 8vw, 4rem);
     font-weight: 800;
     color: #0f172a;
-    line-height: 1.05;
+    line-height: 1.1;
     margin-bottom: 1.5rem;
-    letter-spacing: -0.03em;
 }
 
 .text-gradient {
@@ -50,42 +45,40 @@
 }
 
 .hero-lead {
-    font-size: clamp(1.1rem, 3vw, 1.35rem);
+    font-size: clamp(1.1rem, 3vw, 1.25rem);
     color: #475569;
     line-height: 1.6;
-    max-width: 700px;
-    margin: 0 auto 3rem auto;
+    max-width: 650px;
+    margin: 0 auto 2.5rem;
 }
 
-/* --- Buttons --- */
 .hero-btns {
     display: flex;
     justify-content: center;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
 .btn-main, .btn-ghost {
-    padding: 16px 32px;
-    border-radius: 12px;
+    padding: 14px 28px;
+    border-radius: 10px;
     font-weight: 700;
     font-size: 1rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s ease;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     text-decoration: none;
 }
 
 .btn-main {
     background: #0f172a;
     color: white;
-    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
 }
 
 .btn-main:hover {
     background: #1e293b;
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
 }
 
 .btn-ghost {
@@ -99,38 +92,42 @@
     border-color: #cbd5e1;
 }
 
-/* --- Features Grid --- */
 .feature-overview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    padding: 4rem 0 8rem 0;
+    padding: 4rem 0 6rem;
 }
 
 .feature-card {
     background: white;
-    padding: 3rem 2rem;
-    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
     border: 1px solid #f1f5f9;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     transition: all 0.4s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.feature-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-    border-color: #e2e8f0;
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
 }
 
 .icon-wrap {
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
+    width: 56px; height: 56px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .icon-shield { background: #f0fdf4; color: #16a34a; }
@@ -139,21 +136,29 @@
 
 .feature-card h3 {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.35rem;
+    margin-bottom: 0.75rem;
     color: #0f172a;
 }
 
 .feature-card p {
     color: #64748b;
-    line-height: 1.7;
-    font-size: 1rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
 }
 
-/* --- Mobile Responsive --- */
+.animate-subtle {
+    animation: pulseSubtle 3s infinite ease-in-out;
+}
+
+@keyframes pulseSubtle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); opacity: 0.9; }
+}
+
 @media (max-width: 768px) {
-    .hero-section { padding: 60px 1rem; }
-    .hero-btns { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
-    .btn-main, .btn-ghost { width: 100%; justify-content: center; }
-    .feature-overview { grid-template-columns: 1fr; padding-bottom: 4rem; }
+    .hero-section { padding: 40px 1rem; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .btn-main, .btn-ghost { width: 100%; max-width: 280px; justify-content: center; }
+    .feature-overview { grid-template-columns: 1fr; }
 }

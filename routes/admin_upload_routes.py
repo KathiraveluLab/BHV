@@ -25,7 +25,7 @@ def admin_dashboard():
         
         description = request.form.get('description', '').strip()
         sentiment = request.form.get('sentiment')
-        ai_desc = request.form.get('ai_description', 'Admin Uploaded')
+        ai_desc = request.form.get('ai_description', 'AI Uploaded')
 
         if not file or not target_user_id:
             flash("Missing file or target user selection.", "warning")
@@ -72,7 +72,6 @@ def admin_dashboard():
                 ai_description=ai_desc,
                 file_size=file_size,
                 file_type=file.content_type,
-                is_verified=True
             )
 
             if success:
@@ -85,7 +84,6 @@ def admin_dashboard():
         except Exception as e:
             flash(f"Admin upload failed: {str(e)}", "danger")
 
-    # GET request
     all_images = Image.get_all_images_admin()
     all_users = User.get_all_users() 
     return render_template('admin_upload.html', images=all_images, users=all_users)
@@ -115,7 +113,8 @@ def admin_delete_image(upload_id):
         
         flash("Failed to delete from GitHub. The repo or file might not exist.", "danger")
         
-    return redirect(url_for('admin_upload.admin_dashboard'))
+    return redirect(request.referrer or url_for('admin_upload.admin_dashboard'))
+
 @admin_upload_bp.route('/admin/edit/<upload_id>', methods=['POST'])
 @login_required
 @admin_required

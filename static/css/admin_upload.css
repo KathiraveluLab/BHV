@@ -1,5 +1,3 @@
-/* Admin Upload - Premium Responsive Layout */
-
 :root {
     --clinical-blue: #0052ff;
     --clinical-dark: #0f172a;
@@ -17,16 +15,13 @@
     padding: clamp(1rem, 3vw, 2rem);
 }
 
-/* --- Layout Grid --- */
 .admin-upload-grid {
     display: grid;
-    /* Desktop: 1.5fr for upload form, 1fr for list */
     grid-template-columns: 1.5fr 1fr; 
     gap: 2rem;
     align-items: start;
 }
 
-/* --- Card Base Styles --- */
 .card-upload, .card-recent {
     background: white;
     border: 1px solid var(--border-color);
@@ -35,7 +30,6 @@
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-/* --- Left Panel: Upload Header --- */
 .card-header {
     display: flex;
     gap: 1rem;
@@ -68,7 +62,6 @@
     margin: 0;
 }
 
-/* --- Drop Zone --- */
 .hidden-input {
     display: none !important;
 }
@@ -123,7 +116,6 @@
     width: 100%; height: 100%; object-fit: contain; padding: 10px;
 }
 
-/* --- Form Inputs --- */
 .form-group { margin-bottom: 1.5rem; position: relative; }
 
 .form-label {
@@ -171,7 +163,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* --- Right Panel: Recent List --- */
 .recent-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 1.5rem;
@@ -185,7 +176,7 @@
 }
 
 .recent-table-wrapper {
-    overflow-x: auto; /* Horizontal scroll on mobile */
+    overflow-x: auto;
 }
 
 .recent-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
@@ -219,7 +210,6 @@
 .u-badge.negative { background: #fef2f2; color: var(--danger-red); }
 .u-badge.neutral { background: #f1f5f9; color: var(--text-muted); }
 
-/* Action Buttons */
 .action-buttons { display: flex; justify-content: flex-end; gap: 8px; }
 
 .btn-icon {
@@ -235,10 +225,6 @@
 .btn-icon.delete:hover { background: var(--danger-red); color: white; }
 
 .empty-cell { text-align: center; color: var(--text-muted); padding: 20px; font-style: italic; }
-
-/* ========================================= */
-/* PREMIUM MODAL STYLES (MATCHING USER) */
-/* ========================================= */
 
 .admin-modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -259,7 +245,6 @@
     to { transform: translateY(0); opacity: 1; }
 }
 
-/* Modal Header */
 .modal-head {
     display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
 }
@@ -276,7 +261,6 @@
     font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--clinical-dark);
 }
 
-/* --- PERFECT CLOSE BUTTON (THE CROSS) --- */
 .close-modal-btn {
     width: 36px; height: 36px;
     border-radius: 50%;
@@ -290,14 +274,19 @@
 }
 
 .close-modal-btn:hover {
-    background: #fee2e2; /* Subtle red bg on hover */
+    background: #fee2e2; 
     color: var(--danger-red);
-    transform: rotate(90deg); /* The rotation effect */
+    transform: rotate(90deg);
 }
 
-/* Modal Footer */
+
 .modal-footer {
-    display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; pt-4; border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
 }
 
 .btn-ghost {
@@ -314,10 +303,9 @@
 }
 .btn-save:hover { background: #1e293b; transform: translateY(-1px); }
 
-/* --- RESPONSIVE --- */
 @media (max-width: 992px) {
     .admin-upload-grid {
-        grid-template-columns: 1fr; /* Stack layout */
+        grid-template-columns: 1fr; 
         gap: 2rem;
     }
     .drop-zone { height: 250px; }
@@ -329,15 +317,13 @@
     .btn-icon { width: 36px; height: 36px; font-size: 1rem; }
 }
 
-/* Processing State for Submit Button */
 .btn-loading {
     opacity: 0.7;
     cursor: not-allowed !important;
     pointer-events: none;
-    background: #475569 !important; /* A neutral gray while loading */
+    background: #475569 !important; 
 }
 
-/* Optional: Ensure the spinner has some space */
 .fa-spinner {
     margin-right: 8px;
 }

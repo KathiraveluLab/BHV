@@ -8,10 +8,9 @@
 {% block content %}
 <div class="admin-wrapper">
     <div class="admin-upload-grid">
-
         <div class="card-upload">
             <div class="card-header">
-                <div class="header-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="header-icon"><i class="fas fa-cloud-upload-alt" aria-hidden="true"></i></div>
                 <div>
                     <h4>Admin Upload</h4>
                     <p>Manually add images to the system dataset.</p>
@@ -23,18 +22,14 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <div class="form-group">
-                    <input type="file" name="file" id="fileInput" class="hidden-input" accept="image/*" required
-                        onchange="handleFileSelect(this)">
-
+                    <input type="file" name="file" id="fileInput" class="hidden-input" accept="image/*" required>
                     <div class="drop-zone" id="dropZone">
                         <div class="drop-content" id="dropContent">
-                            <div class="icon-circle">
-                                <i class="fas fa-arrow-up"></i>
-                            </div>
+                            <div class="icon-circle"><i class="fas fa-arrow-up" aria-hidden="true"></i></div>
                             <span class="drop-title">Drag & Drop Image</span>
                             <span class="drop-desc">or click to browse (JPG, PNG, DICOM)</span>
                         </div>
-                        <img id="outputImage" class="preview-image" style="display: none;">
+                        <img id="outputImage" class="preview-image">
                     </div>
                 </div>
 
@@ -42,14 +37,13 @@
                     <div class="form-group">
                         <label class="form-label">Target User</label>
                         <div class="select-wrapper">
-                            <select name="target_user_id" class="custom-select" required
-                                onchange="updateHiddenName(this)">
+                            <select name="target_user_id" id="targetUserSelect" class="custom-select" required>
                                 <option value="" disabled selected>Select User...</option>
                                 {% for u in users %}
                                 <option value="{{ u.user_id }}">{{ u.name }}</option>
                                 {% endfor %}
                             </select>
-                            <i class="fas fa-chevron-down select-arrow"></i>
+                            <i class="fas fa-chevron-down select-arrow" aria-hidden="true"></i>
                         </div>
                         <input type="hidden" name="target_username" id="target_name">
                     </div>
@@ -63,7 +57,7 @@
                                 <option value="Negative">Negative</option>
                                 <option value="Neutral">Neutral</option>
                             </select>
-                            <i class="fas fa-chevron-down select-arrow"></i>
+                            <i class="fas fa-chevron-down select-arrow" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
@@ -71,11 +65,11 @@
                 <div class="form-group">
                     <label class="form-label">Clinical Description</label>
                     <textarea name="description" class="custom-textarea" rows="2"
-                        placeholder="Enter clinical notes or image description..."></textarea>
+                        placeholder="Enter Image Description..."></textarea>
                 </div>
 
-                <button type="submit" class="btn-admin-submit">
-                    <i class="fas fa-check-circle"></i> Upload to System
+                <button type="submit" class="btn-admin-submit" id="submitBtn">
+                    <i class="fas fa-check-circle" aria-hidden="true"></i> Upload to System
                 </button>
             </form>
         </div>
@@ -95,42 +89,40 @@
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="adminActionTable">
                         {% if images %}
                         {% for img in images %}
                         <tr>
-                            <td style="width: 70px;">
+                            <td class="w-70">
                                 <div class="table-thumb">
                                     {% if img.github_url %}
                                     <img src="{{ img.github_url }}" alt="Thumb" loading="lazy">
                                     {% else %}
-                                    <i class="fas fa-image"></i>
+                                    <i class="fas fa-image" aria-hidden="true"></i>
                                     {% endif %}
                                 </div>
                             </td>
                             <td>
                                 <span class="u-name">{{ img.username }}</span>
                                 <span class="u-meta">By: {{ img.uploader_name }}</span>
-                                <span class="u-badge {{ img.sentiment|lower if img.sentiment else 'neutral' }}">{{
-                                    img.sentiment or 'Neutral' }}</span>
+                                <span class="u-badge {{ img.sentiment|lower if img.sentiment else 'neutral' }}">
+                                    {{ img.sentiment or 'Neutral' }}
+                                </span>
                             </td>
                             <td class="text-right">
                                 <div class="action-buttons">
-                                    <button type="button" class="btn-icon edit" title="Edit Metadata"
-                                        onclick="openAdminModal('{{ img.upload_id }}', '{{ img.description|replace("'", "\\'")|replace("
-                                        \n", " " ) }}', '{{ img.sentiment }}' , '{{ img.ai_description|replace("'", "
-                                        \\'")|replace("\n", " " ) }}')">
-                                        <i class="fas fa-pen"></i>
+                                    <button type="button" class="btn-icon edit js-edit-btn"
+                                        data-id="{{ img.upload_id }}" data-desc="{{ img.description }}"
+                                        data-sent="{{ img.sentiment }}" data-ai="{{ img.ai_description }}">
+                                        <i class="fas fa-pen" aria-hidden="true"></i>
                                     </button>
 
                                     <form
                                         action="{{ url_for('admin_upload.admin_delete_image', upload_id=img.upload_id) }}"
-                                        method="POST" onsubmit="return confirm('Permanently delete this image?');"
-                                        style="display:inline;">
+                                        method="POST" class="js-delete-form d-inline">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn-icon delete" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <button type="submit" class="btn-icon delete"><i
+                                                class="fas fa-trash"></i></button>
                                     </form>
                                 </div>
                             </td>
@@ -152,22 +144,17 @@
     <div class="admin-modal">
         <div class="modal-head">
             <div class="modal-title-group">
-                <div class="modal-icon"><i class="fas fa-sliders-h"></i></div>
+                <div class="modal-icon"><i class="fas fa-sliders-h" aria-hidden="true"></i></div>
                 <h4>Edit Metadata</h4>
             </div>
-            <button class="close-modal-btn" onclick="closeAdminModal()">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="close-modal-btn" id="closeModal"><i class="fas fa-times"></i></button>
         </div>
-
         <form id="adminEditForm" method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
             <div class="form-group">
                 <label class="form-label">User Description</label>
                 <textarea name="description" id="modalDesc" class="custom-textarea" rows="3"></textarea>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Sentiment Analysis</label>
                 <div class="select-wrapper">
@@ -179,106 +166,17 @@
                     <i class="fas fa-chevron-down select-arrow"></i>
                 </div>
             </div>
-
             <div class="form-group">
-                <label class="form-label">AI Description (Admin Notes)</label>
-                <textarea name="ai_description" id="modalAiDesc" class="custom-textarea" rows="3"
-                    placeholder="Internal admin notes..."></textarea>
+                <label class="form-label">AI Description (Internal Notes)</label>
+                <textarea name="ai_description" id="modalAiDesc" class="custom-textarea" rows="3"></textarea>
             </div>
-
             <div class="modal-footer">
-                <button type="button" class="btn-ghost" onclick="closeAdminModal()">Cancel</button>
+                <button type="button" class="btn-ghost" id="cancelModal">Cancel</button>
                 <button type="submit" class="btn-save">Save Changes</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-    // Logic remains exactly the same
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const dropContent = document.getElementById('dropContent');
-    const outputImage = document.getElementById('outputImage');
-
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-            e.preventDefault(); e.stopPropagation();
-            dropZone.classList.add('drag-active');
-        }, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-            e.preventDefault(); e.stopPropagation();
-            dropZone.classList.remove('drag-active');
-        }, false);
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFileSelect(fileInput);
-        }
-    });
-
-    function handleFileSelect(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                outputImage.src = e.target.result;
-                outputImage.style.display = 'block';
-                dropContent.style.display = 'none';
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function updateHiddenName(select) {
-        document.getElementById('target_name').value = select.options[select.selectedIndex].text;
-    }
-
-    const adminModal = document.getElementById('adminModalOverlay');
-    const adminEditForm = document.getElementById('adminEditForm');
-
-    function openAdminModal(id, desc, sent, ai_desc) {
-        adminEditForm.action = "/admin/edit/" + id;
-        document.getElementById('modalDesc').value = desc;
-        document.getElementById('modalSent').value = sent;
-        document.getElementById('modalAiDesc').value = ai_desc;
-        adminModal.style.display = 'flex';
-    }
-
-    function closeAdminModal() {
-        adminModal.style.display = 'none';
-    }
-
-    window.onclick = function (event) {
-        if (event.target == adminModal) closeAdminModal();
-    }
-
-    const uploadForm = document.getElementById('uploadForm');
-
-        uploadForm.addEventListener('submit', function (e) {
-            // We don't preventDefault() because we WANT the form to submit.
-            // We just want to change the visual state immediately.
-
-            const btn = this.querySelector('.btn-admin-submit');
-            const originalText = btn.innerHTML;
-
-            // 1. Change Button Look
-            btn.classList.add('btn-loading');
-
-            // 2. Change Text & Icon to Spinner
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading & Processing...';
-
-            // 3. Disable button to prevent double-submit
-            // (Note: In some browsers, disabling the button prevents the form submit
-            // if done too quickly, so CSS pointer-events:none is safer, 
-            // but we'll add the visual class above).
-        });
-</script>
+<script src="{{ url_for('static', filename='js/admin_upload.js') }}"></script>
 {% endblock %}

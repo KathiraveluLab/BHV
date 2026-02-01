@@ -1,5 +1,6 @@
 import os
 import logging
+import hmac
 from flask import session, request
 from models import User
 from logging.handlers import RotatingFileHandler
@@ -51,7 +52,7 @@ class AuthService:
         admin_pass = os.getenv("ADMIN_PASSWORD")
 
         if admin_email and email_clean == admin_email.strip().lower():
-            if password == admin_pass:
+            if admin_pass and hmac.compare_digest(password.encode('utf-8'), admin_pass.encode('utf-8')):
                 log_event(
                     event="ADMIN_LOGIN_SUCCESS",
                     user_id="SYSTEM_ADMIN_001",

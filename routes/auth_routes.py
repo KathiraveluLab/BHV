@@ -2,12 +2,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from decorators import login_required
 from auth import AuthService
 from models import User
-from extensions import limiter, oauth 
+from extensions import  oauth
+from database import Database
 
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")
 def login():
     if request.method == 'POST':
         email = request.form.get('email').strip().lower()
@@ -54,7 +54,6 @@ def google_authorize():
         if not user:
             user = User.find_by_email(email)
             if user:
-                from database import Database
                 db = Database.get_db()
                 db.users.update_one({"email": email}, {"$set": {"google_id": google_id}})
                 user = User.find_by_email(email)
@@ -97,7 +96,6 @@ def setup_password():
     return render_template('setup_password.html')
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
-@limiter.limit("30 per hour")
 def signup():
     if request.method == 'POST':
         name = request.form.get('name').strip()

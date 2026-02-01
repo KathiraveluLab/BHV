@@ -1,18 +1,16 @@
 <nav class="navbar">
     <div class="nav-wrapper">
-        <input type="checkbox" id="nav-check" style="display: none;">
-
         <a href="{{ url_for('main.index') }}" class="brand">
             <span class="brand-icon"></span> BHV
         </a>
 
-        <label for="nav-check" class="nav-toggler">
+        <button class="nav-toggler js-nav-toggler" aria-label="Toggle navigation">
             <span></span>
             <span></span>
             <span></span>
-        </label>
+        </button>
 
-        <ul class="nav-links">
+        <ul class="nav-links js-nav-menu">
             <li><a href="{{ url_for('main.index') }}" class="link-item">Home</a></li>
             <li><a href="{{ url_for('main.about') }}" class="link-item">About Us</a></li>
 
@@ -20,8 +18,7 @@
             {% if session.role == 'admin' %}
             <li><a href="{{ url_for('dash.admin_dashboard') }}" class="admin-link">Admin Dashboard</a></li>
             <li><a href="{{ url_for('admin_upload.admin_dashboard') }}" class="admin-link">Upload Media</a></li>
-            <li><a href="{{ url_for('admin_analysis.analysis_dashboard') }}" class="admin-link">Analysis Dashboard</a>
-            </li>
+            <li><a href="{{ url_for('admin_analysis.analysis_dashboard') }}" class="admin-link">Analysis</a></li>
             {% else %}
             <li><a href="{{ url_for('dash.dashboard') }}" class="link-item">Dashboard</a></li>
             <li><a href="{{ url_for('upload.upload_page') }}" class="link-item">Upload Media</a></li>

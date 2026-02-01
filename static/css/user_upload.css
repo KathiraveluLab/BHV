@@ -1,5 +1,3 @@
-/* User Upload - Finalized Premium Layout */
-
 :root {
     --clinical-blue: #0052ff;
     --clinical-dark: #0f172a;
@@ -18,7 +16,6 @@
     background: #ffffff;
 }
 
-/* --- LEFT PANEL: UPLOAD SECTION --- */
 .upload-panel {
     flex: 1;
     padding: clamp(1.5rem, 5vw, 3rem);
@@ -52,7 +49,6 @@
     margin-bottom: 1.5rem;
 }
 
-/* Drop Zone */
 .drop-zone {
     border: 2px dashed #cbd5e1;
     border-radius: 16px;
@@ -89,7 +85,6 @@
     max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;
 }
 
-/* Form Elements */
 .form-group { margin-bottom: 1.5rem; }
 .form-group label {
     display: block; font-weight: 700; font-size: 0.9rem;
@@ -114,7 +109,6 @@ textarea:focus, select:focus {
     box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
 }
 
-/* Sentiment Toggles */
 .sentiment-toggles { display: flex; gap: 12px; margin-top: 5px;}
 .toggle-option { flex: 1; }
 .toggle-option input { display: none; }
@@ -137,7 +131,6 @@ textarea:focus, select:focus {
 }
 .btn-submit:hover { background: #1e293b; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
-/* --- RIGHT PANEL: HISTORY --- */
 .history-panel {
     flex: 1; background: #f8fafc; padding: 2.5rem; overflow-y: auto;
 }
@@ -168,7 +161,6 @@ textarea:focus, select:focus {
 }
 .btn-edit:hover { background: #e0efff; }
 
-/* --- RESPONSIVE BREAKPOINTS --- */
 @media (max-width: 1100px) {
     .upload-container { flex-direction: column; height: auto; overflow: visible; }
     .upload-panel { max-width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); padding: 2rem; }
@@ -180,7 +172,6 @@ textarea:focus, select:focus {
     .h-thumb { width: 100%; height: 180px; }
 }
 
-/* --- PREMIUM MODAL & FIX FOR "WRONG SIGN" --- */
 .modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
@@ -198,35 +189,63 @@ textarea:focus, select:focus {
 }
 .modal-header h3 { font-family: 'Outfit'; font-size: 1.5rem; color: var(--clinical-dark); }
 
-/* --- THE FIX FOR THE "WRONG SIGN" --- */
 .close-modal {
-    /* Reset default button styles */
     border: none;
     background: transparent;
     padding: 0;
     cursor: pointer;
 
-    /* Make it a perfect circle */
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: #f1f5f9; /* Soft gray background */
+    background-color: #f1f5f9; 
 
-    /* Center the '×' character perfectly */
     display: flex;
     align-items: center;
     justify-content: center;
 
-    /* Typography for the character */
     font-size: 1.5rem;
     line-height: 1;
-    font-family: sans-serif; /* Cleaner than serif default */
+    font-family: sans-serif; 
     color: var(--text-muted);
     transition: all 0.2s ease;
 }
 
 .close-modal:hover {
-    background-color: #e2e8f0; /* Darker gray on hover */
+    background-color: #e2e8f0; 
     color: var(--clinical-dark);
-    transform: rotate(90deg); /* Subtle rotation effect */
+    transform: rotate(90deg); 
+}
+
+
+.history-item {
+    opacity: 0;
+    transform: translateX(20px);
+    animation: slideInRight 0.4s ease forwards;
+}
+
+@keyframes slideInRight {
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.history-item:nth-child(1) { animation-delay: 0.1s; }
+.history-item:nth-child(2) { animation-delay: 0.15s; }
+.history-item:nth-child(3) { animation-delay: 0.2s; }
+
+.edit-modal {
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay[style*="display: flex"] .edit-modal {
+    transform: scale(1);
+}
+
+.u-hidden {
+    display: none !important;
+}
+#uLoading {
+    align-items: center;
+    gap: 8px;
+    display: none;
 }

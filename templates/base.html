@@ -7,7 +7,6 @@
     <title>{% block title %}Behavioral Health Vault - BHV{% endblock %}</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -16,35 +15,28 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
-
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
     <div class="page-wrapper">
-
-        <div class="nav-container">
+        <header class="nav-container">
             {% include 'navbar.html' %}
-        </div>
+        </header>
 
-        <div class="alert-zone">
+        <div class="alert-zone" id="alertZone">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for category, message in messages %}
-            <div class="alert alert-{{ category }} animate-slide-in">
+            <div class="alert alert-{{ category }} animate-slide-in js-alert" role="alert">
                 <div class="alert-content">
                     <span class="alert-icon">
-                        {% if category == 'success' %}
-                        <i class="fas fa-check-circle"></i>
-                        {% elif category == 'danger' %}
-                        <i class="fas fa-circle-exclamation"></i>
-                        {% else %}
-                        <i class="fas fa-circle-info"></i>
-                        {% endif %}
-                        </span>
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-circle-exclamation{% else %}fa-circle-info{% endif %}"
+                            aria-hidden="true"></i>
+                    </span>
                     <span class="alert-text">{{ message }}</span>
-                    </div>
-                    <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                </div>
+                <button type="button" class="alert-close js-close-alert" aria-label="Close">&times;</button>
             </div>
             {% endfor %}
             {% endif %}
@@ -61,19 +53,10 @@
                     <p>&copy; 2026 <span class="brand-text">Behavioral Health Vault</span></p>
                     <span class="footer-tag">Institutional Research And Development</span>
                 </div>
-                
             </div>
         </footer>
     </div>
-<script>
-    setTimeout(() => {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
-            alert.style.opacity = '0';
-            setTimeout(() => alert.remove(), 500);
-        });
-    }, 5000);
-</script>
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
 </body>
 
 </html>

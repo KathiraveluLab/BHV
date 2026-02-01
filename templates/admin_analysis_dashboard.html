@@ -1,17 +1,12 @@
 {% extends "base.html" %}
 
-
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_analysis_dashboard.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-<script
-    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 {% endblock %}
 
 {% block content %}
 <div class="analysis-container">
-
     <div class="page-header">
         <div class="header-text">
             <h2>Analytics Dashboard</h2>
@@ -19,17 +14,17 @@
         </div>
         <div class="action-buttons">
             <a href="{{ url_for('admin_analysis.export_excel') }}" class="btn-excel">
-                <i class="fas fa-file-excel"></i> Export
+                <i class="fas fa-file-excel" aria-hidden="true"></i> Export
             </a>
-            <button onclick="window.print()" class="btn-outline-secondary">
-                <i class="fas fa-print"></i> Print Report
+            <button id="printReportBtn" class="btn-outline-secondary">
+                <i class="fas fa-print" aria-hidden="true"></i> Print Report
             </button>
         </div>
     </div>
 
     <div class="stats-row">
         <div class="stat-card">
-            <div class="icon-box pos-icon"><i class="fas fa-smile"></i></div>
+            <div class="icon-box pos-icon"><i class="fas fa-smile" aria-hidden="true"></i></div>
             <div class="stat-content">
                 <h3>Positive</h3>
                 <p>{{ stats.Positive }}</p>
@@ -38,7 +33,7 @@
         </div>
 
         <div class="stat-card">
-            <div class="icon-box neu-icon"><i class="fas fa-meh"></i></div>
+            <div class="icon-box neu-icon"><i class="fas fa-meh" aria-hidden="true"></i></div>
             <div class="stat-content">
                 <h3>Neutral</h3>
                 <p>{{ stats.Neutral }}</p>
@@ -47,7 +42,7 @@
         </div>
 
         <div class="stat-card">
-            <div class="icon-box neg-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="icon-box neg-icon"><i class="fas fa-frown" aria-hidden="true"></i></div>
             <div class="stat-content">
                 <h3>Negative</h3>
                 <p>{{ stats.Negative }}</p>
@@ -56,7 +51,7 @@
         </div>
 
         <div class="stat-card">
-            <div class="icon-box info-icon"><i class="fas fa-users"></i></div>
+            <div class="icon-box info-icon"><i class="fas fa-users" aria-hidden="true"></i></div>
             <div class="stat-content">
                 <h3>Users</h3>
                 <p>{{ total_users }}</p>
@@ -87,7 +82,7 @@
                 <p>Contribution overview</p>
             </div>
             <div class="search-wrapper">
-                <i class="fas fa-search"></i>
+                <i class="fas fa-search" aria-hidden="true"></i>
                 <input type="text" id="userSearch" placeholder="Search user...">
             </div>
         </div>
@@ -124,10 +119,10 @@
                             {{ user.neg_count }}
                         </td>
                         <td>
-                            <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="health-container">
                                 <div class="health-bar-bg">
-                                    <div class="health-bar-fill"
-                                        style="width: {{ score }}%; background: {{ bar_color }};"></div>
+                                    <div class="health-bar-fill js-health-bar" data-width="{{ score }}"
+                                        data-color="{{ bar_color }}"></div>
                                 </div>
                                 <small>{{ score|round(0)|int }}%</small>
                             </div>
@@ -144,7 +139,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #999;">No data available</td>
+                        <td colspan="5" class="empty-row">No data available</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -161,112 +156,8 @@
 }
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Register the DataLabels plugin
-        Chart.register(ChartDataLabels);
-
-        const dataElement = document.getElementById("dashboard-data");
-        if (!dataElement) return;
-
-        const DASHBOARD_DATA = JSON.parse(dataElement.textContent);
-        const brandColor = '#0052ff';
-        const posColor = '#10b981';
-        const neuColor = '#f59e0b';
-        const negColor = '#ef4444';
-
-        // 1. Trend Chart
-        const trendCtx = document.getElementById("trendChart");
-        if (trendCtx) {
-            new Chart(trendCtx, {
-                type: "line",
-                data: {
-                    labels: DASHBOARD_DATA.labels,
-                    datasets: [{
-                        label: "Uploads",
-                        data: DASHBOARD_DATA.values,
-                        borderColor: brandColor,
-                        backgroundColor: 'rgba(0, 82, 255, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        datalabels: { display: false } // Hide labels on line chart
-                    },
-                    scales: {
-                        y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        // 2. Pie Chart (With Percentage Labels)
-        const pieCtx = document.getElementById("pieChart");
-        if (pieCtx) {
-            new Chart(pieCtx, {
-                type: "doughnut",
-                data: {
-                    labels: ["Positive", "Neutral", "Negative"],
-                    datasets: [{
-                        data: DASHBOARD_DATA.pie,
-                        backgroundColor: [posColor, neuColor, negColor],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    layout: {
-                        padding: 20
-                    },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12 } },
-                        datalabels: {
-                            color: '#fff',
-                            font: { weight: 'bold', size: 12 },
-                            formatter: (value, ctx) => {
-                                let sum = 0;
-                                let dataArr = ctx.chart.data.datasets[0].data;
-                                dataArr.map(data => { sum += data; });
-
-                                // Avoid division by zero
-                                if (sum === 0) return "";
-
-                                let percentage = (value * 100 / sum).toFixed(1) + "%";
-                                return value > 0 ? `${value}\n(${percentage})` : '';
-                            },
-                            textAlign: 'center',
-                            anchor: 'center',
-                            align: 'center',
-                            offset: 0
-                        }
-                    }
-                }
-            });
-        }
-
-        // 3. Search Functionality
-        const searchInput = document.getElementById("userSearch");
-        const tableRows = document.querySelectorAll("#usersTable tbody tr");
-
-        if (searchInput) {
-            searchInput.addEventListener("keyup", function () {
-                const query = this.value.toUpperCase();
-                tableRows.forEach(row => {
-                    const userSpan = row.querySelector(".user-text");
-                    const text = userSpan ? userSpan.textContent : row.textContent;
-                    row.style.display = text.toUpperCase().includes(query) ? "" : "none";
-                });
-            });
-        }
-    });
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<script src="{{ url_for('static', filename='js/admin_analysis_dashboard.js') }}"></script>
 {% endblock %}

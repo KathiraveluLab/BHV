@@ -70,8 +70,7 @@ def upload_page():
                 sentiment=sentiment,
                 ai_description="", 
                 file_size=file_size,
-                file_type=file.content_type,
-                is_verified=True 
+                file_type=file.content_type
             )
             
             if success:
@@ -108,8 +107,7 @@ def delete(upload_id):
         Image.hard_delete(upload_id)
         flash("Image permanently deleted from GitHub and Database.", "success")
     else:
-        flash("Image deleted from database, but could not be removed from GitHub (it may have been moved).", "warning")
-        Image.hard_delete(upload_id) 
+        flash("Failed to delete image from GitHub. It may have been already removed or permissions may have changed.", "danger")
 
     return redirect(url_for('dash.dashboard'))
 

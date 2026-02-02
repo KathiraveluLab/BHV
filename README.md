@@ -31,7 +31,7 @@ The storage of the images could be in a file system with an index to retrieve th
 - SQLAlchemy
 - Alembic (for database migrations)
 
-# To run the Project,follow this:
+# Getting Started
 
 1. Install dependencies:
    ```bash

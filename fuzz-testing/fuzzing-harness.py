@@ -4,9 +4,7 @@ import requests
 def fuzzer(max_length=100, start=33, end=126) -> str :
 
     string_length=random.randrange(1,max_length+1)
-    output="" 
-    for i in range(0,string_length):
-        output+=chr(random.randrange(start,end+1))
+    output = "".join(chr(random.randint(start, end)) for _ in range(string_length))
     return output
     
 def test_inputs():

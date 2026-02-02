@@ -140,8 +140,8 @@ def upload():
             
             except Exception as e:
                 db.session.rollback()  # Undo DB changes if it crashes halfway
-                print(f"CRASH DETECTED: {e}")
-                return f"Internal Server Error: {e}", 500
+                current_app.logger.error(f"An error occurred during upload: {e}", exc_info=True)
+                return "An unexpected error occurred. Please try again later.", 500
         else:
             flash("Please provide a name and select a file.", "error")
             return redirect(url_for('upload'))

@@ -10,12 +10,6 @@ from urllib.parse import quote
 
 app=Flask(__name__)
 
-@app.before_request
-def auto_admin_session():
-    if request.path.startswith("/admin"):
-        session["is_admin"] = True
-
-
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///dev.db')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')

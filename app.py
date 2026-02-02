@@ -36,8 +36,11 @@ class Entries(db.Model):
     narrative = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-@app.route("/admin")
+@app.route("/admin/dashboard")
 def admin_dashboard():
+    if not session.get("is_admin"):
+        flash("Unauthorized access!")
+        return redirect(url_for('login'))
     return render_template("admin.html")
 
 def require_admin():

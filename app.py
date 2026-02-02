@@ -17,7 +17,7 @@ def auto_admin_session():
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///dev.db')
-app.config['SECRET_KEY'] = 'any-random-string-here-for-now'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 app.config['MAX_CONTENT_LENGTH']= 3*1024*1024 #3MB
 

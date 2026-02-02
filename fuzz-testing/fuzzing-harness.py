@@ -24,7 +24,7 @@ def test_inputs():
                 print(f"Internal Server Error, inputs: Name:{name} || Narrative:{narrative}")
             else:
                 print(f"server responded with : {r.status_code}")
-        except:
-            print("Server software is down!")
+        except requests.exceptions.RequestException as e:
+            print(f"Server is down or a network error occurred: {e}")
 
 test_inputs()

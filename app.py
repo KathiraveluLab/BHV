@@ -166,6 +166,6 @@ def gallery(search_term):
     
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # To run the app, use 'flask run'.
+    # To initialize/update the database, use 'flask db upgrade'.
     app.run(debug=False)

@@ -1,476 +1,701 @@
-# Contributing to BHV (Behavioral Health Vault)
+# Contributing to BHV
 
-Thank you for your interest in contributing to BHV! We welcome contributions from everyone who wants to help improve healthcare technology for people with serious mental illnesses and social determinants.
+Thank you for your interest in contributing to BHV (Behavioral Health Vault)! This guide will help you get started.
 
-## Table of Contents
+## 📋 Table of Contents
 
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [How to Contribute](#how-to-contribute)
-- [Development Workflow](#development-workflow)
-- [Issue Guidelines](#issue-guidelines)
-- [Pull Request Guidelines](#pull-request-guidelines)
-- [Commit Message Guidelines](#commit-message-guidelines)
-- [Code Style Guidelines](#code-style-guidelines)
-- [Testing](#testing)
-- [Documentation](#documentation)
-- [Community](#community)
+1. [About BHV](#about-bhv)
+2. [Getting Started](#getting-started)
+3. [Development Setup](#development-setup)
+4. [Making Changes](#making-changes)
+5. [Submitting Pull Requests](#submitting-pull-requests)
+6. [Code Style Guidelines](#code-style-guidelines)
+7. [Testing](#testing)
+8. [Documentation](#documentation)
+9. [Getting Help](#getting-help)
 
-## Code of Conduct
+---
 
-This project adheres to a Code of Conduct that all contributors are expected to follow. Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before contributing.
+## About BHV
+
+BHV (Behavioral Health Vault) is a **minimal, secure platform** for behavioral health image documentation. It's designed for healthcare networks to help document serious mental illness recovery.
+
+### Project Philosophy
+
+BHV is **intentionally minimal**:
+- ✅ Simple, focused features
+- ✅ Security-first approach
+- ✅ Easy to deploy
+- ✅ HIPAA compliance oriented
+
+**BHV is NOT "another Beehive"** - we prioritize simplicity and security over feature bloat.
+
+---
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.8 or higher
-- Git
-- Virtual environment tool (venv, virtualenv, or conda)
-- Basic understanding of Python and databases.
+Before contributing, make sure you have:
 
-### Setting Up Your Development Environment
+- **Python 3.11+** installed
+- **Git** installed
+- **PostgreSQL** (for production-like testing) or SQLite (for quick development)
+- **Text editor** (VS Code, PyCharm, Sublime, etc.)
+- **GitHub account**
 
-1. **Fork the Repository**
-   
-   Click the "Fork" button at the top right of the repository page to create your own copy.
+### Quick Start Checklist
 
-2. **Clone Your Fork**
+- [ ] Read this guide completely
+- [ ] Fork the repository
+- [ ] Set up local development environment
+- [ ] Make your changes
+- [ ] Test your changes
+- [ ] Submit a pull request
 
-   ```bash
-   git clone https://github.com/KathiraveluLab/BHV.git
-   cd BHV
-   ```
+---
 
-3. **Add Upstream Remote**
+## Development Setup
 
-   ```bash
-   git remote add upstream https://github.com/KathiraveluLab/BHV.git
-   git remote -v  # Verify the new remote named 'upstream'
-   ```
+### 1. Fork and Clone
 
-4. **Create a Virtual Environment**
+**Fork the repository:**
+1. Go to https://github.com/KathiraveluLab/BHV
+2. Click "Fork" button (top right)
+3. This creates your own copy
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+**Clone your fork:**
+```bash
+git clone https://github.com/YOUR-USERNAME/BHV.git
+cd BHV
+```
 
-5. **Install Dependencies**
+Replace `YOUR-USERNAME` with your GitHub username.
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
-6. **Set Up Pre-commit Hooks** (if configured)
+### 2. Create Virtual Environment
 
-   ```bash
-   pre-commit install
-   ```
+**Why?** Keeps dependencies isolated and clean.
 
-7. **Run the Application**
+**On Linux/Mac:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
-   Follow the instructions in the README.md to run the application locally and verify your setup.
+**On Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
-## How to Contribute
+You should see `(venv)` in your terminal prompt.
 
-### Types of Contributions
+---
 
-We welcome many types of contributions:
+### 3. Install Dependencies
 
-- **Bug Reports**: Help us identify issues
-- **Feature Requests**: Suggest new functionality
-- **Documentation**: Improve or add documentation
-- **Bug Fixes**: Submit fixes for identified issues
-- **Performance Improvements**: Optimize existing code
-- **UI/UX Improvements**: Enhance user experience
-- **Tests**: Add or improve test coverage
-- **Accessibility**: Improve accessibility features
-- **Security**: Report or fix security vulnerabilities
+```bash
+pip install -r requirements.txt
+```
 
-## Development Workflow
+This installs all required packages.
 
-1. **Sync Your Fork**
+---
 
-   ```bash
-   git checkout dev
-   git fetch upstream
-   git merge upstream/dev
-   ```
+### 4. Configure Environment Variables
 
-2. **Create a Feature Branch**
+**Create `.env` file:**
 
-   Use descriptive branch names:
-   ```bash
-   git checkout -b feature/add-image-compression
-   git checkout -b fix/login-validation-error
-   git checkout -b docs/update-installation-guide
-   git checkout -b refactor/optimize-database-queries
-   ```
+```bash
+# Copy example (if exists) or create new
+touch .env
+```
 
-3. **Make Your Changes**
+**Add these variables:**
 
-   - Write clean, readable code
-   - Follow the project's code style
-   - Add tests for new features
-   - Update documentation as needed
-   
+```bash
+# Database (use SQLite for development)
+DATABASE_URL=sqlite:///bhv_dev.db
 
-4. **Test Your Changes**
+# Flask
+FLASK_APP=app.py
+FLASK_ENV=development
+SECRET_KEY=dev-secret-key-change-in-production
 
+# Upload folder
+UPLOAD_FOLDER=uploads
+MAX_CONTENT_LENGTH=16777216
+```
 
-5. **Commit Your Changes**
+**⚠️ Important:** Never commit `.env` to Git! It's already in `.gitignore`.
 
-   See [Commit Message Guidelines](#commit-message-guidelines)
+---
 
-6. **Push to Your Fork**
+### 5. Initialize Database
 
-   ```bash
-   git push origin feature/your-feature-name
-   ```
+```bash
+# Create database tables
+flask db upgrade
 
-7. **Submit a Pull Request to `dev` Branch**
+# Or if no migrations exist:
+python
+>>> from app import db
+>>> db.create_all()
+>>> exit()
+```
 
-   See [Pull Request Guidelines](#pull-request-guidelines)
+---
 
-## Issue Guidelines
+### 6. Run Development Server
 
-### Before Creating an Issue
+```bash
+flask run
+```
 
-1. **Search Existing Issues**: Check if the issue already exists
-2. **Check Documentation**: Ensure it's not covered in docs
-3. **Verify the Bug**: Make sure it's reproducible
+**You should see:**
+```
+ * Running on http://127.0.0.1:5000
+```
 
-### Creating a Meaningful Issue
+**Open browser:** http://localhost:5000
 
-#### Bug Report Template
+✅ **BHV is now running locally!**
 
-**Title Format**: `[BUG] Brief description of the issue`
+---
 
-**Example**: `[BUG] Image upload fails for files larger than 5MB`
+## Making Changes
 
-**Content**:
+### 1. Create a New Branch
+
+**Always create a new branch for your changes!**
+
+```bash
+# Make sure you're on main
+git checkout main
+
+# Pull latest changes
+git pull origin main
+
+# Create new branch
+git checkout -b feature/your-feature-name
+```
+
+**Branch naming conventions:**
+- `feature/feature-name` - New features
+- `fix/bug-description` - Bug fixes
+- `docs/description` - Documentation
+- `refactor/description` - Code refactoring
+
+**Examples:**
+- `feature/user-profile`
+- `fix/login-redirect`
+- `docs/deployment-guide`
+
+---
+
+### 2. Make Your Changes
+
+**Edit the code using your favorite editor.**
+
+**Keep changes focused:**
+- ✅ One feature or fix per PR
+- ✅ Related changes together
+- ❌ Don't mix features and bug fixes
+- ❌ Don't change unrelated files
+
+---
+
+### 3. Test Your Changes
+
+**Manual testing:**
+1. Run the app: `flask run`
+2. Test your changes in browser
+3. Try different scenarios
+4. Check for errors in terminal
+
+**Automated testing:**
+```bash
+# Run test suite
+pytest
+
+# Run with coverage
+pytest --cov=app
+```
+
+**Make sure all tests pass before submitting PR!**
+
+---
+
+### 4. Commit Your Changes
+
+**Good commit messages are important!**
+
+**Format:**
+```
+type: Brief description (50 chars or less)
+
+Longer explanation if needed (wrap at 72 characters)
+- What changed
+- Why it changed
+- Any important notes
+```
+
+**Types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style/formatting (no logic change)
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
+
+**Examples:**
+
+✅ **Good:**
+```bash
+git commit -m "feat: Add user profile page with bio and avatar"
+```
+
+✅ **Good:**
+```bash
+git commit -m "fix: Resolve PostgreSQL URL format issue on Render
+
+Changed postgres:// to postgresql:// for SQLAlchemy 1.4+ compatibility.
+This fixes deployment issues on Render.com and Heroku.
+"
+```
+
+❌ **Bad:**
+```bash
+git commit -m "fixed stuff"
+git commit -m "update"
+git commit -m "changes"
+```
+
+---
+
+## Submitting Pull Requests
+
+### 1. Push Your Branch
+
+```bash
+git push origin feature/your-feature-name
+```
+
+---
+
+### 2. Create Pull Request on GitHub
+
+1. Go to https://github.com/KathiraveluLab/BHV
+2. You'll see a yellow banner: "Compare & pull request"
+3. Click it
+
+**Or manually:**
+1. Go to "Pull requests" tab
+2. Click "New pull request"
+3. Select your fork and branch
+
+---
+
+### 3. Fill Out PR Template
+
+**Title:**
+```
+feat: Add user profile page
+```
+
+**Description:**
+
 ```markdown
-## Description
-A clear and concise description of the bug.
-
-## Steps to Reproduce
-1. Go to '...'
-2. Click on '...'
-3. Upload image '...'
-4. See error
-
-## Expected Behavior
-What you expected to happen.
-
-## Actual Behavior
-What actually happened.
-
-
-## Screenshots
-If applicable, add screenshots.
-
-## Additional Context
-Any other relevant information.
-
-```
-
-#### Feature Request Template
-
-**Title Format**: `[FEATURE] Brief description of the feature`
-
-**Example**: `[FEATURE] Add bulk image upload capability`
-
-**Content**:
-```markdown
-## Problem Statement
-Describe the problem this feature would solve.
-
-## Proposed Solution
-Describe your proposed solution.
-
-## Alternatives Considered
-What other approaches did you consider?
-
-## Use Case
-Who would benefit from this feature and how?
-
-## Additional Context
-Any other relevant information, mockups, or examples.
-
-#### Documentation Issue Template
-
-**Title Format**: `[DOCS] Brief description of documentation issue`
-
-**Example**: `[DOCS] Missing installation instructions for PostgreSQL`
-
-#### Other Issue Types
-
-- `[QUESTION]` - For questions about the project
-- `[SECURITY]` - For security-related issues (see Security Policy)
-- `[PERFORMANCE]` - For performance-related issues
-- `[ACCESSIBILITY]` - For accessibility improvements
-- `[REFACTOR]` - For code refactoring suggestions
-
-### Issue Labels
-
-Issues will be labeled by maintainers:
-- `bug` - Something isn't working
-- `enhancement` - New feature or request
-- `documentation` - Documentation improvements
-- `good first issue` - Good for newcomers
-- `help wanted` - Extra attention needed
-- `priority: high` - High priority
-- `security` - Security-related
-- `wontfix` - This will not be worked on
-
-```
-
-## Pull Request Guidelines
-
-
-### PR Title Format
-
-Use conventional commit format:
-
-```
-<type>(<scope>): <subject>
-```
-
-**Types**:
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation only changes
-- `style`: Code style changes (formatting, etc.)
-- `refactor`: Code refactoring
-- `perf`: Performance improvements
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks
-- `ci`: CI/CD changes
-- `security`: Security fixes
-
-**Examples**:
-- `feat(upload): add support for bulk image uploads`
-- `fix(auth): resolve login validation error for special characters`
-- `docs(readme): update installation instructions`
-- `refactor(database): optimize patient record queries`
-- `security(api): fix SQL injection vulnerability in search`
-
-### PR Description Template
-
-```markdown
-## Description
+## Overview
 Brief description of what this PR does.
 
-## Related Issue
-Fixes #(issue number)
-Closes #(issue number)
-Related to #(issue number)
+## Changes
+- Added user profile page
+- Created profile template
+- Added profile route
+- Updated navigation
 
-## Type of Change
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Documentation update
-- [ ] Code refactoring
-- [ ] Performance improvement
-- [ ] Security fix
+## Testing
+- [ ] Tested locally
+- [ ] All existing tests pass
+- [ ] Added new tests for profile page
 
-## Changes Made
-- Change 1
-- Change 2
-- Change 3
+## Screenshots (if UI changes)
+[Add screenshots here]
 
-
-## Screenshots (if applicable)
-Add screenshots to help explain your changes.
-
-## Checklist
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published
-
-## Additional Notes
-Any additional information for reviewers.
+## Related Issues
+Closes #123 (if applicable)
 ```
 
-### PR Review Process
+---
 
-1. **Automated Checks**: CI/CD pipeline runs automatically
-2. **Code Review**: At least one maintainer review required
-3. **Revisions**: Address requested changes promptly
-4. **Approval**: Once approved, a maintainer will merge
-5. **Cleanup**: Delete your branch after merge
+### 4. Wait for Review
 
-### PR Best Practices
+- ✅ Be patient - reviews take time
+- ✅ Respond to feedback professionally
+- ✅ Make requested changes promptly
+- ✅ Ask questions if something is unclear
 
-- Keep PRs focused and small (easier to review)
-- One feature/fix per PR
-- Link related issues
-- Respond to feedback constructively
-- Keep your PR up to date with the main branch
-- Be patient - reviews take time
+---
 
-## Commit Message Guidelines
+### 5. Address Feedback
 
-### Format
+**If reviewer requests changes:**
 
-```
-<type>(<scope>): <subject>
+```bash
+# Make the changes locally
+# Test them
 
-<body>
+# Commit
+git add .
+git commit -m "fix: Address review feedback - improve error handling"
 
-<footer>
+# Push to same branch
+git push origin feature/your-feature-name
 ```
 
-### Example
+**PR updates automatically!**
 
-```
-feat(upload): add image compression before storage
-
-Implement automatic image compression using Pillow to reduce
-storage requirements. Images are compressed to 85% quality
-while maintaining visual fidelity.
-
-Closes #123
-```
-
-### Rules
-
-- Use present tense ("add feature" not "added feature")
-- Use imperative mood ("move cursor to..." not "moves cursor to...")
-- First line should be 50 characters or less
-- Include body if changes need explanation
-- Reference issues and PRs in footer
+---
 
 ## Code Style Guidelines
 
-### Python Style
+### Python Code (PEP 8)
 
-- Follow [PEP 8](https://pep8.org/)
-- Use 4 spaces for indentation (no tabs)
-- Maximum line length: 88 characters (Black formatter default)
-- Use meaningful variable and function names
-- Add docstrings to functions and classes
+**Follow PEP 8 standards:**
 
+✅ **Good:**
+```python
+def calculate_total(items):
+    """Calculate total price of items."""
+    total = 0
+    for item in items:
+        total += item.price
+    return total
+```
 
-### Frontend Style
+❌ **Bad:**
+```python
+def CalculateTotal(items):
+    total=0
+    for item in items:total+=item.price
+    return total
+```
 
-- Use minimal styles and components.
-- We don't need any modern or fancy design.
+**Key rules:**
+- Use 4 spaces for indentation (not tabs)
+- Max line length: 79 characters
+- Use snake_case for functions and variables
+- Use PascalCase for classes
+- Add docstrings to functions
 
-### Database
+**Check your code:**
+```bash
+# Install flake8
+pip install flake8
 
-- Use MongoDB for Database.
-- Using Github Repo as a Database(Idea)
+# Check code
+flake8 app.py
+```
 
+---
+
+### HTML/Templates
+
+**Use proper indentation:**
+
+```html
+<!-- Good -->
+<div class="container">
+    <h1>{{ title }}</h1>
+    <p>{{ content }}</p>
+</div>
+
+<!-- Bad -->
+<div class="container">
+<h1>{{ title }}</h1>
+<p>{{ content }}</p>
+</div>
+```
+
+---
+
+### CSS
+
+**Keep it simple and organized:**
+
+```css
+/* Good */
+.user-profile {
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.user-profile h2 {
+    color: #333;
+    font-size: 24px;
+}
+
+/* Bad */
+.user-profile{padding:20px;margin-bottom:15px;}
+.user-profile h2{color:#333;font-size:24px;}
+```
+
+---
+
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run specific test file
+pytest tests/test_auth.py
+
+# Run with coverage report
+pytest --cov=app --cov-report=html
+```
+
+---
+
+### Writing Tests
+
+**Example test:**
+
+```python
+def test_user_registration(client):
+    """Test user can register successfully."""
+    response = client.post('/register', data={
+        'username': 'testuser',
+        'email': 'test@example.com',
+        'password': 'securepassword'
+    })
+    
+    assert response.status_code == 302  # Redirect after success
+    
+    # Check user was created
+    user = User.query.filter_by(username='testuser').first()
+    assert user is not None
+    assert user.email == 'test@example.com'
+```
+
+**Test guidelines:**
+- Write tests for new features
+- Maintain >80% code coverage
+- Test edge cases
+- Test error handling
+
+---
 
 ## Documentation
 
-### What to Document
+### When to Update Documentation
 
-- New features and how to use them
-- API endpoints and parameters
-- Configuration options
-- Installation and setup procedures
-- Troubleshooting common issues
+**Always update docs when you:**
+- Add new features
+- Change existing behavior
+- Fix bugs that affect usage
+- Add new configuration options
+- Change API endpoints
 
-### Documentation Style
+### Types of Documentation
 
-- Be clear and concise
-- Use examples where helpful
-- Keep it up to date
-- Use proper grammar and spelling
-- Structure with headers and lists
+1. **Code comments** - Explain complex logic
+2. **Docstrings** - Document functions and classes
+3. **README.md** - Update if setup changes
+4. **This file (CONTRIBUTING.md)** - Keep up to date
+5. **Deployment guides** - Update for new deployment scenarios
 
-## Community
+---
 
-### Getting Help
+## Getting Help
 
-- **Issues**: Create an issue for bugs or questions.
-- **Discussions**: Use GitHub Discussions for general questions and ideas.
-- **Email**: Contact maintainers for any issues/help needed.
+### Before Asking
 
-### Introducing Yourself in Discussions
+1. **Search existing issues** - Your question might be answered
+2. **Read documentation** - Check README and guides
+3. **Check discussions** - See community Q&A
 
-We encourage new contributors to introduce themselves! Go to the **Discussions** tab and:
+### How to Ask
 
-1. Click on the "Introductions" category
-2. Start a new discussion
-3. Tell us about yourself:
-   - Your name/username
-   - Your background (developer, healthcare professional, student, etc.)
-   - What interests you about BHV
-   - What you'd like to contribute
-   - Any questions you have
+**Open a discussion (preferred for questions):**
+1. Go to https://github.com/KathiraveluLab/BHV/discussions
+2. Click "New discussion"
+3. Choose "Q&A" category
+4. Provide clear title and description
 
-**Example Introduction**:
+**Create an issue (for bugs):**
+1. Go to https://github.com/KathiraveluLab/BHV/issues
+2. Click "New issue"
+3. Describe the bug clearly
+4. Include steps to reproduce
+5. Add error messages if any
 
-```markdown
-Hi everyone! 👋
+**Tag contributors for help:**
+- @yadavchiragg - Deployment and documentation help
+- @pradeeban - Project maintainer
 
-I'm [Your Name], a [your role] with experience in [relevant skills]. 
+---
 
-I'm interested in BHV because [reason - e.g., "I work in healthcare and want to 
-improve mental health record systems"].
+## Pull Request Review Process
 
-I'm hoping to contribute by [what you want to do - e.g., "improving the UI/UX" 
-or "adding test coverage"].
+### What Happens After You Submit
 
-Looking forward to working with you all!
+1. **Automated checks** (if configured)
+   - Tests run automatically
+   - Code style checks
+
+2. **Maintainer review**
+   - Code quality review
+   - Security review
+   - Functionality check
+
+3. **Feedback or approval**
+   - Requested changes
+   - Questions
+   - Approval
+
+4. **Merge**
+   - PR gets merged into main branch
+   - Your contribution is live!
+
+### Review Timeline
+
+- **Documentation PRs:** 3-7 days
+- **Bug fixes:** 2-5 days
+- **New features:** 5-14 days
+
+**Be patient!** Maintainers are often busy with other responsibilities.
+
+---
+
+## Important Notes
+
+### What We Look For
+
+✅ **Good PRs:**
+- Clear, focused changes
+- Well-tested
+- Good documentation
+- Clean code
+- Helpful commit messages
+
+❌ **Avoid:**
+- Large, unfocused PRs
+- Breaking changes without discussion
+- Code without tests
+- Undocumented changes
+- Style-only changes (unless requested)
+
+### Current Focus Areas
+
+**We're currently prioritizing:**
+1. Security hardening (HIPAA compliance)
+2. Performance optimization
+3. Deployment documentation
+4. Testing coverage
+
+**Features on hold:**
+- Complex new features
+- UI/UX overhauls
+- Third-party integrations
+
+**Why?** We want BHV to be minimal, secure, and production-ready before adding more features.
+
+---
+
+## Code of Conduct
+
+### Be Respectful
+
+- ✅ Professional communication
+- ✅ Constructive feedback
+- ✅ Patience with reviewers
+- ✅ Help other contributors
+
+### Unacceptable Behavior
+
+- ❌ Harassment or discrimination
+- ❌ Spam or self-promotion
+- ❌ Disrespectful comments
+- ❌ Sharing others' private information
+
+---
+
+## Recognition
+
+### Contributors
+
+All contributors are listed in:
+- GitHub contributors page
+- Project documentation (if significant contribution)
+- Release notes (for major features)
+
+### Your First PR
+
+**First-time contributors** get extra support and guidance! Don't hesitate to ask questions.
+
+---
+
+## Additional Resources
+
+- **Flask Documentation:** https://flask.palletsprojects.com/
+- **SQLAlchemy Documentation:** https://docs.sqlalchemy.org/
+- **Python PEP 8:** https://pep8.org/
+- **Git Basics:** https://git-scm.com/book/en/v2/Getting-Started-Git-Basics
+- **GitHub Flow:** https://guides.github.com/introduction/flow/
+
+---
+
+## Quick Reference
+
+### Common Commands
+
+```bash
+# Start development server
+flask run
+
+# Run tests
+pytest
+
+# Check code style
+flake8 .
+
+# Create migration
+flask db migrate -m "description"
+
+# Apply migrations
+flask db upgrade
+
+# Activate virtual environment
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
 ```
 
-### Communication Guidelines
+---
 
-- Be respectful and inclusive
-- Assume good intentions
-- Provide constructive feedback
-- Help others learn and grow
-- Acknowledge contributions
+## Contact
 
-### Recognition
+- **GitHub Discussions:** https://github.com/KathiraveluLab/BHV/discussions
+- **Issues:** https://github.com/KathiraveluLab/BHV/issues
+- **Project Maintainer:** @pradeeban
 
-We value all contributions! Contributors will be:
-- Listed in our CONTRIBUTORS.md file
-- Mentioned in release notes
-- Acknowledged in the project
-
-## Security
-
-### Reporting Security Vulnerabilities
-
-**DO NOT** create public issues for security vulnerabilities.
-
-Please report security issues privately:
-1. Create a security advisory on GitHub
-2. Or email the maintainers directly
-
-Include:
-- Description of the vulnerability
-- Steps to reproduce
-- Potential impact
-- Suggested fix (if any)
+---
 
 ## License
 
-By contributing to BHV, you agree that your contributions will be licensed under the same license as the project (see [LICENSE](LICENSE)).
+By contributing to BHV, you agree that your contributions will be licensed under the same license as the project.
 
 ---
 
-## Questions?
-
-If you have questions about contributing, feel free to:
-- Open a discussion on GitHub
-- Check existing issues and discussions
-- Reach out to maintainers
-
-Thank you for contributing to BHV and helping improve mental health care technology!
+**Thank you for contributing to BHV! Your help makes healthcare technology more accessible and secure.** 🚀
 
 ---
 
-**Happy Contributing!** 🎉
+**Last Updated:** January 2026  
+**Maintained by:** BHV Community

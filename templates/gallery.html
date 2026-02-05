@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/gallery.css">
+
+<style>
+
+.profile-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 16px;
+  margin-bottom:14px;
+  border-bottom:1px solid #e6e6e6;
+}
+.profile-header h3{
+  margin:0;
+  font-size:20px;
+}
+.profile-meta{
+  font-size:13px;
+  color:#777;
+}
+
+.grid-card{
+  padding:10px;
+}
+
+
+.meta-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+.meta-card{
+  background:#fff;
+  width:80%;
+  max-width:700px;
+  max-height:80vh;
+  overflow:auto;
+  border-radius:12px;
+  padding:20px;
+  position:relative;
+}
+.meta-close{
+  position:absolute;
+  top:10px;
+  right:14px;
+  font-size:22px;
+  border:none;
+  background:none;
+  cursor:pointer;
+}
+
+.narrative-box{
+  width:100%;
+  box-sizing:border-box;
+  margin-top:6px;
+  padding:6px 8px;
+  font-size:13px;
+  border-radius:6px;
+  border:1px solid #ddd;
+  resize:none;
+  background:#fafafa;
+}
+
+/* ===== BUTTONS ===== */
+.view-btn{
+  margin-top:6px;
+  background:#f2f2f2;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="profile-header">
+  <div>
+    <h3>{{ profile_user }}</h3>
+    <p class="profile-meta">{{ images|length }} posts</p>
+  </div>
+</div>
+
+{% if profile_user == current_user %}
+<form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+  <input type="file" name="image" required>
+
+  <select name="visibility">
+    <option value="private">Private</option>
+    <option value="public">Public</option>
+  </select>
+
+  <button class="btn-upload">Upload</button>
+</form>
+<hr>
+{% endif %}
+
+
+<div class="grid-container">
+
+{% for img in images %}
+  <div class="grid-card">
+
+    <img src="/static/uploads/{{ img[0] }}" class="grid-thumb">
+
+    {% if img[1] %}
+    <button class="view-btn" onclick="openMeta('{{ img[0] }}')">
+      View metadata
+    </button>
+    {% endif %}
+
+    {% if profile_user == current_user %}
+    <form method="post" action="/update-narrative">
+      <input type="hidden" name="filename" value="{{ img[0] }}">
+
+      <textarea
+        name="narrative"
+        rows="2"
+        class="narrative-box"
+        placeholder="Write a note about this image..."
+        onblur="this.form.submit()"
+      >{{ img[2] if img[2] not in ['private','public'] else '' }}</textarea>
+    </form>
+    {% else %}
+      {% if img[2] %}
+      <p style="font-size:13px;color:#555;margin-top:6px;">
+        {{ img[2] }}
+      </p>
+      {% endif %}
+    {% endif %}
+
+    {% if profile_user == current_user %}
+    <form method="post" action="/delete/{{ img[0] }}" class="delete-form">
+      <button class="delete-btn">&times;</button>
+    </form>
+    {% endif %}
+  </div>
+
+
+  {% if img[1] %}
+  <div id="meta-{{ img[0] }}" class="meta-overlay">
+    <div class="meta-card">
+      <button class="meta-close" onclick="closeMeta('{{ img[0] }}')">✕</button>
+      <h3>Visual Metadata</h3>
+      <pre>{{ img[1] | tojson(indent=2) }}</pre>
+    </div>
+  </div>
+  {% endif %}
+
+{% else %}
+  <p style="text-align:center;color:#777;margin-top:20px;">No posts yet</p>
+{% endfor %}
+
+</div>
+
+
+<script>
+function openMeta(id){
+  document.getElementById("meta-"+id).style.display="flex";
+}
+function closeMeta(id){
+  document.getElementById("meta-"+id).style.display="none";
+}
+</script>
+
+{% endblock %}

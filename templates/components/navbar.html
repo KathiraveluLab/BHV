@@ -1,0 +1,35 @@
+<header class="navbar">
+
+  <!-- LEFT -->
+  <div class="nav-left">
+    <img src="/static/images/BHV_logo.png" alt="BHV Logo" class="nav-logo">
+  </div>
+
+  <!-- CENTER MENU -->
+  <nav class="nav-center">
+    <ul class="menu">
+      <li><a href="/">Home</a></li>
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="/explore">Explore</a></li>
+      <li><a href="/research">Research</a></li>
+      <div class="border"></div>
+    </ul>
+  </nav>
+
+ 
+
+  <!-- RIGHT -->
+  <div class="nav-right">
+    {% if user %}
+      <img src="/static/images/profile_logo.png" class="user-icon">
+      <span class="user-name">{{ user }}</span>
+
+      <a href="/logout">
+        <img src="/static/images/logout_logo.png" class="logout-icon">
+      </a>
+    {% else %}
+      <a href="/login" class="signin-btn">Sign in</a>
+    {% endif %}
+  </div>
+
+</header>

@@ -1,0 +1,19 @@
+{
+  "colors": [
+    { "name": "red", "emotion": ["anger", "passion", "love"] },
+    { "name": "blue", "emotion": ["calm", "sadness", "trust"] },
+    { "name": "yellow", "emotion": ["happiness", "energy", "optimism"] },
+    { "name": "green", "emotion": ["growth", "harmony", "safety", "nature"] },
+    { "name": "orange", "emotion": ["enthusiasm", "creativity", "warmth"] },
+    { "name": "purple", "emotion": ["luxury", "mystery", "royalty"] },
+    { "name": "pink", "emotion": ["love", "compassion", "playfulness"] },
+    { "name": "brown", "emotion": ["stability", "reliability", "comfort"] },
+    { "name": "cyan", "emotion": ["freshness", "peace", "clarity"] },
+    { "name": "teal", "emotion": ["calm", "sophistication", "stability"] },
+    { "name": "violet", "emotion": ["imagination", "inspiration", "mystery"] },
+    { "name": "indigo", "emotion": ["intuition", "perception", "wisdom"] },
+    { "name": "black", "emotion": ["grief", "power", "mystery"] },
+    { "name": "white", "emotion": ["peace", "purity", "cleanliness"] },
+    { "name": "gray", "emotion": ["neutrality", "balance", "sadness"] }
+  ]
+}

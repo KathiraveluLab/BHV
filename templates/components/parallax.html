@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Parallax </title>
+
+<style>
+
+.tv-root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;        
+  background: #000;
+  margin: 0;
+}
+
+.tv-screen {
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background: #111;
+}
+
+
+.scene {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.scene-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+  z-index: 0;
+}
+
+
+.scene-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  color: white;
+  padding: 40px 20px;
+  pointer-events: none;
+}
+
+.scene-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  pointer-events: auto;
+}
+
+
+.model-frame {
+  width: 80%;
+  max-width: 900px;
+  height: 60vh;
+  min-height: 360px;
+  max-height: 520px;
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.35);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  pointer-events: auto;
+}
+
+.model-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+</style>
+</head>
+
+<body style="margin:0">
+
+<div class="tv-root">
+  <div class="tv-screen">
+
+   
+    <section class="scene" data-speed="0.25">
+      <div class="scene-bg"
+        style="background-image:url('https://static.vecteezy.com/system/resources/thumbnails/004/968/002/small_2x/cute-abstract-modern-background-free-vector.jpg')">
+      </div>
+
+      <div class="scene-content">
+        
+          <img
+            src="https://talatyusuf.com/my-content/uploads/2025/02/99-Quotes-about-Change-in-People-Behaviour-Suddenly-4.jpg"
+            >
+          </img>
+        
+      </div>
+    </section>
+
+  
+    <section class="scene" data-speed="0.30">
+      <div class="scene-bg"
+        style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRakOvNWFhYFkIwddm2a1O1BMJCZmR3QtHhyA&s')">
+      </div>
+
+      <div class="scene-content">
+       
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEgDJyE6Yw3Vd0jXOawqQSsTtkDg7GHK6i6w&s"
+           >
+          </img>
+        </div>
+      
+    </section>
+
+   
+    <section class="scene" data-speed="0.40">
+      <div class="scene-bg"
+        style="background-image:url('https://images.template.net/358779/Memphis-Cute-Background-edit-online-3.jpg')">
+      </div>
+
+      <div class="scene-content">
+        
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbheh_eC-zLDcj8W76ksaBHyyEwjrtwZwM-A&s"
+           >
+          </img>
+       
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===== PARALLAX JS ===== -->
+<script>
+(function(){
+  const screen = document.querySelector('.tv-screen');
+  const scenes = screen.querySelectorAll('.scene');
+  let rafLocked = false;
+
+  function renderParallax(){
+    const screenHeight = screen.clientHeight;
+
+    scenes.forEach(scene => {
+      const bgLayer = scene.querySelector('.scene-bg');
+      const depth = parseFloat(scene.dataset.speed) || 0.3;
+      const box = scene.getBoundingClientRect();
+
+      const delta = box.top + box.height / 2 - screenHeight / 2;
+      bgLayer.style.transform =
+        `translate3d(0, ${-delta * depth}px, 0)`;
+    });
+
+    rafLocked = false;
+  }
+
+  function onScreenScroll(){
+    if (!rafLocked) {
+      requestAnimationFrame(renderParallax);
+      rafLocked = true;
+    }
+  }
+
+  renderParallax();
+  screen.addEventListener('scroll', onScreenScroll, { passive: true });
+  window.addEventListener('resize', renderParallax);
+})();
+</script>
+
+</body>
+</html>

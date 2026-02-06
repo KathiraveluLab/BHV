@@ -1,0 +1,149 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.login-page {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+.login-left {
+  flex: 2;
+  width: 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 24px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #1c1b1a;
+}
+
+.divider {
+  font-size: 13px;
+  color: #999;
+  margin: 18px 0;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  border-radius: 25px;
+  border: 1px solid #e0e0e0;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.login-card input:focus {
+  border-color: #c9a24d;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #c9a24d;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(201, 162, 77, 0.35);
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 999px;
+  border: 1px solid #dadce0;
+  background: #ffffff;
+  color: #1f1f1f;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-google:hover {
+  background: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.auth-footer {
+  margin-top: 18px;
+  font-size: 13px;
+  color: #666;
+}
+
+.auth-footer a {
+  color: #c9a24d;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-right {
+  flex: 1;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.login-logo {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 80px;
+  height: auto;
+}
+
+@media (max-width: 900px) {
+  .login-right {
+    display: none;
+  }
+
+  .login-left {
+    width: 100%;
+  }
+}

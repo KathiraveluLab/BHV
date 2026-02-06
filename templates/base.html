@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>BHV — Alaska</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/alaska.css') }}" />
+  </head>
+  <body class="{% block body_class %}{% endblock %}" style="--bg-image: url('{{ url_for('static', filename='img/homePage1.png') }}');">
+    <header class="site-header">
+      <div class="container header-inner" role="navigation" aria-label="Primary">
+        <a class="brand" href="{{ url_for('index') }}" aria-label="BHV home">
+          <img class="brand-logo" src="{{ url_for('static', filename='img/alaska-logo.svg') }}" alt="Alaska" />
+          <span class="brand-mark">BHV</span>
+          <span class="brand-sub">Behavioral Health Vault</span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('upload') }}">Upload</a>
+          <a href="{{ url_for('dashboard') }}">Entries</a>
+        </nav>
+        <nav class="site-actions" aria-label="Account">
+          {% if session.user_email %}
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a class="action-primary" href="{{ url_for('signup') }}">Signup</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    {% block hero %}{% endblock %}
+
+    <main class="main">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="flash">{% for m in messages %}{{ m }}{% endfor %}</div>
+        {% endif %}
+      {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-col footer-social">
+          <div class="footer-icons" aria-label="Social links">
+            <span class="footer-icon" aria-hidden="true">f</span>
+            <span class="footer-icon" aria-hidden="true">t</span>
+            <span class="footer-icon" aria-hidden="true">in</span>
+          </div>
+          <div class="footer-small">BHV — Minimal prototype</div>
+          <div class="footer-small">Mail: bhv@example.com</div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-title">Copyright</div>
+          <div class="footer-small">Behavioral Health Vault</div>
+          <div class="footer-small">All rights reserved</div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-title">Quick links</div>
+          <div class="footer-small"><a href="{{ url_for('index') }}">Home</a></div>
+          <div class="footer-small"><a href="{{ url_for('upload') }}">Upload</a></div>
+          <div class="footer-small"><a href="{{ url_for('dashboard') }}">Entries</a></div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-title">Account</div>
+          {% if session.user_email %}
+            <div class="footer-small"><a href="{{ url_for('profile') }}">Profile</a></div>
+            <div class="footer-small"><a href="{{ url_for('logout') }}">Logout</a></div>
+          {% else %}
+            <div class="footer-small"><a href="{{ url_for('login') }}">Login</a></div>
+            <div class="footer-small"><a href="{{ url_for('signup') }}">Signup</a></div>
+          {% endif %}
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

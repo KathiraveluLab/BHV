@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+	<h1>Welcome to Alaska BHV</h1>
+	<p class="muted">A minimal Beehive-style prototype for storing immutable patient records.</p>
+	<p>
+		<a class="btn" href="{{ url_for('signup') }}">Get started</a>
+		<a class="btn secondary" href="{{ url_for('login') }}">Sign in</a>
+	</p>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <h2>Profile</h2>
+  {% if user %}
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Role:</strong> {{ user.role }}</p>
+    <p><strong>Entries:</strong> {{ entries|length }}</p>
+    <h3>Recent files</h3>
+    {% if entries %}
+      <ul class="file-list">
+      {% for e in entries[:10] %}
+        <li>
+          <strong>{{ e.filename }}</strong>
+          <div class="muted">{{ e.narrative or '' }}</div>
+          <div style="margin-top:6px">
+            <a class="btn" href="{{ url_for('file_version', patient_id=user.email, filename=e.filename) }}">Download</a>
+            <a class="btn secondary" href="{{ url_for('history', patient_id=user.email, filename=e.filename) }}">History</a>
+          </div>
+        </li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No entries yet.</p>
+    {% endif %}
+  {% else %}
+    <p class="muted">No user information available.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 160 40" aria-labelledby="title">
+  <title id="title">Alaska BHV</title>
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#00a0b6"/>
+      <stop offset="100%" stop-color="#007682"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="40" fill="none"/>
+  <!-- stylized mountain -->
+  <g transform="translate(6,6)">
+    <path d="M8 28 L18 8 L28 28 Z" fill="url(#g1)"/>
+    <path d="M24 28 L36 10 L48 28 Z" fill="#008b9a" opacity="0.92"/>
+  </g>
+  <g transform="translate(70,10)" fill="#04323a" font-family="Segoe UI, Roboto, Arial, sans-serif">
+    <text x="0" y="10" font-size="12" font-weight="700">Alaska</text>
+    <text x="0" y="26" font-size="10" fill="#2b4b50">BHV</text>
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <h2>History — {{ patient_id }} / {{ filename }}</h2>
+  {% if commits %}
+    <ul class="file-list">
+    {% for c in commits %}
+      <li>
+        <div><strong>{{ c.hexsha }}</strong> — <span class="muted">{{ c.datetime }} by {{ c.author }}</span></div>
+        <div style="margin-top:6px">
+          <a class="btn" href="{{ url_for('file_version', patient_id=patient_id, filename=filename, version=c.hexsha) }}">Download this version</a>
+          {% if not loop.first %}
+            {% set prev = commits[loop.index0 - 1] %}
+            <a class="btn secondary" href="{{ url_for('diff', patient_id=patient_id, filename=filename, old_sha=prev.hexsha, new_sha=c.hexsha) }}">Diff vs previous</a>
+          {% endif %}
+        </div>
+        <div class="muted">{{ c.message }}</div>
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No history found for this file.</p>
+  {% endif %}
+</div>
+{% endblock %}

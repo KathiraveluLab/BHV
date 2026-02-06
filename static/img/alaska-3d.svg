@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- Simple layered mountains with subtle shadows to suggest 3D -->
+  <defs>
+    <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#dff7fb"/>
+      <stop offset="100%" stop-color="#bfeef7"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#cdeff3"/>
+      <stop offset="100%" stop-color="#9fe6ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#g1)"/>
+  <g transform="translate(0,40)">
+    <path d="M0 220 L120 120 L240 200 L360 90 L480 200 L620 100 L740 220 L800 160 L800 400 L0 400 Z" fill="url(#g2)" opacity="0.98"/>
+    <path d="M0 260 L140 160 L270 240 L380 130 L520 240 L660 140 L800 260 L800 400 L0 400 Z" fill="#8fd7d9" opacity="0.9"/>
+    <path d="M0 300 L160 200 L320 300 L480 170 L640 300 L800 190 L800 400 L0 400 Z" fill="#69c5c8" opacity="0.86"/>
+  </g>
+  <!-- subtle highlight / gloss -->
+  <ellipse cx="620" cy="60" rx="160" ry="40" fill="white" opacity="0.06"/>
+</svg>

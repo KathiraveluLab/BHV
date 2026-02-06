@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <h2>Diff — {{ patient_id }} / {{ filename }}</h2>
+  <div class="muted">{{ old }} → {{ new }}</div>
+  <pre style="white-space:pre-wrap;overflow:auto;padding:12px;background:#f7fcfd;border-radius:6px;border:1px solid #e9f5f6;margin-top:12px">{{ diff }}</pre>
+  <p style="margin-top:8px"><a class="btn" href="{{ url_for('history', patient_id=patient_id, filename=filename) }}">Back to History</a></p>
+</div>
+{% endblock %}

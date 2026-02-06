@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <h2>Create an account</h2>
+  <form method="post">
+    {{ csrf_token() }}
+    <label>Email</label>
+    <input name="email" type="email" required/>
+
+    <label>Password</label>
+    <input name="password" type="password" required/>
+
+    <label>Role</label>
+    <select name="role"><option value="patient">Patient</option><option value="admin">Admin</option></select>
+
+    <div style="margin-top:12px">
+      <button class="btn" type="submit">Create</button>
+      <a class="btn secondary" href="{{ url_for('index') }}">Back</a>
+    </div>
+  </form>
+  <hr style="margin:16px 0;opacity:0.3"/>
+  <p style="margin-top:16px;text-align:center"><strong>Or sign up with</strong></p>
+  <div id="g_id_onload"
+       data-client_id="{{ config.get('GOOGLE_CLIENT_ID', '') }}"
+       data-callback="handleCredentialResponse">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+function handleCredentialResponse(response) {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '{{ url_for('auth_google') }}';
+  const tokenInput = document.createElement('input');
+  tokenInput.type = 'hidden';
+  tokenInput.name = 'token';
+  tokenInput.value = response.credential;
+  form.appendChild(tokenInput);
+  document.body.appendChild(form);
+  form.submit();
+}
+</script>
+{% endblock %}
+

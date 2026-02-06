@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <h2>Upload File & Narrative</h2>
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <label>File</label>
+    <input type="file" name="file" required/>
+
+    <label>Narrative</label>
+    <textarea name="narrative" placeholder="Short notes about this upload"></textarea>
+
+    <div style="margin-top:12px">
+      <button class="btn" type="submit">Upload</button>
+      <a class="btn secondary" href="{{ url_for('index') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+

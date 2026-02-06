@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <h2>My Entries — {{ patient_id }}</h2>
+  {% if entries %}
+    <ul class="file-list">
+    {% for e in entries %}
+      <li>
+        <strong>{{ e.filename }}</strong>
+        <div class="muted">{{ e.narrative or '' }}</div>
+        <div style="margin-top:6px">
+          <a class="btn" href="{{ url_for('uploads', filename=patient_id + '/' + e.filename) }}">Download</a>
+          {% if session.user_email and session.user_email == patient_id %}
+            <form style="display:inline" method="post" action="{{ url_for('entry_delete', entry_id=e.id) }}">
+              <button class="btn secondary" type="submit">Delete</button>
+            </form>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No entries yet. <a href="{{ url_for('upload') }}">Upload one</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}

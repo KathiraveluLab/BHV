@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Upload Image - BHV{% endblock %}
+{% block content %}
+<div style="max-width: 700px; margin: 0 auto;">
+    <div style="margin-bottom: 30px;">
+        <h2 style="margin-bottom: 10px; color: #2c3e50;">📤 Upload Image</h2>
+        <p style="color: #666; margin: 0;">Share your histology images with the community</p>
+    </div>
+
+    <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <form method="POST" enctype="multipart/form-data" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <!-- Title Field -->
+            <div style="margin-bottom: 25px;">
+                {{ form.title.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50;") }}
+                {{ form.title(class="form-control", style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="Enter image title") }}
+                {% if form.title.errors %}
+                    <div style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">
+                        {% for error in form.title.errors %}
+                            <p style="margin: 0;">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Description Field -->
+            <div style="margin-bottom: 25px;">
+                {{ form.description.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50;") }}
+                {{ form.description(class="form-control", style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; min-height: 120px; font-family: inherit;", placeholder="Describe your image (optional)", rows="5") }}
+                {% if form.description.errors %}
+                    <div style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">
+                        {% for error in form.description.errors %}
+                            <p style="margin: 0;">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- File Upload Field -->
+            <div style="margin-bottom: 25px;">
+                {{ form.file.label(style="display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50;") }}
+                <div style="border: 2px dashed #ddd; border-radius: 8px; padding: 30px; text-align: center; background: #f8f9fa;">
+                    {{ form.file(style="display: block; margin: 0 auto;", accept="image/png,image/jpeg,image/jpg,image/gif") }}
+                    <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">Allowed formats: PNG, JPG, JPEG, GIF</p>
+                    <p style="margin: 5px 0 0 0; color: #999; font-size: 0.85rem;">Max file size: 5MB</p>
+                </div>
+                {% if form.file.errors %}
+                    <div style="color: #e74c3c; margin-top: 10px; font-size: 0.9rem;">
+                        {% for error in form.file.errors %}
+                            <p style="margin: 0;">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div style="margin-top: 30px;">
+                {{ form.submit(style="width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer;") }}
+            </div>
+        </form>
+
+        <!-- Info Box -->
+        <div style="margin-top: 30px; padding: 20px; background: #e8f4f8; border-left: 4px solid #3498db; border-radius: 5px;">
+            <h4 style="margin: 0 0 10px 0; color: #2c3e50;">📋 Upload Guidelines</h4>
+            <ul style="margin: 0; padding-left: 20px; color: #666; line-height: 1.8;">
+                <li>Images should be clear and properly focused</li>
+                <li>Provide descriptive titles for easy identification</li>
+                <li>Add detailed descriptions when possible</li>
+                <li>Ensure images meet file size requirements</li>
+                <li>Only upload images you have rights to share</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Back Link -->
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{{ url_for('gallery') }}" style="color: #3498db; text-decoration: none; font-weight: bold;">
+            ← Back to Gallery
+        </a>
+    </div>
+</div>
+
+<style>
+    input[type="file"]::-webkit-file-upload-button {
+        padding: 10px 20px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    input[type="file"]::-webkit-file-upload-button:hover {
+        background: #2980b9;
+    }
+</style>
+{% endblock %}

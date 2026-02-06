@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }} - User Details{% endblock %}
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="color: #2c3e50;">User Details</h2>
+        <a href="{{ url_for('admin_users') }}" style="background: #95a5a6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">← Back to Users</a>
+    </div>
+    
+    <!-- User Info Card -->
+    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <p style="color: #666; margin-bottom: 5px;">Username</p>
+                <p style="font-size: 1.3rem; font-weight: bold; color: #2c3e50;">{{ user.username }}</p>
+            </div>
+            
+            <div>
+                <p style="color: #666; margin-bottom: 5px;">Email</p>
+                <p style="font-size: 1.1rem; color: #2c3e50;">{{ user.email }}</p>
+            </div>
+            
+            <div>
+                <p style="color: #666; margin-bottom: 5px;">Member Since</p>
+                <p style="font-size: 1.1rem; color: #2c3e50;">{{ user.created_at.strftime('%B %d, %Y') }}</p>
+            </div>
+            
+            <div>
+                <p style="color: #666; margin-bottom: 5px;">Total Images</p>
+                <p style="font-size: 1.3rem; font-weight: bold; color: #3498db;">{{ images|length }}</p>
+            </div>
+            
+            <div>
+                <p style="color: #666; margin-bottom: 5px;">Storage Used</p>
+                <p style="font-size: 1.1rem; color: #2c3e50;">{{ total_storage_mb }} MB</p>
+            </div>
+            
+            <div>
+                <p style="color: #666; margin-bottom: 5px;">Admin Status</p>
+                <p style="font-size: 1.1rem;">
+                    {% if user.is_admin %}
+                    <span style="background: #e74c3c; color: white; padding: 4px 12px; border-radius: 5px; font-weight: bold;">Admin</span>
+                    {% else %}
+                    <span style="background: #95a5a6; color: white; padding: 4px 12px; border-radius: 5px;">Regular User</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Admin Actions -->
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; display: flex; gap: 10px;">
+            {% if user.id != current_user.id %}
+            <form method="POST" action="{{ url_for('admin_toggle_admin', user_id=user.id) }}" style="display: inline;">
+                <button type="submit" style="padding: 10px 20px; background: #f39c12; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                    {% if user.is_admin %}Remove Admin{% else %}Make Admin{% endif %}
+                </button>
+            </form>
+            
+            <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure? This will delete the user and ALL their images!');">
+                <button type="submit" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Delete User</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- User's Images -->
+    <h3 style="margin-bottom: 20px; color: #2c3e50;">User's Uploads</h3>
+    
+    {% if images %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+        {% for image in images %}
+        <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <img src="{{ url_for('serve_upload', filename=image.filename) }}" alt="{{ image.title }}" style="width: 100%; height: 200px; object-fit: cover;">
+            <div style="padding: 15px;">
+                <h4 style="margin-bottom: 10px; color: #2c3e50;">{{ image.title }}</h4>
+                <p style="font-size: 0.9rem; color: #999; margin-bottom: 10px;">{{ image.uploaded_at.strftime('%B %d, %Y') }}</p>
+                <form method="POST" action="{{ url_for('admin_delete_image', image_id=image.id) }}" onsubmit="return confirm('Delete this image?');">
+                    <button type="submit" style="width: 100%; padding: 8px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">Delete Image</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 50px; background: white; border-radius: 10px;">
+        <p style="font-size: 1.1rem; color: #666;">This user hasn't uploaded any images yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

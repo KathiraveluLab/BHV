@@ -1,0 +1,93 @@
+# BHV: Behavioral Health Vault - Python Dependencies
+# Core web framework
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# Database and ORM
+sqlite3  # Built into Python
+
+# Security and authentication
+bcrypt==4.0.1
+cryptography==41.0.4
+
+# File handling and validation
+Pillow==10.0.0  # Optional: for image processing
+python-magic==0.4.27  # Optional: for file type detection
+
+# System monitoring and diagnostics
+psutil==5.9.5
+
+# Environment and configuration
+python-dotenv==1.0.0
+
+# Development and testing (optional)
+pytest==7.4.2
+pytest-flask==1.2.0
+coverage==7.3.2
+
+# Logging and monitoring
+structlog==23.1.0
+
+# Date and time handling
+python-dateutil==2.8.2
+
+# JSON handling (built into Python)
+# json
+
+# HTTP client for testing
+requests==2.31.0
+
+# WSGI server for production deployment
+gunicorn==21.2.0  # For Linux/Unix deployment
+waitress==2.1.2   # For Windows deployment
+
+# Additional security headers
+flask-talisman==1.1.0
+
+# Session management
+flask-session==0.5.0
+
+# Input validation and sanitization
+bleach==6.0.0
+html5lib==1.1
+
+# File system utilities
+pathlib  # Built into Python 3.4+
+shutil   # Built into Python
+
+# Backup and compression
+zipfile  # Built into Python
+
+# Configuration validation
+cerberus==1.3.4
+
+# Healthcare compliance utilities
+hashlib  # Built into Python
+secrets  # Built into Python
+uuid     # Built into Python
+
+# Performance monitoring
+memory-profiler==0.61.0  # Optional: for memory profiling
+
+# Documentation generation (optional)
+sphinx==7.1.2
+sphinx-rtd-theme==1.3.0
+
+# Code quality tools (development)
+flake8==6.0.0
+black==23.7.0
+isort==5.12.0
+
+# Type checking (optional)
+mypy==1.5.1
+types-requests==2.31.0.2
+
+# Environment-specific dependencies
+# Windows-specific
+pywin32==306; sys_platform == "win32"
+
+# Linux-specific  
+python-systemd==234; sys_platform == "linux"
+
+# macOS-specific
+pyobjc==9.2; sys_platform == "darwin"

@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Image - BHV{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow">
+            <div class="card-header card-header-bhv">
+                <h4 class="mb-0">
+                    <i class="bi bi-cloud-upload"></i> Upload Image
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <!-- File Upload Section -->
+                    <div class="mb-4">
+                        <label for="file" class="form-label">
+                            <i class="bi bi-image"></i> Select Image
+                        </label>
+                        <input type="file" class="form-control" id="file" name="file" accept="image/*" required onchange="previewImage(this)">
+                        <div class="form-text">
+                            Supported formats: PNG, JPG, JPEG, GIF, BMP, TIFF (Max size: 16MB)
+                        </div>
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div class="mb-4 text-center">
+                        <img id="imagePreview" src="#" alt="Image Preview" class="img-fluid rounded shadow-sm" style="display: none; max-height: 300px;">
+                    </div>
+                    
+                    <!-- Narrative Section -->
+                    <div class="mb-4">
+                        <label for="narrative" class="form-label">
+                            <i class="bi bi-chat-text"></i> Narrative (Optional)
+                        </label>
+                        <textarea class="form-control" id="narrative" name="narrative" rows="4" placeholder="Describe this image, your thoughts, feelings, or the story behind it..."></textarea>
+                        <div class="form-text">
+                            Share the story behind your image. This narrative will help document your recovery journey.
+                        </div>
+                        <div class="text-end mt-1">
+                            <small class="text-muted">
+                                <span id="charCount">0</span> characters
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Privacy Settings -->
+                    <div class="mb-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-shield-lock"></i> Privacy Settings
+                                </h6>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="isPrivate" name="isPrivate" checked>
+                                    <label class="form-check-label" for="isPrivate">
+                                        Keep this image private
+                                    </label>
+                                </div>
+                                <small class="text-muted">
+                                    Private images are only visible to you and authorized healthcare professionals.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tags Section -->
+                    <div class="mb-4">
+                        <label for="tags" class="form-label">
+                            <i class="bi bi-tags"></i> Tags (Optional)
+                        </label>
+                        <input type="text" class="form-control" id="tags" name="tags" placeholder="recovery, progress, milestone, therapy...">
+                        <div class="form-text">
+                            Add tags to help organize and find your images later. Separate multiple tags with commas.
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Progress -->
+                    <div class="mb-3" id="uploadProgress" style="display: none;">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted mt-1">Uploading your image...</small>
+                    </div>
+                    
+                    <!-- Submit Buttons -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success" id="uploadBtn">
+                            <i class="bi bi-cloud-upload"></i> Upload Image
+                        </button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Upload Guidelines -->
+        <div class="alert alert-info mt-3" role="alert">
+            <h6><i class="bi bi-info-circle"></i> Upload Guidelines</h6>
+            <ul class="mb-0">
+                <li>Only upload images that are relevant to your recovery journey</li>
+                <li>Ensure you have the right to share any images you upload</li>
+                <li>Do not include sensitive personal information in images</li>
+                <li>All uploads are logged for security and compliance purposes</li>
+            </ul>
+        </div>
+        
+        <!-- Security Notice -->
+        <div class="alert alert-success mt-3" role="alert">
+            <h6><i class="bi bi-shield-check"></i> Security & Privacy</h6>
+            <p class="mb-0">
+                Your images are encrypted during upload and stored securely. Access is controlled based on your privacy settings and healthcare regulations.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-check-circle"></i> Upload Successful
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-3">
+                    <i class="bi bi-cloud-check text-success" style="font-size: 3rem;"></i>
+                </div>
+                <h6>Your image has been uploaded successfully!</h6>
+                <p class="text-muted">
+                    It's now part of your recovery journey documentation and can be viewed in your dashboard.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                    <i class="bi bi-grid"></i> View Dashboard
+                </a>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="resetForm()">
+                    <i class="bi bi-plus"></i> Upload Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const narrativeTextarea = document.getElementById('narrative');
+    const charCount = document.getElementById('charCount');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploadProgress = document.getElementById('uploadProgress');
+    
+    // Character counter for narrative
+    narrativeTextarea.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = count;
+        
+        if (count > 1000) {
+            charCount.classList.add('text-danger');
+        } else if (count > 800) {
+            charCount.classList.add('text-warning');
+            charCount.classList.remove('text-danger');
+        } else {
+            charCount.classList.remove('text-warning', 'text-danger');
+        }
+    });
+    
+    // Form submission with progress
+    uploadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const fileInput = document.getElementById('file');
+        if (!fileInput.files[0]) {
+            alert('Please select an image to upload.');
+            return;
+        }
+        
+        // Validate file size (16MB limit)
+        const maxSize = 16 * 1024 * 1024; // 16MB in bytes
+        if (fileInput.files[0].size > maxSize) {
+            alert('File size exceeds 16MB limit. Please choose a smaller image.');
+            return;
+        }
+        
+        // Show progress and disable button
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Uploading...';
+        uploadProgress.style.display = 'block';
+        
+        // Simulate upload progress
+        let progress = 0;
+        const progressBar = uploadProgress.querySelector('.progress-bar');
+        
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 30;
+            if (progress > 90) progress = 90;
+            
+            progressBar.style.width = progress + '%';
+        }, 200);
+        
+        // Create FormData and submit
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            clearInterval(progressInterval);
+            progressBar.style.width = '100%';
+            
+            if (response.ok) {
+                setTimeout(() => {
+                    uploadProgress.style.display = 'none';
+                    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+                }, 500);
+            } else {
+                throw new Error('Upload failed');
+            }
+        })
+        .catch(error => {
+            clearInterval(progressInterval);
+            uploadProgress.style.display = 'none';
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Upload Image';
+            
+            alert('Upload failed. Please try again.');
+            console.error('Upload error:', error);
+        });
+    });
+    
+    // File validation
+    document.getElementById('file').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        
+        // Check file type
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp', 'image/tiff'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please select a valid image file (PNG, JPG, JPEG, GIF, BMP, TIFF).');
+            this.value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            return;
+        }
+        
+        // Check file size
+        const maxSize = 16 * 1024 * 1024; // 16MB
+        if (file.size > maxSize) {
+            alert('File size exceeds 16MB limit. Please choose a smaller image.');
+            this.value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            return;
+        }
+        
+        // Show file info
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+        console.log(`Selected file: ${file.name} (${sizeInMB} MB)`);
+    });
+});
+
+function resetForm() {
+    document.getElementById('uploadForm').reset();
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('charCount').textContent = '0';
+    document.getElementById('uploadBtn').disabled = false;
+    document.getElementById('uploadBtn').innerHTML = '<i class="bi bi-cloud-upload"></i> Upload Image';
+}
+
+// Enhanced image preview function
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            
+            // Add fade-in effect
+            preview.style.opacity = '0';
+            setTimeout(() => {
+                preview.style.transition = 'opacity 0.3s';
+                preview.style.opacity = '1';
+            }, 10);
+        };
+        
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+{% endblock %}

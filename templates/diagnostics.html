@@ -1,0 +1,543 @@
+{% extends "base.html" %}
+
+{% block title %}System Diagnostics - BHV{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Diagnostics Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2>
+                    <i class="bi bi-activity"></i> System Diagnostics
+                </h2>
+                <p class="text-muted mb-0">
+                    Comprehensive system health monitoring and troubleshooting
+                </p>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="refreshDiagnostics()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Overall Health Score -->
+        {% if results and results.overall_health %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body text-center">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="mb-2">
+                            <span class="health-indicator health-{{ results.overall_health.status }}"></span>
+                            <h3 class="d-inline ms-2">{{ results.overall_health.score }}%</h3>
+                        </div>
+                        <h5 class="text-capitalize">{{ results.overall_health.status }}</h5>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row text-center">
+                            <div class="col">
+                                <div class="mb-1">
+                                    <span class="health-indicator health-{{ 'excellent' if results.overall_health.component_scores.application >= 90 else 'good' if results.overall_health.component_scores.application >= 75 else 'fair' if results.overall_health.component_scores.application >= 60 else 'poor' }}"></span>
+                                    <strong>{{ results.overall_health.component_scores.application }}%</strong>
+                                </div>
+                                <small class="text-muted">Application</small>
+                            </div>
+                            <div class="col">
+                                <div class="mb-1">
+                                    <span class="health-indicator health-{{ 'excellent' if results.overall_health.component_scores.database >= 90 else 'good' if results.overall_health.component_scores.database >= 75 else 'fair' if results.overall_health.component_scores.database >= 60 else 'poor' }}"></span>
+                                    <strong>{{ results.overall_health.component_scores.database }}%</strong>
+                                </div>
+                                <small class="text-muted">Database</small>
+                            </div>
+                            <div class="col">
+                                <div class="mb-1">
+                                    <span class="health-indicator health-{{ 'excellent' if results.overall_health.component_scores.file_system >= 90 else 'good' if results.overall_health.component_scores.file_system >= 75 else 'fair' if results.overall_health.component_scores.file_system >= 60 else 'poor' }}"></span>
+                                    <strong>{{ results.overall_health.component_scores.file_system }}%</strong>
+                                </div>
+                                <small class="text-muted">File System</small>
+                            </div>
+                            <div class="col">
+                                <div class="mb-1">
+                                    <span class="health-indicator health-{{ 'excellent' if results.overall_health.component_scores.security >= 90 else 'good' if results.overall_health.component_scores.security >= 75 else 'fair' if results.overall_health.component_scores.security >= 60 else 'poor' }}"></span>
+                                    <strong>{{ results.overall_health.component_scores.security }}%</strong>
+                                </div>
+                                <small class="text-muted">Security</small>
+                            </div>
+                            <div class="col">
+                                <div class="mb-1">
+                                    <span class="health-indicator health-{{ 'excellent' if results.overall_health.component_scores.configuration >= 90 else 'good' if results.overall_health.component_scores.configuration >= 75 else 'fair' if results.overall_health.component_scores.configuration >= 60 else 'poor' }}"></span>
+                                    <strong>{{ results.overall_health.component_scores.configuration }}%</strong>
+                                </div>
+                                <small class="text-muted">Configuration</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Diagnostic Sections -->
+        <div class="row g-4">
+            <!-- System Information -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header card-header-bhv">
+                        <h5 class="mb-0">
+                            <i class="bi bi-cpu"></i> System Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results and results.system_info %}
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="text-muted">Platform</small>
+                                <div class="fw-bold">{{ results.system_info.platform }}</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">CPU Cores</small>
+                                <div class="fw-bold">{{ results.system_info.cpu_count }}</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Memory</small>
+                                <div class="fw-bold">{{ results.system_info.memory_total_gb }} GB</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Uptime</small>
+                                <div class="fw-bold">{{ "%.1f"|format(results.system_info.uptime_seconds / 3600) }} hrs</div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-exclamation-circle"></i>
+                            System information unavailable
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header card-header-bhv">
+                        <h5 class="mb-0">
+                            <i class="bi bi-speedometer2"></i> Performance Metrics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results and results.performance_metrics %}
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="text-muted">CPU Usage</small>
+                                <div class="fw-bold">{{ results.performance_metrics.cpu_percent }}%</div>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar bg-{{ 'danger' if results.performance_metrics.cpu_percent > 80 else 'warning' if results.performance_metrics.cpu_percent > 60 else 'success' }}" 
+                                         style="width: {{ results.performance_metrics.cpu_percent }}%"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Memory Usage</small>
+                                <div class="fw-bold">{{ results.performance_metrics.memory_percent }}%</div>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar bg-{{ 'danger' if results.performance_metrics.memory_percent > 80 else 'warning' if results.performance_metrics.memory_percent > 60 else 'success' }}" 
+                                         style="width: {{ results.performance_metrics.memory_percent }}%"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <small class="text-muted">Available Memory</small>
+                                <div class="fw-bold">{{ results.performance_metrics.memory_available_gb }} GB</div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-exclamation-circle"></i>
+                            Performance metrics unavailable
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Health -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header card-header-bhv">
+                        <h5 class="mb-0">
+                            <i class="bi bi-app-indicator"></i> Application Health
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results and results.application_health %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Overall Status</span>
+                                <span class="badge bg-{{ 'success' if results.application_health.status == 'healthy' else 'warning' if results.application_health.status == 'degraded' else 'danger' }}">
+                                    {{ results.application_health.status.title() }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        {% if results.application_health.checks %}
+                        <div class="list-group list-group-flush">
+                            {% for check, status in results.application_health.checks.items() %}
+                            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-capitalize">{{ check.replace('_', ' ') }}</span>
+                                <i class="bi bi-{{ 'check-circle text-success' if status else 'x-circle text-danger' }}"></i>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.application_health.issues %}
+                        <div class="mt-3">
+                            <small class="text-muted">Issues:</small>
+                            {% for issue in results.application_health.issues %}
+                            <div class="alert alert-warning alert-sm py-1 px-2 mt-1">
+                                <small>{{ issue }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-exclamation-circle"></i>
+                            Application health unavailable
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Health -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header card-header-bhv">
+                        <h5 class="mb-0">
+                            <i class="bi bi-database"></i> Database Health
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results and results.database_health %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Database Status</span>
+                                <span class="badge bg-{{ 'success' if results.database_health.status == 'healthy' else 'warning' if results.database_health.status == 'degraded' else 'danger' }}">
+                                    {{ results.database_health.status.title() }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        {% if results.database_health.statistics %}
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Users</small>
+                                <div class="fw-bold">{{ results.database_health.statistics.users_count or 0 }}</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Images</small>
+                                <div class="fw-bold">{{ results.database_health.statistics.images_count or 0 }}</div>
+                            </div>
+                            <div class="col-12">
+                                <small class="text-muted">Database Size</small>
+                                <div class="fw-bold">{{ "%.1f"|format(results.database_health.statistics.database_size_mb or 0) }} MB</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.database_health.checks %}
+                        <div class="list-group list-group-flush">
+                            {% for check, status in results.database_health.checks.items() %}
+                            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-capitalize">{{ check.replace('_', ' ') }}</span>
+                                <i class="bi bi-{{ 'check-circle text-success' if status else 'x-circle text-danger' }}"></i>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-exclamation-circle"></i>
+                            Database health unavailable
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- File System Health -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header card-header-bhv">
+                        <h5 class="mb-0">
+                            <i class="bi bi-hdd"></i> File System Health
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results and results.file_system_health %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Storage Status</span>
+                                <span class="badge bg-{{ 'success' if results.file_system_health.status == 'healthy' else 'warning' if results.file_system_health.status == 'degraded' else 'danger' }}">
+                                    {{ results.file_system_health.status.title() }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        {% if results.file_system_health.storage_info %}
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Total Space</small>
+                                <div class="fw-bold">{{ results.file_system_health.storage_info.total_gb }} GB</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Free Space</small>
+                                <div class="fw-bold">{{ results.file_system_health.storage_info.free_gb }} GB</div>
+                            </div>
+                            <div class="col-12">
+                                <small class="text-muted">Disk Usage</small>
+                                <div class="fw-bold">{{ results.file_system_health.storage_info.used_percent }}%</div>
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar bg-{{ 'danger' if results.file_system_health.storage_info.used_percent > 90 else 'warning' if results.file_system_health.storage_info.used_percent > 75 else 'success' }}" 
+                                         style="width: {{ results.file_system_health.storage_info.used_percent }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.file_system_health.checks %}
+                        <div class="list-group list-group-flush">
+                            {% for check, status in results.file_system_health.checks.items() %}
+                            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-capitalize">{{ check.replace('_', ' ') }}</span>
+                                <i class="bi bi-{{ 'check-circle text-success' if status else 'x-circle text-danger' }}"></i>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-exclamation-circle"></i>
+                            File system health unavailable
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Status -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header card-header-bhv">
+                        <h5 class="mb-0">
+                            <i class="bi bi-shield-check"></i> Security Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if results and results.security_status %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Security Level</span>
+                                <span class="badge bg-{{ 'success' if results.security_status.status == 'secure' else 'warning' if results.security_status.status == 'warning' else 'danger' }}">
+                                    {{ results.security_status.status.title() }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        {% if results.security_status.checks %}
+                        <div class="list-group list-group-flush">
+                            {% for check, status in results.security_status.checks.items() %}
+                            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                                <span class="text-capitalize">{{ check.replace('_', ' ') }}</span>
+                                <i class="bi bi-{{ 'check-circle text-success' if status else 'x-circle text-danger' }}"></i>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.security_status.warnings %}
+                        <div class="mt-3">
+                            <small class="text-muted">Security Warnings:</small>
+                            {% for warning in results.security_status.warnings %}
+                            <div class="alert alert-warning alert-sm py-1 px-2 mt-1">
+                                <small>{{ warning }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-exclamation-circle"></i>
+                            Security status unavailable
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        {% if results and results.recommendations %}
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header card-header-bhv">
+                <h5 class="mb-0">
+                    <i class="bi bi-lightbulb"></i> Recommendations
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if results.recommendations %}
+                <div class="list-group list-group-flush">
+                    {% for recommendation in results.recommendations %}
+                    <div class="list-group-item px-0">
+                        <i class="bi bi-arrow-right text-primary me-2"></i>
+                        {{ recommendation }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-success">
+                    <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                    <h6 class="mt-2">No Recommendations</h6>
+                    <p class="text-muted mb-0">Your system is running optimally!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent Errors -->
+        {% if results and results.recent_errors %}
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header card-header-bhv">
+                <h5 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Recent Errors
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if results.recent_errors %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Level</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for error in results.recent_errors %}
+                            <tr>
+                                <td><small>{{ error.timestamp }}</small></td>
+                                <td>
+                                    <span class="badge bg-{{ 'danger' if error.level == 'CRITICAL' else 'warning' }}">
+                                        {{ error.level }}
+                                    </span>
+                                </td>
+                                <td><small>{{ error.message }}</small></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center text-success">
+                    <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                    <h6 class="mt-2">No Recent Errors</h6>
+                    <p class="text-muted mb-0">System is running smoothly!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Diagnostic Actions -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header card-header-bhv">
+                <h5 class="mb-0">
+                    <i class="bi bi-tools"></i> Diagnostic Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-primary w-100" onclick="exportDiagnostics()">
+                            <i class="bi bi-download"></i> Export Report
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-info w-100" onclick="testConnections()">
+                            <i class="bi bi-wifi"></i> Test Connections
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-warning w-100" onclick="clearCache()">
+                            <i class="bi bi-trash"></i> Clear Cache
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-success w-100" onclick="optimizeSystem()">
+                            <i class="bi bi-speedometer2"></i> Optimize
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function refreshDiagnostics() {
+    location.reload();
+}
+
+function exportDiagnostics() {
+    const diagnosticsData = {
+        timestamp: new Date().toISOString(),
+        system_info: {{ results.system_info | tojson if results and results.system_info else '{}' }},
+        overall_health: {{ results.overall_health | tojson if results and results.overall_health else '{}' }}
+    };
+    
+    const dataStr = JSON.stringify(diagnosticsData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `bhv_diagnostics_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+}
+
+function testConnections() {
+    alert('Connection testing feature will be available in the next update.');
+}
+
+function clearCache() {
+    if (confirm('Clear system cache? This may temporarily slow down the application.')) {
+        alert('Cache clearing feature will be available in the next update.');
+    }
+}
+
+function optimizeSystem() {
+    if (confirm('Run system optimization? This may take a few minutes.')) {
+        alert('System optimization feature will be available in the next update.');
+    }
+}
+
+// Auto-refresh every 30 seconds
+setInterval(function() {
+    const refreshBtn = document.querySelector('button[onclick="refreshDiagnostics()"]');
+    if (refreshBtn && !document.hidden) {
+        const now = new Date();
+        const lastRefresh = localStorage.getItem('lastDiagnosticsRefresh');
+        
+        if (!lastRefresh || (now - new Date(lastRefresh)) > 30000) {
+            localStorage.setItem('lastDiagnosticsRefresh', now.toISOString());
+            // Uncomment to enable auto-refresh
+            // location.reload();
+        }
+    }
+}, 30000);
+</script>
+{% endblock %}

@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Register - BHV{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow">
+            <div class="card-header card-header-bhv text-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-plus"></i> Create Account
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" id="registrationForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email Address
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="form-text">Used for account recovery and notifications</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">
+                                <i class="bi bi-person"></i> Username
+                            </label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                            <div class="form-text">Choose a unique username</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-lock"></i> Password
+                        </label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="form-text">
+                            Must be at least 8 characters with uppercase, lowercase, number, and special character
+                        </div>
+                        <div class="progress mt-2" style="height: 5px;">
+                            <div class="progress-bar" id="passwordStrength" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="bi bi-lock-fill"></i> Confirm Password
+                        </label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">
+                            <i class="bi bi-person-badge"></i> Role
+                        </label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="patient" selected>Patient</option>
+                            <option value="social_worker">Social Worker</option>
+                        </select>
+                        <div class="form-text">
+                            <strong>Patient:</strong> Upload and manage your own images and narratives<br>
+                            <strong>Social Worker:</strong> View patient content and add clinical notes
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a> 
+                            and <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-bhv-primary" id="submitBtn" disabled>
+                            <i class="bi bi-person-plus"></i> Create Account
+                        </button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="text-muted mb-2">Already have an account?</p>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security Information -->
+        <div class="alert alert-info mt-3" role="alert">
+            <h6><i class="bi bi-shield-check"></i> Security & Privacy</h6>
+            <ul class="mb-0">
+                <li>All data is encrypted and stored securely</li>
+                <li>Access is logged for compliance and security</li>
+                <li>Your information is protected under HIPAA guidelines</li>
+                <li>Admin approval may be required for certain roles</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Terms of Service Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Terms of Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Acceptance of Terms</h6>
+                <p>By using BHV (Behavioral Health Vault), you agree to these terms and conditions.</p>
+                
+                <h6>2. Purpose and Use</h6>
+                <p>BHV is designed for healthcare professionals and patients to store and manage recovery-related images and narratives in a secure, HIPAA-compliant environment.</p>
+                
+                <h6>3. User Responsibilities</h6>
+                <ul>
+                    <li>Maintain the confidentiality of your account credentials</li>
+                    <li>Use the system only for its intended healthcare purposes</li>
+                    <li>Report any security concerns immediately</li>
+                    <li>Comply with all applicable healthcare regulations</li>
+                </ul>
+                
+                <h6>4. Data Security</h6>
+                <p>We implement industry-standard security measures to protect your data. However, no system is 100% secure, and you acknowledge the inherent risks of electronic data storage.</p>
+                
+                <h6>5. Compliance</h6>
+                <p>This system is designed to comply with HIPAA and other relevant healthcare regulations. Users must also ensure their use complies with applicable laws.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Privacy Policy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Information We Collect</h6>
+                <ul>
+                    <li>Account information (email, username, role)</li>
+                    <li>Uploaded images and associated narratives</li>
+                    <li>System access logs for security and compliance</li>
+                    <li>Technical information for system operation</li>
+                </ul>
+                
+                <h6>How We Use Information</h6>
+                <ul>
+                    <li>To provide secure storage and retrieval of your content</li>
+                    <li>To maintain system security and compliance</li>
+                    <li>To support your healthcare recovery journey</li>
+                    <li>To comply with legal and regulatory requirements</li>
+                </ul>
+                
+                <h6>Information Sharing</h6>
+                <p>We do not share your personal information except:</p>
+                <ul>
+                    <li>With authorized healthcare professionals as part of your care</li>
+                    <li>When required by law or regulation</li>
+                    <li>To protect the rights and safety of users</li>
+                </ul>
+                
+                <h6>Data Security</h6>
+                <p>We use encryption, access controls, and other security measures to protect your information in accordance with HIPAA and industry best practices.</p>
+                
+                <h6>Your Rights</h6>
+                <p>You have the right to access, modify, or delete your personal information, subject to healthcare regulations and system requirements.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const strengthBar = document.getElementById('passwordStrength');
+    const submitBtn = document.getElementById('submitBtn');
+    const agreeTerms = document.getElementById('agreeTerms');
+    
+    // Password strength checker
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        let strength = 0;
+        
+        if (password.length >= 8) strength += 25;
+        if (/[a-z]/.test(password)) strength += 25;
+        if (/[A-Z]/.test(password)) strength += 25;
+        if (/[0-9]/.test(password)) strength += 12.5;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 12.5;
+        
+        strengthBar.style.width = strength + '%';
+        
+        if (strength < 50) {
+            strengthBar.className = 'progress-bar bg-danger';
+        } else if (strength < 75) {
+            strengthBar.className = 'progress-bar bg-warning';
+        } else {
+            strengthBar.className = 'progress-bar bg-success';
+        }
+        
+        checkFormValidity();
+    });
+    
+    // Password confirmation checker
+    confirmPasswordInput.addEventListener('input', checkFormValidity);
+    agreeTerms.addEventListener('change', checkFormValidity);
+    
+    function checkFormValidity() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        const termsAgreed = agreeTerms.checked;
+        
+        const passwordsMatch = password === confirmPassword && password.length > 0;
+        const passwordStrong = password.length >= 8 && 
+                              /[a-z]/.test(password) && 
+                              /[A-Z]/.test(password) && 
+                              /[0-9]/.test(password) && 
+                              /[^A-Za-z0-9]/.test(password);
+        
+        submitBtn.disabled = !(passwordsMatch && passwordStrong && termsAgreed);
+        
+        // Update confirm password field styling
+        if (confirmPassword.length > 0) {
+            if (passwordsMatch) {
+                confirmPasswordInput.classList.remove('is-invalid');
+                confirmPasswordInput.classList.add('is-valid');
+            } else {
+                confirmPasswordInput.classList.remove('is-valid');
+                confirmPasswordInput.classList.add('is-invalid');
+            }
+        } else {
+            confirmPasswordInput.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+});
+</script>
+{% endblock %}

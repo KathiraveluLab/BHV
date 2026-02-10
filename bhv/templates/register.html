@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Register - BHV{% endblock %}
+{% block content %}
+<div style="max-width: 500px; margin: 50px auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Create Your Account</h2>
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.username.label(style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;") }}
+            {{ form.username(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="Choose a username") }}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <p style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.email.label(style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;") }}
+            {{ form.email(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="your.email@example.com", type="email") }}
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <p style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            {{ form.password.label(style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;") }}
+            {{ form.password(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="At least 6 characters") }}
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <p style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+            <small style="color: #999; display: block; margin-top: 5px;">Minimum 6 characters</small>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+            {{ form.confirm_password.label(style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;") }}
+            {{ form.confirm_password(style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;", placeholder="Repeat your password") }}
+            {% if form.confirm_password.errors %}
+                {% for error in form.confirm_password.errors %}
+                    <p style="color: #e74c3c; margin-top: 5px; font-size: 0.9rem;">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div>
+            {{ form.submit(style="width: 100%; padding: 15px; background: #2ecc71; color: white; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s;") }}
+        </div>
+    </form>
+    
+    <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="color: #666;">Already have an account? 
+            <a href="{{ url_for('login') }}" style="color: #3498db; text-decoration: none; font-weight: bold;">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

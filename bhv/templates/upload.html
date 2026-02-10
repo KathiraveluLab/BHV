@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Upload Image - BHV{% endblock %}
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h2 style="margin-bottom: 20px; color: #2c3e50;">Upload Your Image</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div style="margin-bottom: 20px;">
+            {{ form.image.label(style="display: block; margin-bottom: 5px; font-weight: bold;") }}
+            {{ form.image(style="width: 100%; padding: 10px;") }}
+            {% if form.image.errors %}
+                {% for error in form.image.errors %}<p style="color: #e74c3c;">{{ error }}</p>{% endfor %}
+            {% endif %}
+            <small style="color: #666;">Allowed: JPG, PNG, GIF (Max 5MB)</small>
+        </div>
+        <div style="margin-bottom: 20px;">
+            {{ form.title.label(style="display: block; margin-bottom: 5px; font-weight: bold;") }}
+            {{ form.title(style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;") }}
+            {% if form.title.errors %}
+                {% for error in form.title.errors %}<p style="color: #e74c3c;">{{ error }}</p>{% endfor %}
+            {% endif %}
+        </div>
+        <div style="margin-bottom: 20px;">
+            {{ form.description.label(style="display: block; margin-bottom: 5px; font-weight: bold;") }}
+            {{ form.description(style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-height: 150px;") }}
+            {% if form.description.errors %}
+                {% for error in form.description.errors %}<p style="color: #e74c3c;">{{ error }}</p>{% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            {{ form.submit(style="width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 5px; font-size: 1.1rem; cursor: pointer;") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -472,8 +472,7 @@ def admin_export_images():
 def admin_dashboard():
     total_users = User.query.count()
     total_images = Image.query.count()
-    total_storage = sum(img.file_size for img in Image.query.all())
-    total_storage_mb = round(total_storage / (1024 * 1024), 2)
+    total_storage = db.session.query(db.func.sum(Image.file_size)).scalar() or 0
     
     # Top uploaders
     from sqlalchemy import func

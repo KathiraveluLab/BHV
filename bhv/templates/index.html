@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align: center; padding: 50px 20px;">
+    <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Welcome to BHV</h2>
+    <p style="font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto 30px;">
+        A secure platform for storing and sharing your behavioral health journey through images and narratives.
+    </p>
+    <div style="margin-top: 40px;">
+        <a href="{{ url_for('upload') }}" style="display: inline-block; background: #3498db; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-size: 1.1rem; margin: 10px;">Upload Your Story</a>
+        <a href="{{ url_for('gallery') }}" style="display: inline-block; background: #2ecc71; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-size: 1.1rem; margin: 10px;">View Gallery</a>
+    </div>
+</div>
+{% endblock %}

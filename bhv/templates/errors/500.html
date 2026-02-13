@@ -1,0 +1,32 @@
+{% extends "errors/base_error.html" %}
+
+{% block title %}Server Error{% endblock %}
+
+{% block icon %}⚠️{% endblock %}
+
+{% block code %}500{% endblock %}
+
+{% block error_title %}Internal Server Error{% endblock %}
+
+{% block message %}
+Oops! Something went wrong on our end. Our team has been notified and we're working to fix it. Please try again in a few moments.
+{% endblock %}
+
+{% block actions %}
+<a href="{{ url_for('index') }}" class="btn btn-primary">🏠 Go Home</a>
+<a href="javascript:location.reload()" class="btn btn-secondary">🔄 Try Again</a>
+{% endblock %}
+
+{% block details %}
+<div class="error-details">
+    <strong>💡 What happened?</strong><br>
+    The server encountered an unexpected error and couldn't complete your request. This could be due to:<br>
+    • Temporary server overload<br>
+    • Database connection issues<br>
+    • A bug in our code (we're on it!)<br><br>
+    <strong>What you can do:</strong><br>
+    • Wait a few moments and try again<br>
+    • Clear your browser cache<br>
+    • Contact support if the problem persists
+</div>
+{% endblock %}

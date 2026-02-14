@@ -17,3 +17,32 @@ The system should avoid unnecessary bloat to enable easy installation in healthc
 The front-end should be kept minimal to allow the entire system to be run from a single command (rather than expecting the front-end, backend, and database to be run separately).
 
 The storage of the images could be in a file system with an index to retrieve them easily. The index itself could be in a database to allow easy queries.
+
+
+## Proposed MVP Scope (Draft)
+
+This section summarizes the currently discussed MVP scope for BHV, based on
+community discussions and early prototype work. It is intended as a living
+reference and may evolve as the project matures.
+
+### Core MVP (Must-Have)
+The initial focus of BHV is on:
+- Secure image upload and storage
+- Privacy-first access control (defining core user and admin roles/permissions)
+- Simple, minimal architecture suitable for community clinics
+- Local filesystem storage with metadata indexed in a lightweight database
+- Easy local setup and a single-command run where possible
+
+### Optional / Modular Extensions
+The following features are considered valuable but optional for the initial MVP:
+- User-facing admin dashboards and moderation tools
+- Containerized deployment (e.g., Docker)
+- Research-oriented modules for analyzing potential color–emotion associations
+  in images without explicit tags or narratives
+
+### Guiding Principles
+- Prefer simplicity over feature completeness
+- Avoid locking architectural decisions too early
+- Keep advanced features modular so they do not block the core system
+
+Community feedback and maintainer guidance will continue to shape this scope.

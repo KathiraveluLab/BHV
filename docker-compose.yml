@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: bhv-app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./bhv.db:/app/bhv.db
+      - ./static/uploads:/app/static/uploads
+    environment:
+      - FLASK_APP=bhv/app.py
+      - FLASK_ENV=production
+      - SECRET_KEY=your-secret-key-change-in-production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  bhv_db:
+  bhv_uploads:

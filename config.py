@@ -9,7 +9,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = BASE_DIR / 'static' / 'uploads'
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'

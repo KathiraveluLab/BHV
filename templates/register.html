@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block title %}BHV — Register{% endblock %} {% block
+content %}
+<h1>Create an account</h1>
+
+{% with messages = get_flashed_messages() %} {% if messages %}
+<div class="flash">
+  {% for msg in messages %}
+  <p>{{ msg }}</p>
+  {% endfor %}
+</div>
+{% endif %} {% endwith %}
+
+<form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required />
+
+  <label for="password">Password</label>
+  <input type="password" id="password" name="password" minlength="8" required />
+
+  <button type="submit">Register</button>
+  <p class="auth-alt">Already have an account? <a href="#">Sign in</a></p>
+</form>
+{% endblock %}

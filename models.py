@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 import bcrypt
 from bson import ObjectId
+from bson.errors import InvalidId
 
 from database import get_db
 
@@ -21,8 +22,7 @@ class User:
             "password": hashed,
             "created_at": datetime.now(timezone.utc),
         }
-        result = User._collection().insert_one(doc)
-        doc["_id"] = result.inserted_id
+        User._collection().insert_one(doc)
         return doc
 
     @staticmethod
@@ -31,7 +31,10 @@ class User:
 
     @staticmethod
     def get_by_id(user_id):
-        return User._collection().find_one({"_id": ObjectId(user_id)})
+        try:
+            return User._collection().find_one({"_id": ObjectId(user_id)})
+        except (InvalidId, TypeError):
+            return None
 
     @staticmethod
     def check_password(user, password):

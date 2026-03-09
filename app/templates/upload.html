@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHV - Upload</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("bhv-theme") || "dark");
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/dashboard">Behavioral Health Vault (BHV)</a>
+        <nav class="nav-primary">
+            <a href="/dashboard">Dashboard</a>
+            <a class="active" href="/upload">Upload</a>
+            <a href="/gallery">My Gallery</a>
+            <button type="button" class="theme-icon-btn" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                <span data-theme-icon aria-hidden="true">&#9788;</span>
+            </button>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-container">
+        <section class="card">
+            <h2>Add a New Entry</h2>
+            <p class="lead">Upload Document</p>
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+            <form action="/upload" method="post" enctype="multipart/form-data" class="form-stack">
+                <label for="image">File</label>
+                <input id="image" name="image" type="file" accept="image/*,.pdf" required>
+                <label for="image" id="drop-zone" class="drop-zone">
+                    <span class="drop-zone-icon">&#128206;</span>
+                    <strong>Drag and drop your image or PDF here</strong>
+                    <span>or click to choose file</span>
+                    <small id="file-name">No file selected</small>
+                </label>
+
+                <div id="upload-preview" class="upload-preview" hidden>
+                    <p class="muted preview-label">Preview</p>
+                    <img id="image-preview" alt="Image preview" hidden>
+                    <iframe id="pdf-preview" title="PDF preview" hidden></iframe>
+                </div>
+
+                <label for="title">Title</label>
+                <input id="title" name="title" type="text" required>
+
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+
+                <label for="sentiment">Sentiment</label>
+                <select id="sentiment" name="sentiment" required>
+                    {% for item in sentiments %}
+                    <option value="{{ item }}">{{ item|capitalize }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Upload</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        const fileInput = document.getElementById("image");
+        const dropZone = document.getElementById("drop-zone");
+        const fileName = document.getElementById("file-name");
+        const previewContainer = document.getElementById("upload-preview");
+        const imagePreview = document.getElementById("image-preview");
+        const pdfPreview = document.getElementById("pdf-preview");
+
+        const setName = (files) => {
+            fileName.textContent = files && files.length ? files[0].name : "No file selected";
+        };
+
+        const resetPreviews = () => {
+            imagePreview.hidden = true;
+            pdfPreview.hidden = true;
+            imagePreview.removeAttribute("src");
+            pdfPreview.removeAttribute("src");
+            previewContainer.hidden = true;
+        };
+
+        const setPreview = (files) => {
+            if (!files || !files.length) {
+                resetPreviews();
+                return;
+            }
+
+            const file = files[0];
+            const url = URL.createObjectURL(file);
+            previewContainer.hidden = false;
+
+            if (file.type === "application/pdf") {
+                pdfPreview.src = url;
+                pdfPreview.hidden = false;
+                imagePreview.hidden = true;
+                imagePreview.removeAttribute("src");
+                return;
+            }
+
+            if (file.type.startsWith("image/")) {
+                imagePreview.src = url;
+                imagePreview.hidden = false;
+                pdfPreview.hidden = true;
+                pdfPreview.removeAttribute("src");
+                return;
+            }
+
+            resetPreviews();
+        };
+
+        fileInput.addEventListener("change", () => {
+            setName(fileInput.files);
+            setPreview(fileInput.files);
+        });
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                dropZone.classList.add("drag-over");
+            });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+            dropZone.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                dropZone.classList.remove("drag-over");
+            });
+        });
+
+        dropZone.addEventListener("drop", (event) => {
+            const files = event.dataTransfer.files;
+            if (!files || !files.length) {
+                return;
+            }
+            fileInput.files = files;
+            setName(files);
+            setPreview(files);
+        });
+    </script>
+    <script src="/static/js/theme.js" defer></script>
+</body>
+</html>

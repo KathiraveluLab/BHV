@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHV - Login</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("bhv-theme") || "dark");
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">Behavioral Health Vault (BHV)</a>
+        <nav>
+            <button type="button" class="theme-icon-btn" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                <span data-theme-icon aria-hidden="true">&#9788;</span>
+            </button>
+            <a href="/auth/signup">Signup</a>
+        </nav>
+    </header>
+    <main class="auth-wrapper">
+        <section class="card auth-card">
+            <h1>Behavioral Health Vault</h1>
+            <p class="tagline">Secure access to patient-centered image</p>
+            <div class="auth-divider"></div>
+            <h2>Login</h2>
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+            <form action="/auth/login" method="post" class="form-stack">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="Enter your email" required>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Enter your password" required>
+
+                <button type="submit">Sign In</button>
+            </form>
+            <p class="auth-footer">New user? <a href="/auth/signup">Create account</a></p>
+        </section>
+    </main>
+    <script src="/static/js/theme.js" defer></script>
+</body>
+</html>

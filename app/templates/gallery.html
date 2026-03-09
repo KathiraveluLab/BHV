@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHV - Gallery</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("bhv-theme") || "dark");
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/dashboard">Behavioral Health Vault (BHV)</a>
+        <nav class="nav-primary">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/upload">Upload</a>
+            <a class="active" href="/gallery">My Gallery</a>
+            <button type="button" class="theme-icon-btn" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                <span data-theme-icon aria-hidden="true">&#9788;</span>
+            </button>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-container">
+        {% if not admin_view %}
+        <section class="card gallery-controls">
+            <div class="gallery-filter-form" id="gallery-filter-form">
+                <div class="control-group search-wide">
+                    <label for="q">Search title or description</label>
+                    <input id="q" name="q" type="text" placeholder="Search your posts">
+                </div>
+
+                <div class="control-group">
+                    <label for="sentiment_filter">Sentiment</label>
+                    <select id="sentiment_filter" name="sentiment">
+                        <option value="all">All</option>
+                        {% for item in sentiments %}
+                        <option value="{{ item }}">{{ item|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="view">View</label>
+                    <select id="view" name="view">
+                        <option value="grid">Grid</option>
+                        <option value="list">List</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="page_size">Per page</label>
+                    <select id="page_size" name="page_size">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+
+            </div>
+        </section>
+        {% endif %}
+
+        {% if images|length == 0 %}
+        <section class="card empty-state">
+            <p>No images uploaded yet.</p>
+            {% if not admin_view %}
+            <a class="button-link" href="/upload">Upload Your First Image</a>
+            {% endif %}
+        </section>
+        {% else %}
+        <section class="gallery-grid" id="gallery-cards">
+            {% for image in images %}
+            <article class="card gallery-card" data-title="{{ image.title|lower|e }}" data-description="{{ image.description|lower|e }}" data-sentiment="{{ image.sentiment }}">
+                <div class="gallery-media-area">
+                    {% if image.image_path.lower().endswith('.pdf') %}
+                    <div class="pdf-card-preview">
+                        <p class="pdf-icon">PDF</p>
+                        <p class="pdf-label">Document available</p>
+                        <p class="pdf-hint">Hover to preview</p>
+                    </div>
+                    {% else %}
+                    <img src="/{{ image.image_path }}" alt="{{ image.title }}">
+                    {% endif %}
+                    <button
+                        type="button"
+                        class="media-preview-btn open-preview-modal"
+                        data-file-path="/{{ image.image_path }}"
+                        data-file-title="{{ image.title|e }}"
+                        data-file-type="{% if image.image_path.lower().endswith('.pdf') %}pdf{% else %}image{% endif %}"
+                    >
+                        Preview
+                    </button>
+                </div>
+                <div class="content">
+                    <h3>{{ image.title }}</h3>
+                    <p class="sentiment-chip sentiment-{{ image.sentiment }}">{{ image.sentiment|capitalize }}</p>
+                    <p>{{ image.description }}</p>
+                    {% if admin_view %}
+                    <p class="muted">Owner: {{ image.owner_email }}</p>
+                    <div class="card-actions">
+                        <form action="/admin/delete/{{ image.id }}" method="post">
+                            <button type="submit" class="danger">Delete</button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="card-actions">
+                        <button
+                            type="button"
+                            class="open-edit-modal"
+                            data-image-id="{{ image.id }}"
+                            data-image-title="{{ image.title|e }}"
+                            data-image-description="{{ image.description|e }}"
+                            data-image-sentiment="{{ image.sentiment }}"
+                        >
+                            Edit
+                        </button>
+                        <form action="/gallery/delete/{{ image.id }}" method="post">
+                            <button type="submit" class="danger">Delete</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+
+        {% if not admin_view %}
+        <section class="card empty-state" id="filter-empty-state" hidden>
+            <p>No results found for your current search/filter.</p>
+        </section>
+        <section class="gallery-pagination" id="gallery-pagination">
+            <p id="pagination-summary"></p>
+            <div class="pagination-actions">
+                <button type="button" id="prev-page">Previous</button>
+                <button type="button" id="next-page">Next</button>
+            </div>
+        </section>
+        {% endif %}
+        {% endif %}
+
+        {% if not admin_view %}
+        <div id="edit-modal" class="modal-overlay" hidden>
+            <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+                <div class="modal-header">
+                    <h2 id="edit-modal-title">Edit Post</h2>
+                    <button type="button" class="modal-close" id="close-edit-modal" aria-label="Close">X</button>
+                </div>
+                <form id="edit-modal-form" method="post" class="form-stack edit-form">
+                    <label for="modal-title">Title</label>
+                    <input id="modal-title" name="title" type="text" required>
+
+                    <label for="modal-description">Description</label>
+                    <textarea id="modal-description" name="description" rows="4"></textarea>
+
+                    <label for="modal-sentiment">Sentiment</label>
+                    <select id="modal-sentiment" name="sentiment" required>
+                        {% for item in sentiments %}
+                        <option value="{{ item }}">{{ item|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <div id="preview-modal" class="modal-overlay" hidden>
+            <div class="modal-card preview-modal-card" role="dialog" aria-modal="true" aria-labelledby="preview-modal-title">
+                <div class="modal-header">
+                    <h2 id="preview-modal-title">Preview</h2>
+                    <button type="button" class="modal-close" id="close-preview-modal" aria-label="Close">X</button>
+                </div>
+                <div class="preview-modal-body">
+                    <img id="preview-modal-image" alt="Preview image" hidden>
+                    <iframe id="preview-modal-pdf" title="Preview PDF" hidden></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {% if not admin_view %}
+    <script>
+        const cardsContainer = document.getElementById("gallery-cards");
+        const allCards = cardsContainer ? Array.from(cardsContainer.querySelectorAll(".gallery-card")) : [];
+        const searchInput = document.getElementById("q");
+        const sentimentInput = document.getElementById("sentiment_filter");
+        const viewInput = document.getElementById("view");
+        const pageSizeInput = document.getElementById("page_size");
+        const emptyState = document.getElementById("filter-empty-state");
+        const paginationSection = document.getElementById("gallery-pagination");
+        const paginationSummary = document.getElementById("pagination-summary");
+        const prevPageButton = document.getElementById("prev-page");
+        const nextPageButton = document.getElementById("next-page");
+        const editModal = document.getElementById("edit-modal");
+        const closeEditModalButton = document.getElementById("close-edit-modal");
+        const editModalForm = document.getElementById("edit-modal-form");
+        const modalTitleInput = document.getElementById("modal-title");
+        const modalDescriptionInput = document.getElementById("modal-description");
+        const modalSentimentInput = document.getElementById("modal-sentiment");
+        const openModalButtons = Array.from(document.querySelectorAll(".open-edit-modal"));
+        const previewModal = document.getElementById("preview-modal");
+        const closePreviewModalButton = document.getElementById("close-preview-modal");
+        const previewModalTitle = document.getElementById("preview-modal-title");
+        const previewModalImage = document.getElementById("preview-modal-image");
+        const previewModalPdf = document.getElementById("preview-modal-pdf");
+        const openPreviewButtons = Array.from(document.querySelectorAll(".open-preview-modal"));
+
+        let currentPage = 1;
+        let filteredCards = [...allCards];
+
+        const getPageSize = () => Number(pageSizeInput.value || 12);
+
+        const applyViewMode = () => {
+            if (viewInput.value === "list") {
+                cardsContainer.classList.add("gallery-list");
+            } else {
+                cardsContainer.classList.remove("gallery-list");
+            }
+        };
+
+        const render = () => {
+            const pageSize = getPageSize();
+            const totalItems = filteredCards.length;
+            const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+
+            allCards.forEach((card) => {
+                card.hidden = true;
+            });
+
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            filteredCards.slice(start, end).forEach((card) => {
+                card.hidden = false;
+            });
+
+            if (emptyState) {
+                emptyState.hidden = totalItems !== 0;
+            }
+            if (paginationSection) {
+                paginationSection.hidden = totalItems === 0;
+            }
+
+            if (paginationSummary) {
+                paginationSummary.textContent = `Showing page ${currentPage} of ${totalPages} (${totalItems} items)`;
+            }
+
+            if (prevPageButton) {
+                prevPageButton.disabled = currentPage <= 1;
+            }
+            if (nextPageButton) {
+                nextPageButton.disabled = currentPage >= totalPages;
+            }
+        };
+
+        const applyFilters = () => {
+            const text = (searchInput.value || "").trim().toLowerCase();
+            const selectedSentiment = sentimentInput.value;
+
+            filteredCards = allCards.filter((card) => {
+                const title = card.dataset.title || "";
+                const description = card.dataset.description || "";
+                const sentiment = card.dataset.sentiment || "neutral";
+
+                const textMatch = !text || title.includes(text) || description.includes(text);
+                const sentimentMatch = selectedSentiment === "all" || sentiment === selectedSentiment;
+
+                return textMatch && sentimentMatch;
+            });
+
+            currentPage = 1;
+            applyViewMode();
+            render();
+        };
+
+        let debounceTimer;
+        searchInput.addEventListener("input", () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(applyFilters, 220);
+        });
+
+        [sentimentInput, viewInput, pageSizeInput].forEach((el) => {
+            el.addEventListener("change", applyFilters);
+        });
+
+        if (prevPageButton) {
+            prevPageButton.addEventListener("click", () => {
+                if (currentPage > 1) {
+                    currentPage -= 1;
+                    render();
+                }
+            });
+        }
+
+        if (nextPageButton) {
+            nextPageButton.addEventListener("click", () => {
+                const totalPages = Math.max(1, Math.ceil(filteredCards.length / getPageSize()));
+                if (currentPage < totalPages) {
+                    currentPage += 1;
+                    render();
+                }
+            });
+        }
+
+        const closeModal = () => {
+            if (!editModal) {
+                return;
+            }
+            editModal.hidden = true;
+            document.body.style.overflow = "";
+        };
+
+        const closePreviewModal = () => {
+            if (!previewModal) {
+                return;
+            }
+            previewModal.hidden = true;
+            previewModalImage.hidden = true;
+            previewModalPdf.hidden = true;
+            previewModalImage.removeAttribute("src");
+            previewModalPdf.removeAttribute("src");
+            document.body.style.overflow = "";
+        };
+
+        const openModal = (payload) => {
+            if (!editModal || !editModalForm) {
+                return;
+            }
+            editModalForm.action = `/gallery/edit/${payload.id}`;
+            modalTitleInput.value = payload.title || "";
+            modalDescriptionInput.value = payload.description || "";
+            modalSentimentInput.value = payload.sentiment || "neutral";
+            editModal.hidden = false;
+            document.body.style.overflow = "hidden";
+        };
+
+        const openPreviewModal = (payload) => {
+            if (!previewModal) {
+                return;
+            }
+            previewModalTitle.textContent = payload.title || "Preview";
+            previewModalImage.hidden = true;
+            previewModalPdf.hidden = true;
+            previewModalImage.removeAttribute("src");
+            previewModalPdf.removeAttribute("src");
+
+            if (payload.type === "pdf") {
+                previewModalPdf.src = payload.path;
+                previewModalPdf.hidden = false;
+            } else {
+                previewModalImage.src = payload.path;
+                previewModalImage.hidden = false;
+            }
+
+            previewModal.hidden = false;
+            document.body.style.overflow = "hidden";
+        };
+
+        openModalButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                openModal({
+                    id: button.dataset.imageId,
+                    title: button.dataset.imageTitle,
+                    description: button.dataset.imageDescription,
+                    sentiment: button.dataset.imageSentiment,
+                });
+            });
+        });
+
+        if (closeEditModalButton) {
+            closeEditModalButton.addEventListener("click", closeModal);
+        }
+
+        openPreviewButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                openPreviewModal({
+                    path: button.dataset.filePath,
+                    title: button.dataset.fileTitle,
+                    type: button.dataset.fileType,
+                });
+            });
+        });
+
+        if (closePreviewModalButton) {
+            closePreviewModalButton.addEventListener("click", closePreviewModal);
+        }
+
+        if (editModal) {
+            editModal.addEventListener("click", (event) => {
+                if (event.target === editModal) {
+                    closeModal();
+                }
+            });
+        }
+
+        if (previewModal) {
+            previewModal.addEventListener("click", (event) => {
+                if (event.target === previewModal) {
+                    closePreviewModal();
+                }
+            });
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key !== "Escape") {
+                return;
+            }
+            if (editModal && !editModal.hidden) {
+                closeModal();
+            }
+            if (previewModal && !previewModal.hidden) {
+                closePreviewModal();
+            }
+        });
+
+        applyFilters();
+    </script>
+    {% endif %}
+
+    {% if admin_view %}
+    <script>
+        const previewModal = document.getElementById("preview-modal");
+        const closePreviewModalButton = document.getElementById("close-preview-modal");
+        const previewModalTitle = document.getElementById("preview-modal-title");
+        const previewModalImage = document.getElementById("preview-modal-image");
+        const previewModalPdf = document.getElementById("preview-modal-pdf");
+        const openPreviewButtons = Array.from(document.querySelectorAll(".open-preview-modal"));
+
+        const closePreviewModal = () => {
+            if (!previewModal) {
+                return;
+            }
+            previewModal.hidden = true;
+            previewModalImage.hidden = true;
+            previewModalPdf.hidden = true;
+            previewModalImage.removeAttribute("src");
+            previewModalPdf.removeAttribute("src");
+            document.body.style.overflow = "";
+        };
+
+        const openPreviewModal = (payload) => {
+            if (!previewModal) {
+                return;
+            }
+            previewModalTitle.textContent = payload.title || "Preview";
+            previewModalImage.hidden = true;
+            previewModalPdf.hidden = true;
+            previewModalImage.removeAttribute("src");
+            previewModalPdf.removeAttribute("src");
+
+            if (payload.type === "pdf") {
+                previewModalPdf.src = payload.path;
+                previewModalPdf.hidden = false;
+            } else {
+                previewModalImage.src = payload.path;
+                previewModalImage.hidden = false;
+            }
+
+            previewModal.hidden = false;
+            document.body.style.overflow = "hidden";
+        };
+
+        openPreviewButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                openPreviewModal({
+                    path: button.dataset.filePath,
+                    title: button.dataset.fileTitle,
+                    type: button.dataset.fileType,
+                });
+            });
+        });
+
+        if (closePreviewModalButton) {
+            closePreviewModalButton.addEventListener("click", closePreviewModal);
+        }
+
+        if (previewModal) {
+            previewModal.addEventListener("click", (event) => {
+                if (event.target === previewModal) {
+                    closePreviewModal();
+                }
+            });
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && previewModal && !previewModal.hidden) {
+                closePreviewModal();
+            }
+        });
+    </script>
+    {% endif %}
+
+    <script src="/static/js/theme.js" defer></script>
+</body>
+</html>

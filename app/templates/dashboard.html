@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHV - Dashboard</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("bhv-theme") || "dark");
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/dashboard">Behavioral Health Vault (BHV)</a>
+        <nav class="nav-primary">
+            <a class="active" href="/dashboard">Dashboard</a>
+            <a href="/upload">Upload</a>
+            <a href="/gallery">My Gallery</a>
+            <button type="button" class="theme-icon-btn" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                <span data-theme-icon aria-hidden="true">&#9788;</span>
+            </button>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main class="page-container">
+        <section class="card welcome-card">
+            <p class="welcome-badge">Dashboard</p>
+            <h2>Welcome, {{ user.email }}</h2>
+            <p class="lead">Capture, organize, and review patient-centered images in one secure place</p>
+            <div class="actions">
+                <a class="button-link" href="/upload">Upload Image</a>
+                <a class="button-link button-secondary" href="/gallery">My Gallery</a>
+                {% if user.role == "admin" %}
+                <a class="button-link" href="/admin">Admin Panel</a>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="card about-project-card">
+            <h2>About Behavioral Health Vault (BHV)</h2>
+            <p>
+                Behavioral Health Vault (BHV) is intended to support the documentation of recovery journeys for
+                people affected by serious mental illnesses, substance-use disorders, and other social determinants
+                of health. The central goal is to preserve patient voice through image-based
+                that reflect lived experience over time.
+            </p>
+            <p>
+                BHV is designed to complement clinical records by providing a space for patient-provided photographs,
+                sketches, scanned drawings, and contextual narratives. These records can be shared directly by patients
+                or documented by social workers during interviews to better represent recovery context.
+            </p>
+            <p>
+                The broader objective is to make behavioral health data collection participatory, accessible,
+                and ethically grounded, while helping care teams and researchers understand how personal narratives,
+                emotional signals, and social context influence recovery and well-being.
+            </p>
+            <p>
+                BHV also aims to remain practical for community-facing environments by reducing barriers to use,
+                encouraging adoption in clinics and behavioral health programs where technical overhead can otherwise
+                limit impact.
+            </p>
+        </section>
+    </main>
+    <script src="/static/js/theme.js" defer></script>
+</body>
+</html>

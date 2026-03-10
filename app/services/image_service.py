@@ -34,8 +34,16 @@ def save_image_file(upload_file: UploadFile, user_id: str) -> str:
 
 
 def delete_image_file(image_path: str) -> None:
-    image_full_path = BASE_DIR / image_path
-    if image_full_path.exists() and image_full_path.is_file():
+    if not image_path:
+        return
+
+    image_full_path = (BASE_DIR / image_path).resolve()
+
+    # Prevent path traversal attacks by ensuring the path is within the storage directory.
+    if not str(image_full_path).startswith(str(IMAGE_STORAGE_DIR.resolve())):
+        return
+
+    if image_full_path.is_file():
         image_full_path.unlink()
 
 

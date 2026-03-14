@@ -18,6 +18,8 @@ content %}
   <input type="password" id="password" name="password" minlength="8" required />
 
   <button type="submit">Register</button>
-  <p class="auth-alt">Already have an account? <a href="#">Sign in</a></p>
+  <p class="auth-alt">
+    Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+  </p>
 </form>
 {% endblock %}

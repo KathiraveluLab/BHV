@@ -34,7 +34,26 @@ nav .brand {
   padding: 10px 10px;
 }
 
+.nav-links form {
+  display: inline;
+}
+
+.nav-button {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: #555;
+  padding: 10px 10px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
 .nav-links a:hover {
+  color: #000;
+}
+
+.nav-button:hover {
   color: #000;
 }
 

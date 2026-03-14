@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block title %}BHV — Sign in{% endblock %} {% block
+content %}
+<h1>Sign in</h1>
+
+{% with messages = get_flashed_messages() %} {% if messages %}
+<div class="flash">
+  {% for msg in messages %}
+  <p>{{ msg }}</p>
+  {% endfor %}
+</div>
+{% endif %} {% endwith %}
+
+<form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required />
+
+  <label for="password">Password</label>
+  <input type="password" id="password" name="password" required />
+
+  <button type="submit">Sign in</button>
+  <p class="auth-alt">
+    Don’t have an account?
+    <a href="{{ url_for('auth.register') }}">Create one</a>
+  </p>
+</form>
+{% endblock %}

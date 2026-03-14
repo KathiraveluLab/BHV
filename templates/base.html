@@ -20,8 +20,14 @@
       <a href="{{ url_for('index') }}" class="brand">BHV</a>
       <div class="nav-links">
         <a href="{{ url_for('index') }}">Home</a>
-        <a href="#">Sign in</a>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('auth.logout') }}">
+          <button type="submit" class="nav-button">Sign out</button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}">Sign in</a>
         <a href="{{ url_for('auth.register') }}">Get started</a>
+        {% endif %}
       </div>
     </nav>
     <main>{% block content %}{% endblock %}</main>

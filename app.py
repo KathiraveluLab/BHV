@@ -5,6 +5,7 @@ import os
 import secrets
 
 from dotenv import load_dotenv
+from flask_login import LoginManager
 
 load_dotenv()
 
@@ -23,6 +24,20 @@ def create_app():
                 "SECRET_KEY environment variable must be set in production.")
     app.config["SECRET_KEY"] = secret_key
     app.config["DEBUG"] = is_debug
+
+    login_manager = LoginManager()
+    setattr(login_manager, "login_view", "auth.login")
+    login_manager.init_app(app)
+
+    from auth import AuthUser
+    from models import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        user = User.get_by_id(user_id)
+        if not user:
+            return None
+        return AuthUser(user)
 
     from auth import auth
     app.register_blueprint(auth)

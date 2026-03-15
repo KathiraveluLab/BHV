@@ -20,10 +20,41 @@
       <a href="{{ url_for('index') }}" class="brand">BHV</a>
       <div class="nav-links">
         <a href="{{ url_for('index') }}">Home</a>
-        {% if current_user.is_authenticated %}
-        <form method="POST" action="{{ url_for('auth.logout') }}">
-          <button type="submit" class="nav-button">Sign out</button>
-        </form>
+        {% if current_user.is_authenticated %} {% set account_name =
+        current_user.user.get("name") if current_user.user.get("name") else
+        current_user.user.get("email", "User").split("@")[0] %} {% set
+        account_initial = account_name[:1].upper() %}
+        <a href="{{ url_for('routes.upload') }}">Upload</a>
+        <a href="{{ url_for('routes.records') }}">Records</a>
+        <div class="profile-menu-wrap">
+          <button
+            type="button"
+            id="profile-menu-toggle"
+            class="profile-menu-toggle"
+            aria-expanded="false"
+          >
+            {{ account_initial }}
+          </button>
+          <div id="profile-menu" class="profile-menu hidden-input">
+            <div class="profile-menu-head">
+              <div class="profile-avatar">{{ account_initial }}</div>
+              <div>
+                <p class="profile-name">{{ account_name }}</p>
+                <p class="profile-email">
+                  {{ current_user.user.get("email", "") }}
+                </p>
+              </div>
+            </div>
+            <a href="{{ url_for('auth.account') }}" class="profile-menu-item"
+              >⚙ Manage account</a
+            >
+            <form method="POST" action="{{ url_for('auth.logout') }}">
+              <button type="submit" class="profile-menu-item profile-signout">
+                ↪ Sign out
+              </button>
+            </form>
+          </div>
+        </div>
         {% else %}
         <a href="{{ url_for('auth.login') }}">Sign in</a>
         <a href="{{ url_for('auth.register') }}">Get started</a>
@@ -31,5 +62,31 @@
       </div>
     </nav>
     <main>{% block content %}{% endblock %}</main>
+    {% if current_user.is_authenticated %}
+    <script>
+      const profileToggle = document.getElementById("profile-menu-toggle");
+      const profileMenu = document.getElementById("profile-menu");
+
+      if (profileToggle && profileMenu) {
+        profileToggle.addEventListener("click", () => {
+          const isHidden = profileMenu.classList.contains("hidden-input");
+          profileMenu.classList.toggle("hidden-input");
+          profileToggle.setAttribute(
+            "aria-expanded",
+            isHidden ? "true" : "false",
+          );
+        });
+
+        document.addEventListener("click", (event) => {
+          const insideMenu = profileMenu.contains(event.target);
+          const isToggle = profileToggle.contains(event.target);
+          if (!insideMenu && !isToggle) {
+            profileMenu.classList.add("hidden-input");
+            profileToggle.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+    </script>
+    {% endif %}
   </body>
 </html>

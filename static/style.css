@@ -38,6 +38,89 @@ nav .brand {
   display: inline;
 }
 
+.profile-menu-wrap {
+  position: relative;
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.profile-menu-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #a17a6b;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 19rem;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 1100;
+}
+
+.profile-menu-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #a17a6b;
+  color: #fff;
+  font-weight: 700;
+}
+
+.profile-name {
+  text-align: left;
+  font-weight: 700;
+}
+
+.profile-email {
+  text-align: left;
+  color: #666;
+}
+
+.profile-menu-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: #fff;
+  color: #555;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  border-top: 1px solid #eee;
+  font: inherit;
+}
+
+.profile-menu-item:hover {
+  background: #fff7f7;
+  color: #333;
+}
+
+.profile-signout {
+  color: #333;
+}
+
 .nav-button {
   margin-left: 1rem;
   text-decoration: none;
@@ -89,6 +172,25 @@ p {
   border-radius: 4px;
 }
 
+.auth-form select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+}
+
+.auth-form textarea {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.auth-form input[type="file"] {
+  padding: 0.3rem;
+}
+
 .auth-form button {
   padding: 0.5rem;
   background: #db7f7f;
@@ -128,4 +230,247 @@ p {
 
 .auth-alt a:hover {
   text-decoration: underline;
+}
+
+.records-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 225px);
+  gap: 0.8rem;
+  margin-top: 1rem;
+  justify-content: end;
+  direction: rtl;
+}
+
+.record-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.35rem;
+  background: #fff;
+  width: 225px;
+  direction: ltr;
+  overflow: hidden;
+}
+
+.record-image-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.record-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.record-card h2 {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: #db7f7f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.record-sentiment {
+  text-align: left;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.record-details {
+  margin-top: 0.35rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.35rem;
+}
+
+.record-detail-title {
+  text-align: left;
+  font-weight: 600;
+  color: #db7f7f;
+}
+
+.record-details p {
+  text-align: left;
+  margin-top: 0.25rem;
+}
+
+.record-details audio {
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.record-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.record-modal-content {
+  width: min(28rem, calc(100% - 2rem));
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+}
+
+.record-modal-close {
+  border: none;
+  background: #db7f7f;
+  color: #fff;
+  border-radius: 4px;
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+  margin-left: auto;
+  display: block;
+}
+
+.record-modal-close:hover {
+  background: #c66;
+}
+
+.record-modal-content p {
+  text-align: left;
+  margin-top: 0.4rem;
+}
+
+.record-modal-content audio {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination-box {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.45rem 0.8rem;
+}
+
+.page-arrow {
+  color: #db7f7f;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.page-arrow:hover {
+  text-decoration: underline;
+}
+
+.page-arrow-disabled {
+  color: #bbb;
+}
+
+.page-number {
+  color: #333;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 32rem;
+  margin: 1rem auto 0;
+}
+
+.upload-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.upload-card label {
+  font-weight: 600;
+}
+
+.upload-card input,
+.upload-card textarea,
+.upload-card select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.drop-zone {
+  border: 1px dashed #db7f7f;
+  border-radius: 8px;
+  min-height: 8.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.2rem;
+  cursor: pointer;
+  background: #fff7f7;
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.drop-zone input[type="file"] {
+  display: none;
+}
+
+.drop-zone small {
+  color: #777;
+}
+
+.drop-zone-active {
+  background: #ffe9e9;
+}
+
+.record-button {
+  width: fit-content;
+  padding: 0.45rem 0.7rem;
+  background: #f0bf20;
+  color: #222;
+  border: none;
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.record-button:hover {
+  background: #dfb010;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.upload-form > button {
+  padding: 0.6rem;
+  background: #db7f7f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.upload-form > button:hover {
+  background: #c66;
 }

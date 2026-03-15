@@ -19,11 +19,12 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
 
+    name = request.form.get("name", "").strip()
     email = request.form.get("email", "").strip()
     password = request.form.get("password", "")
 
-    if not email or not password:
-        flash("Email and password are required.")
+    if not name or not email or not password:
+        flash("Name, email, and password are required.")
         return render_template("register.html"), 400
 
     if len(password) < 8:
@@ -34,7 +35,7 @@ def register():
         flash("An account with that email already exists.")
         return render_template("register.html"), 409
 
-    User.create_user(email, password)
+    User.create_user(name, email, password)
     flash("Account created. You can now sign in.")
     return redirect(url_for("auth.login"))
 
@@ -66,3 +67,9 @@ def logout():
     logout_user()
     flash("You have been signed out.")
     return redirect(url_for("auth.login"))
+
+
+@auth.route("/account")
+@login_required
+def account():
+    return render_template("account.html")

@@ -1,0 +1,9 @@
+{% extends "base.html" %} {% block title %}BHV — Account{% endblock %} {% block
+content %}
+<h1>Manage account</h1>
+<p>
+  Name: {{ current_user.user.get("name") if current_user.user.get("name") else
+  current_user.user.get("email", "").split("@")[0] }}
+</p>
+<p>Email: {{ current_user.user.get("email", "") }}</p>
+{% endblock %}

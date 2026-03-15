@@ -24,6 +24,8 @@ def create_app():
                 "SECRET_KEY environment variable must be set in production.")
     app.config["SECRET_KEY"] = secret_key
     app.config["DEBUG"] = is_debug
+    app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "uploads")
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     login_manager = LoginManager()
     setattr(login_manager, "login_view", "auth.login")
@@ -41,6 +43,9 @@ def create_app():
 
     from auth import auth
     app.register_blueprint(auth)
+
+    from routes import routes
+    app.register_blueprint(routes)
 
     @app.route("/")
     def index():

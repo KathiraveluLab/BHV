@@ -1,0 +1,110 @@
+{% extends "base.html" %} {% block title %}BHV — Records{% endblock %} {% block
+content %}
+<h1>Your uploads</h1>
+
+{% if uploads %}
+<div class="records-list">
+  {% for upload in uploads %}
+  <article class="record-card">
+    <button
+      type="button"
+      class="record-image-button"
+      data-title="{{ upload['title'] }}"
+      data-description="{{ upload['description'] }}"
+      data-sentiment="{{ upload.get('custom_sentiment') if upload.get('sentiment') == 'Custom' else upload.get('sentiment', 'Not set') }}"
+      data-audio="{{ url_for('routes.uploaded_file', filename=upload.get('voice_note_filename')) if upload.get('voice_note_filename') else '' }}"
+    >
+      <img
+        src="{{ url_for('routes.uploaded_file', filename=upload['filename']) }}"
+        alt="{{ upload['title'] }}"
+      />
+    </button>
+    <h2 title="{{ upload['title'] }}">{{ upload["title"] }}</h2>
+    <p class="record-sentiment">
+      Sentiment : {{ upload.get("custom_sentiment") if upload.get("sentiment")
+      == "Custom" else upload.get("sentiment", "Not set") }}
+    </p>
+  </article>
+  {% endfor %}
+</div>
+<div id="record-modal" class="record-modal hidden-input" aria-hidden="true">
+  <div class="record-modal-content">
+    <button type="button" id="record-modal-close" class="record-modal-close">
+      Close
+    </button>
+    <p id="record-modal-title" class="record-detail-title"></p>
+    <p id="record-modal-description"></p>
+    <p id="record-modal-sentiment" class="record-sentiment"></p>
+    <audio id="record-modal-audio" controls class="hidden-input"></audio>
+  </div>
+</div>
+<div class="pagination">
+  <div class="pagination-box">
+    {% if has_prev %}
+    <a href="{{ url_for('routes.records', page=page - 1) }}" class="page-arrow"
+      >&#8592;</a
+    >
+    {% else %}
+    <span class="page-arrow page-arrow-disabled">&#8592;</span>
+    {% endif %}
+    <span class="page-number">Page {{ page }}</span>
+    {% if has_next %}
+    <a href="{{ url_for('routes.records', page=page + 1) }}" class="page-arrow"
+      >&#8594;</a
+    >
+    {% else %}
+    <span class="page-arrow page-arrow-disabled">&#8594;</span>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<p>No uploads yet.</p>
+{% endif %}
+
+<script>
+  const modal = document.getElementById("record-modal");
+  const closeButton = document.getElementById("record-modal-close");
+  const modalTitle = document.getElementById("record-modal-title");
+  const modalDescription = document.getElementById("record-modal-description");
+  const modalSentiment = document.getElementById("record-modal-sentiment");
+  const modalAudio = document.getElementById("record-modal-audio");
+
+  function closeModal() {
+    modal.classList.add("hidden-input");
+    modal.setAttribute("aria-hidden", "true");
+    modalAudio.pause();
+    modalAudio.removeAttribute("src");
+    modalAudio.load();
+    modalAudio.classList.add("hidden-input");
+  }
+
+  document.querySelectorAll(".record-image-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      modalTitle.textContent = button.getAttribute("data-title") || "";
+      modalDescription.textContent =
+        button.getAttribute("data-description") || "";
+      const sentiment = button.getAttribute("data-sentiment") || "Not set";
+      modalSentiment.textContent = `Sentiment : ${sentiment}`;
+
+      const audioUrl = button.getAttribute("data-audio") || "";
+      if (audioUrl) {
+        modalAudio.src = audioUrl;
+        modalAudio.classList.remove("hidden-input");
+      } else {
+        modalAudio.classList.add("hidden-input");
+      }
+
+      modal.classList.remove("hidden-input");
+      modal.setAttribute("aria-hidden", "false");
+    });
+  });
+
+  closeButton.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+</script>
+{% endblock %}

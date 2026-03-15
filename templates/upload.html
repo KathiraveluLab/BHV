@@ -1,0 +1,160 @@
+{% extends "base.html" %} {% block title %}BHV — Upload{% endblock %} {% block
+content %}
+<h1>Upload Media</h1>
+
+{% with messages = get_flashed_messages() %} {% if messages %}
+<div class="flash">
+  {% for msg in messages %}
+  <p>{{ msg }}</p>
+  {% endfor %}
+</div>
+{% endif %} {% endwith %}
+
+<form
+  method="POST"
+  action="{{ url_for('routes.upload') }}"
+  class="upload-form"
+  enctype="multipart/form-data"
+>
+  <section class="upload-card">
+    <label for="image">Image</label>
+    <div id="drop-zone" class="drop-zone" tabindex="0">
+      <input type="file" id="image" name="image" accept="image/*" required />
+      <p id="drop-zone-text">Click to upload or drag and drop</p>
+      <small>PNG, JPG, JPEG, WEBP</small>
+    </div>
+  </section>
+
+  <section class="upload-card">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" required />
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <label for="sentiment">Sentiment</label>
+    <select id="sentiment" name="sentiment" required>
+      <option value="Positive">Positive</option>
+      <option value="Neutral">Neutral</option>
+      <option value="Negative">Negative</option>
+      <option value="Custom">Custom</option>
+    </select>
+
+    <input
+      type="text"
+      id="custom_sentiment"
+      name="custom_sentiment"
+      placeholder="Enter custom sentiment"
+      class="hidden-input"
+    />
+  </section>
+
+  <section class="upload-card">
+    <label>Voice Note (Optional)</label>
+    <button type="button" id="record-voice" class="record-button">
+      Start Recording
+    </button>
+    <audio id="voice-preview" controls class="hidden-input"></audio>
+    <input type="hidden" id="voice_note_data" name="voice_note_data" />
+  </section>
+
+  <button type="submit">Upload Media</button>
+</form>
+
+<script>
+  const sentiment = document.getElementById("sentiment");
+  const customSentiment = document.getElementById("custom_sentiment");
+  const recordButton = document.getElementById("record-voice");
+  const voicePreview = document.getElementById("voice-preview");
+  const voiceNoteData = document.getElementById("voice_note_data");
+  const dropZone = document.getElementById("drop-zone");
+  const imageInput = document.getElementById("image");
+  const dropZoneText = document.getElementById("drop-zone-text");
+
+  function updateCustomSentimentVisibility() {
+    if (sentiment.value === "Custom") {
+      customSentiment.classList.remove("hidden-input");
+      customSentiment.required = true;
+    } else {
+      customSentiment.classList.add("hidden-input");
+      customSentiment.required = false;
+      customSentiment.value = "";
+    }
+  }
+
+  function updateDropZoneText() {
+    if (imageInput.files && imageInput.files.length > 0) {
+      dropZoneText.textContent = imageInput.files[0].name;
+    } else {
+      dropZoneText.textContent = "Click to upload or drag and drop";
+    }
+  }
+
+  sentiment.addEventListener("change", updateCustomSentimentVisibility);
+  imageInput.addEventListener("change", updateDropZoneText);
+
+  dropZone.addEventListener("click", () => imageInput.click());
+  dropZone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    dropZone.classList.add("drop-zone-active");
+  });
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("drop-zone-active");
+  });
+  dropZone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    dropZone.classList.remove("drop-zone-active");
+    if (event.dataTransfer.files.length > 0) {
+      imageInput.files = event.dataTransfer.files;
+      updateDropZoneText();
+    }
+  });
+
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let stream = null;
+
+  recordButton.addEventListener("click", async () => {
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      alert("Voice recording is not supported in this browser.");
+      return;
+    }
+
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      mediaRecorder.stop();
+      recordButton.textContent = "Start Recording";
+      return;
+    }
+
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = (event) => {
+      audioChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+      voicePreview.src = URL.createObjectURL(audioBlob);
+      voicePreview.classList.remove("hidden-input");
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        voiceNoteData.value = reader.result;
+      };
+      reader.readAsDataURL(audioBlob);
+
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+
+    mediaRecorder.start();
+    recordButton.textContent = "Stop Recording";
+  });
+
+  updateCustomSentimentVisibility();
+  updateDropZoneText();
+</script>
+{% endblock %}

@@ -61,7 +61,9 @@
         {% endif %}
       </div>
     </nav>
-    <main>{% block content %}{% endblock %}</main>
+    <main class="{% block main_class %}{% endblock %}">
+      {% block content %}{% endblock %}
+    </main>
     {% if current_user.is_authenticated %}
     <script>
       const profileToggle = document.getElementById("profile-menu-toggle");

@@ -1,5 +1,107 @@
 {% extends "base.html" %} {% block title %}BHV — Home{% endblock %} {% block
-content %}
-<h1>Behavioral Health Vault</h1>
-<p>Store and retrieve patient-provided images and narratives.</p>
+main_class %}home-main{% endblock %} {% block content %}
+<section class="home-hero" aria-label="Homepage hero">
+  <h1 class="home-hero-title">
+    <span class="home-hero-line-1"
+      ><span>Transforming </span
+      ><span class="home-hero-highlight">Alaska's</span>
+      <span> Behavioral Health</span></span
+    ><br />
+    <span>Insights</span>
+  </h1>
+  <p class="home-hero-subtitle">
+    A data-driven initiative enhancing behavioral health insights and healthcare
+    practices<br />
+    in Alaska through a federated data approach.
+  </p>
+</section>
+
+<section class="home-features" aria-label="Key platform features">
+  <h2 class="home-features-title">Powerful Features for Better Healthcare</h2>
+  <p class="home-features-subtitle">
+    Discover how BHV is revolutionizing behavioral health data management in
+    Alaska
+  </p>
+
+  <div class="home-feature-grid">
+    <article class="home-feature-card">
+      <h3 class="home-feature-card-title">Secure Data Collaboration</h3>
+      <p class="home-feature-card-text">
+        Secure sharing of behavioral health artifacts between clinics and care
+        teams.
+      </p>
+    </article>
+
+    <article class="home-feature-card">
+      <h3 class="home-feature-card-title">Behavioral Health Analytics</h3>
+      <p class="home-feature-card-text">
+        Analysis of patient-generated artifacts and narratives to support
+        clinical decisions.
+      </p>
+    </article>
+
+    <article class="home-feature-card">
+      <h3 class="home-feature-card-title">
+        Improving Behavioral Health Outcomes
+      </h3>
+      <p class="home-feature-card-text">
+        Helping clinicians and recovery programs better understand patient
+        progress through therapeutic artifacts.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="home-mission" aria-label="Our mission">
+  <h2 class="home-mission-title">Our Mission</h2>
+  <p class="home-mission-text">
+    At BHV, we aim to improve behavioral healthcare through innovative data
+    tools and collaborative systems.
+  </p>
+  <p class="home-mission-text">
+    Our platform helps healthcare providers make informed, data-driven decisions
+    while maintaining strong privacy and security standards.
+  </p>
+</section>
+
+<footer class="home-footer" aria-label="Footer">
+  <div class="home-footer-grid">
+    <section>
+      <h3 class="home-footer-brand">BHV</h3>
+      <p class="home-footer-tagline">
+        Transforming behavioral healthcare through data-driven insights.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="home-footer-heading">Company</h3>
+      <ul class="home-footer-list">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="home-footer-heading">Resources</h3>
+      <ul class="home-footer-list">
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API</a></li>
+        <li><a href="#">Support</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="home-footer-heading">Connect</h3>
+      <ul class="home-footer-list">
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Facebook</a></li>
+        <li><a href="#">GitHub</a></li>
+      </ul>
+    </section>
+  </div>
+</footer>
 {% endblock %}

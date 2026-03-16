@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bhv"
+version = "0.1.0"
+description = "BHV FastAPI Web App"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "jinja2",
+    "python-multipart"
+]
+
+
+[project.scripts]
+bhv = "bhv.main:run"
+
+[tool.setuptools]
+packages = ["bhv"]
+
+[tool.setuptools.package-data]
+bhv = ["/static/**", "/ui/**"]

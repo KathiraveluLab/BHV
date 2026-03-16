@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+<h2>Upload Image</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="image" required>
+
+    <input name="title" placeholder="Title">
+    <textarea name="description" placeholder="Narrative"></textarea>
+
+    <select name="emotion">
+        <option value="">Self-Reported Emotion</option>
+        <option>Happy</option>
+        <option>Sad</option>
+        <option>Anxious</option>
+        <option>Calm</option>
+    </select>
+
+    <button type="submit">Upload</button>
+</form>
+</div>
+
+{% endblock %}

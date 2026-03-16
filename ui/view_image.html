@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <img src="{{ image.path }}" width="400">
+    <h3>{{ image.title }}</h3>
+    <p>{{ image.description }}</p>
+
+    {% if image.fuzzy %}
+        <p><b>Model Emotion:</b> {{ image.fuzzy }}</p>
+    {% endif %}
+
+    <a href="/delete/{{ image.id }}">Delete</a>
+</div>
+
+{% endblock %}

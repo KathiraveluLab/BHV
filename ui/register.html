@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+<h2>Register</h2>
+
+<form method="post">
+    <input name="email" placeholder="Email" required>
+    <input name="password" type="password" placeholder="Password" required>
+
+    <input type="checkbox" name="consent">
+    <label>
+        I consent to anonymized research
+    </label>
+
+    <button type="submit">Create Account</button>
+</form>
+</div>
+
+{% endblock %}

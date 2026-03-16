@@ -388,6 +388,7 @@ Closes #123
 - Use proper grammar and spelling
 - Structure with headers and lists
 
+
 ## Community
 
 ### Getting Help

@@ -1,11 +1,20 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI(title="BHV - Behavioral Health Vault")
 
-@app.get("/")
-def root():
-    return {"message": "BHV API is running"}
+class RootResponse(BaseModel):
+    message: str
 
-@app.get("/health")
-def health():
-    return {"status": "healthy"}
+class HealthResponse(BaseModel):
+    status: str
+
+@app.get("/", response_model=RootResponse)
+def root() -> RootResponse:
+    """Root endpoint to check if the API is running."""
+    return RootResponse(message="BHV API is running")
+
+@app.get("/health", response_model=HealthResponse)
+def health() -> HealthResponse:
+    """Health check endpoint to verify service is up."""
+    return HealthResponse(status="healthy")

@@ -1,7 +1,19 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from app.database.db import Base, engine
+from app.routes import auth
 
-app = FastAPI(title="BHV - Behavioral Health Vault")
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="BHV - Behavioral Health Vault",
+    description="A secure platform for behavioral health data management",
+    version="0.1.0"
+)
+
+# Include routers
+app.include_router(auth.router)
 
 class RootResponse(BaseModel):
     message: str

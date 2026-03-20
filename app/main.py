@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from app.database.db import Base, engine
 from app.routes import auth
+from app.routes import auth, images
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -14,6 +15,7 @@ app = FastAPI(
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(images.router)
 
 class RootResponse(BaseModel):
     message: str

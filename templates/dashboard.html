@@ -27,7 +27,7 @@
 <div class="records-grid">
     {% for record in records %}
     <div class="record-item card">
-        <img src="{{ url_for('static', filename='../uploads/' + record.image_filename) }}" alt="Record Image">
+        <img src="{{ url_for('uploaded_file', filename=record.image_filename) }}" alt="Record Image">
         <p><strong>Date:</strong> {{ record.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
         <p>{{ record.narrative }}</p>
     </div>

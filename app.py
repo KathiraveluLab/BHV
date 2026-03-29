@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from models import db, User, Record
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'bhv-secret-key-for-gsoc-2026'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'bhv-dev-fallback-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bhv.db'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
@@ -101,6 +101,15 @@ def admin():
         return "Access Denied", 403
     all_records = Record.query.all()
     return render_template('admin.html', records=all_records)
+
+@app.route('/uploads/<filename>')
+@login_required
+def uploaded_file(filename):
+    record = Record.query.filter_by(image_filename=filename).first_or_404()
+    # Security: Ensure patients can only see their own files, unless they are admin
+    if not current_user.is_admin and record.user_id != current_user.id:
+        return "Access Denied", 403
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # --- Initialize DB ---
 with app.app_context():

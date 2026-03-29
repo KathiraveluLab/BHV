@@ -25,7 +25,7 @@ nav {
     background-color: var(--primary);
     color: var(--white);
     padding: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 nav .container {
@@ -71,11 +71,12 @@ main {
     background: var(--white);
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     margin-bottom: 2rem;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: var(--primary);
 }
 
@@ -138,4 +139,52 @@ footer {
     padding: 2rem 0;
     font-size: 0.8rem;
     color: #777;
+}
+
+/* Admin Table Styles */
+.admin-table-container {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+    border-bottom: 2px solid #eee;
+}
+
+.img-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.btn-delete {
+    background-color: #e74c3c;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
+
+.centered-card {
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+.hero-card {
+    text-align: center;
+    padding: 4rem 2rem;
 }

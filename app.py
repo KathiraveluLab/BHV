@@ -1,4 +1,5 @@
 import os
+import uuid
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -50,6 +51,10 @@ def register():
             flash('Username already exists')
             return redirect(url_for('register'))
             
+        if User.query.filter_by(email=email).first():
+            flash('Email address is already in use')
+            return redirect(url_for('register'))
+            
         hashed_password = generate_password_hash(password)
         new_user = User(username=username, email=email, password=hashed_password)
         db.session.add(new_user)
@@ -84,8 +89,8 @@ def upload():
         
     if file:
         filename = secure_filename(file.filename)
-        # Prefix with user ID for isolation
-        filename = f"{current_user.id}_{filename}"
+        # Prefix with user ID and UUID for isolation and uniqueness
+        filename = f"{current_user.id}_{uuid.uuid4().hex}_{filename}"
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
         new_record = Record(user_id=current_user.id, image_filename=filename, narrative=narrative)
@@ -102,6 +107,25 @@ def admin():
     all_records = Record.query.all()
     return render_template('admin.html', records=all_records)
 
+@app.route('/record/delete/<int:record_id>', methods=['POST'])
+@login_required
+def delete_record(record_id):
+    if not current_user.is_admin:
+        return "Access Denied", 403
+    record = Record.query.get_or_404(record_id)
+    # Delete from filesystem
+    try:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], record.image_filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    except OSError as e:
+        flash(f'Error deleting file: {e}')
+        
+    db.session.delete(record)
+    db.session.commit()
+    flash('Record deleted successfully')
+    return redirect(url_for('admin'))
+
 @app.route('/uploads/<filename>')
 @login_required
 def uploaded_file(filename):
@@ -116,10 +140,11 @@ with app.app_context():
     db.create_all()
     # Create default admin if not exists
     if not User.query.filter_by(username='admin').first():
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'bhv-admin-fallback-password')
         admin_user = User(
             username='admin', 
             email='admin@bhv.org', 
-            password=generate_password_hash('password123'),
+            password=generate_password_hash(admin_password),
             is_admin=True
         )
         db.session.add(admin_user)

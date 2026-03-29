@@ -4,32 +4,34 @@
 <h1>Admin Moderation Dashboard</h1>
 <p>Viewing all patient-provided records in the ecosystem.</p>
 
-<div class="card">
-    <table style="width: 100%; border-collapse: collapse;">
+<div class="card admin-table-container">
+    <table class="admin-table">
         <thead>
-            <tr style="border-bottom: 2px solid #eee; text-align: left;">
-                <th style="padding: 1rem;">ID</th>
-                <th style="padding: 1rem;">Patient</th>
-                <th style="padding: 1rem;">Image</th>
-                <th style="padding: 1rem;">Narrative</th>
-                <th style="padding: 1rem;">Date</th>
-                <th style="padding: 1rem;">Actions</th>
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Image</th>
+                <th>Narrative</th>
+                <th>Date</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for record in records %}
-            <tr style="border-bottom: 1px solid #eee;">
-                <td style="padding: 1rem;">{{ record.id }}</td>
-                <td style="padding: 1rem;">{{ record.patient.username }}</td>
-                <td style="padding: 1rem;">
-                    <img src="{{ url_for('uploaded_file', filename=record.image_filename) }}"
-                        style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+            <tr>
+                <td>{{ record.id }}</td>
+                <td>{{ record.patient.username }}</td>
+                <td>
+                    <img src="{{ url_for('uploaded_file', filename=record.image_filename) }}" class="img-thumbnail">
                 </td>
-                <td style="padding: 1rem;">{{ record.narrative[:50] }}...</td>
-                <td style="padding: 1rem;">{{ record.timestamp.strftime('%Y-%m-%d') }}</td>
-                <td style="padding: 1rem;">
-                    <button
-                        style="background-color: #e74c3c; padding: 0.4rem 0.8rem; font-size: 0.8rem;">Delete</button>
+                <td>{{ record.narrative[:50] }}...</td>
+                <td>{{ record.timestamp.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <form action="{{ url_for('delete_record', record_id=record.id) }}" method="POST"
+                        style="display: inline;">
+                        <button type="submit" class="btn-delete"
+                            onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                    </form>
                 </td>
             </tr>
             {% else %}

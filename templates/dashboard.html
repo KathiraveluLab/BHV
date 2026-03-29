@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header"
+    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Your Recovery Journey</h1>
+    <p>Welcome, {{ current_user.username }}!</p>
+</div>
+
+<div class="card">
+    <h3>Add a New Record</h3>
+    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+        <div style="margin-bottom: 1rem;">
+            <label for="image">Upload Image (Photo or Sketch)</label>
+            <input type="file" name="image" id="image" accept="image/*" required>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label for="narrative">Your Narrative</label>
+            <textarea name="narrative" id="narrative" rows="4"
+                placeholder="Describe the image or your feelings..."></textarea>
+        </div>
+        <button type="submit">Upload Record</button>
+    </form>
+</div>
+
+<h2>Your History</h2>
+<div class="records-grid">
+    {% for record in records %}
+    <div class="record-item card">
+        <img src="{{ url_for('static', filename='../uploads/' + record.image_filename) }}" alt="Record Image">
+        <p><strong>Date:</strong> {{ record.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p>{{ record.narrative }}</p>
+    </div>
+    {% else %}
+    <p>No records yet. Start by uploading an image!</p>
+    {% endfor %}
+</div>
+{% endblock %}

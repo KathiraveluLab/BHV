@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from io import BytesIO, StringIO
 import csv
 import json
+import time
+from flask import jsonify
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -292,6 +294,12 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
+
+@app.route('/ping')
+@login_required
+def ping():
+    """Keep session alive endpoint for session timeout feature"""
+    return jsonify({'status': 'ok', 'timestamp': time.time()})
 
 # ============================================
 # USER ROUTES

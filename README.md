@@ -97,3 +97,13 @@ See [DOCKER.md](DOCKER.md) for complete Docker deployment guide including:
 
 No Python installation needed! 🐳
 "# Force deploy" 
+
+## Security Features
+
+- **Automatic Session Timeout**: Sessions expire after 15 minutes of inactivity (HIPAA §164.312(a)(2)(iii) compliance)
+  - User warning 3 minutes before timeout
+  - Automatic logout on expiration
+  - Activity detection (mouse, keyboard, scroll, touch)
+- **Secure Session Cookies**: HTTPOnly, Secure, and SameSite flags enabled
+- **Password Hashing**: Bcrypt password hashing
+- **CSRF Protection**: Flask-WTF CSRF tokens

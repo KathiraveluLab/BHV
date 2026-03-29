@@ -149,5 +149,47 @@
     <main>
         {% block content %}{% endblock %}
     </main>
+    {% if current_user.is_authenticated %}
+<script>
+// Session timeout warning for HIPAA compliance
+(function() {
+    let warningTimeout;
+    let logoutTimeout;
+    const WARNING_TIME = 12 * 60 * 1000; // 12 minutes
+    const LOGOUT_TIME = 15 * 60 * 1000;  // 15 minutes
+    
+    function resetTimers() {
+        clearTimeout(warningTimeout);
+        clearTimeout(logoutTimeout);
+        
+        warningTimeout = setTimeout(showWarning, WARNING_TIME);
+        logoutTimeout = setTimeout(forceLogout, LOGOUT_TIME);
+    }
+    
+    function showWarning() {
+        const continueSession = confirm(
+            'Your session will expire in 3 minutes due to inactivity.\n\n' +
+            'Click OK to stay logged in.'
+        );
+        
+        if (continueSession) {
+            fetch('/ping').then(() => resetTimers());
+        }
+    }
+    
+    function forceLogout() {
+        window.location.href = '/logout?reason=timeout';
+    }
+    
+    const events = ['mousedown', 'keypress', 'scroll', 'touchstart'];
+    events.forEach(event => {
+        document.addEventListener(event, resetTimers, true);
+    });
+    
+    console.log('Session timeout initialized');
+    resetTimers();
+})();
+</script>
+{% endif %}
 </body>
 </html>

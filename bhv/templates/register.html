@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Register - BHV{% endblock %}
+{% block content %}
+<div style="max-width: 450px; margin: 80px auto; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">Create Account</h2>
+    
+    <form method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+        <div>
+            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Username</label>
+            <input type="text" 
+                   name="username" 
+                   required 
+                   placeholder="Choose a username"
+                   style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+        
+        <div>
+            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Email</label>
+            <input type="email" 
+                   name="email" 
+                   required 
+                   placeholder="your@email.com"
+                   style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+        
+        <div>
+            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Password</label>
+            <input type="password" 
+                   name="password" 
+                   required 
+                   minlength="6"
+                   placeholder="At least 6 characters"
+                   style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+        
+        <div>
+            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Confirm Password</label>
+            <input type="password" 
+                   name="confirm_password" 
+                   required 
+                   minlength="6"
+                   placeholder="Re-enter password"
+                   style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+        
+        <button type="submit" 
+                style="padding: 15px; background: #2ecc71; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s;"
+                onmouseover="this.style.background='#27ae60'"
+                onmouseout="this.style.background='#2ecc71'">
+            Register
+        </button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 20px; color: #666;">
+        Already have an account? 
+        <a href="{{ url_for('login') }}" style="color: #3498db; text-decoration: none; font-weight: bold;">Login here</a>
+    </p>
+</div>
+{% endblock %}

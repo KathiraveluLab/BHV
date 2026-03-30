@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Login - BHV{% endblock %}
+{% block content %}
+<div style="max-width: 450px; margin: 100px auto; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">Login to BHV</h2>
+    
+    <form method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+        <div>
+            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Username</label>
+            <input type="text" 
+                   name="username" 
+                   required 
+                   placeholder="Enter your username"
+                   style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+        
+        <div>
+            <label style="display: block; margin-bottom: 8px; color: #555; font-weight: bold;">Password</label>
+            <input type="password" 
+                   name="password" 
+                   required 
+                   placeholder="Enter your password"
+                   style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem;">
+        </div>
+        
+        <button type="submit" 
+                style="padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s;"
+                onmouseover="this.style.background='#2980b9'"
+                onmouseout="this.style.background='#3498db'">
+            Login
+        </button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 20px; color: #666;">
+        Don't have an account? 
+        <a href="{{ url_for('register') }}" style="color: #3498db; text-decoration: none; font-weight: bold;">Register here</a>
+    </p>
+</div>
+{% endblock %}

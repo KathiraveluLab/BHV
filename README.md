@@ -20,7 +20,7 @@ The storage of the images could be in a file system with an index to retrieve th
 
 ## Local Development Setup
 
-For detailed contribution and development instructions, refer to CONTRIBUTING.md.
+For detailed contribution and development instructions, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Quick Setup
 

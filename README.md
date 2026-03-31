@@ -17,3 +17,20 @@ The system should avoid unnecessary bloat to enable easy installation in healthc
 The front-end should be kept minimal to allow the entire system to be run from a single command (rather than expecting the front-end, backend, and database to be run separately).
 
 The storage of the images could be in a file system with an index to retrieve them easily. The index itself could be in a database to allow easy queries.
+
+## Local Development Setup
+
+For detailed contribution and development instructions, refer to CONTRIBUTING.md.
+
+### Quick Setup
+
+```bash
+git clone https://github.com/KathiraveluLab/BHV.git
+cd BHV
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+This provides a minimal setup to get started with the project locally.
+

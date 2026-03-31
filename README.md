@@ -25,10 +25,10 @@ For detailed contribution and development instructions, refer to CONTRIBUTING.md
 ### Quick Setup
 
 ```bash
-git clone https://github.com/KathiraveluLab/BHV.git
+git clone https://github.com/your-username/BHV.git
 cd BHV
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate (CMD) or .\venv\Scripts\Activate.ps1 (PowerShell)
 pip install -r requirements.txt
 ```
 

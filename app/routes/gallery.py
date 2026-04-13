@@ -80,7 +80,7 @@ def delete_image(request: Request, image_id: str):
 
     try:
         image = images_collection.find_one({"_id": ObjectId(image_id)})
-    except Exception:
+    except InvalidId:
         return RedirectResponse(url="/gallery", status_code=303)
 
     if image and image.get("user_id") == user["id"]:

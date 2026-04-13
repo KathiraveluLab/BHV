@@ -22,10 +22,22 @@ def admin_panel(request: Request):
         return RedirectResponse(url="/dashboard", status_code=303)
 
     images = list(images_collection.find().sort("created_at", -1))
+
+    user_ids = {
+        ObjectId(image["user_id"])
+        for image in images
+        if image.get("user_id")
+    }
+
+    owners = {
+        str(user["_id"]): user
+        for user in users_collection.find({"_id": {"$in": list(user_ids)}})
+    }
+
     for image in images:
         image["id"] = str(image["_id"])
         image["sentiment"] = image.get("sentiment", "neutral")
-        owner = users_collection.find_one({"_id": ObjectId(image.get("user_id"))})
+        owner = owners.get(image.get("user_id"))
         image["owner_email"] = owner.get("email") if owner else "Unknown"
 
     return templates.TemplateResponse(

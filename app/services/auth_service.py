@@ -88,7 +88,7 @@ def get_current_user_from_request(request: Request) -> Optional[dict[str, Any]]:
 
     try:
         user = users_collection.find_one({"_id": ObjectId(user_id)})
-    except Exception:
+    except InvalidId:
         return None
 
     if not user:

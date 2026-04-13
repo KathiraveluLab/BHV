@@ -1,5 +1,7 @@
 from bson import ObjectId
 from bson.errors import InvalidId
+from typing import Optional
+
 from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -14,8 +16,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory=str(BASE_DIR / "app" / "templates"))
 
 
-def require_admin_user(request: Request):
-    user = get_current_user_from_request(request)
+def require_admin_user(user: Optional[dict] = Depends(get_current_user_from_request)):
     if not user:
         raise HTTPException(status_code=303, headers={"Location": "/auth/login"})
     if user.get("role") != "admin":

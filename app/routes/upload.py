@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
+from typing import Optional
 
-from fastapi import APIRouter, File, Form, Request, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -16,8 +17,7 @@ SENTIMENT_CHOICES = ["positive", "neutral", "negative"]
 
 
 @router.get("/")
-def upload_page(request: Request):
-    user = get_current_user_from_request(request)
+def upload_page(request: Request, user: Optional[dict] = Depends(get_current_user_from_request)):
     if not user:
         return RedirectResponse(url="/auth/login", status_code=303)
     return templates.TemplateResponse(
@@ -38,8 +38,8 @@ def upload_image(
     description: str = Form(""),
     sentiment: str = Form("neutral"),
     image: UploadFile = File(...),
+    user: Optional[dict] = Depends(get_current_user_from_request),
 ):
-    user = get_current_user_from_request(request)
     if not user:
         return RedirectResponse(url="/auth/login", status_code=303)
 

@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Request
+from typing import Optional
+
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -33,16 +35,14 @@ def shutdown_database() -> None:
 
 
 @app.get("/")
-def index(request: Request):
-    user = get_current_user_from_request(request)
+def index(user: Optional[dict] = Depends(get_current_user_from_request)):
     if user:
         return RedirectResponse(url="/dashboard", status_code=303)
     return RedirectResponse(url="/auth/login", status_code=303)
 
 
 @app.get("/dashboard")
-def dashboard(request: Request):
-    user = get_current_user_from_request(request)
+def dashboard(request: Request, user: Optional[dict] = Depends(get_current_user_from_request)):
     if not user:
         return RedirectResponse(url="/auth/login", status_code=303)
     return templates.TemplateResponse("dashboard.html", {"request": request, "user": user})

@@ -1,5 +1,7 @@
 from bson import ObjectId
-from fastapi import APIRouter, Form, Request
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -15,8 +17,7 @@ SENTIMENT_CHOICES = ["positive", "neutral", "negative"]
 
 
 @router.get("/")
-def gallery_page(request: Request):
-    user = get_current_user_from_request(request)
+def gallery_page(request: Request, user: Optional[dict] = Depends(get_current_user_from_request)):
     if not user:
         return RedirectResponse(url="/auth/login", status_code=303)
 
@@ -45,8 +46,8 @@ def edit_image(
     title: str = Form(...),
     description: str = Form(""),
     sentiment: str = Form("neutral"),
+    user: Optional[dict] = Depends(get_current_user_from_request),
 ):
-    user = get_current_user_from_request(request)
     if not user:
         return RedirectResponse(url="/auth/login", status_code=303)
 
@@ -73,8 +74,7 @@ def edit_image(
 
 
 @router.post("/delete/{image_id}")
-def delete_image(request: Request, image_id: str):
-    user = get_current_user_from_request(request)
+def delete_image(request: Request, image_id: str, user: Optional[dict] = Depends(get_current_user_from_request)):
     if not user:
         return RedirectResponse(url="/auth/login", status_code=303)
 

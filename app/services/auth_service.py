@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 import jwt
 from bson import ObjectId
+from bson.errors import InvalidId
 from passlib.context import CryptContext
 from pymongo.errors import DuplicateKeyError
 from starlette.requests import Request

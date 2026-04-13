@@ -50,7 +50,7 @@ def create_user(email: str, password: str, role: str = "user") -> bool:
                 "email": email,
                 "password": hash_password(password),
                 "role": role,
-                "created_at": datetime.utcnow(),
+                "created_at": datetime.now(timezone.utc),
             }
         )
         return True

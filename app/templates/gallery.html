@@ -184,6 +184,77 @@
         </div>
     </main>
 
+    <script>
+        const previewModal = document.getElementById("preview-modal");
+        const closePreviewModalButton = document.getElementById("close-preview-modal");
+        const previewModalTitle = document.getElementById("preview-modal-title");
+        const previewModalImage = document.getElementById("preview-modal-image");
+        const previewModalPdf = document.getElementById("preview-modal-pdf");
+        const openPreviewButtons = Array.from(document.querySelectorAll(".open-preview-modal"));
+
+        const closePreviewModal = () => {
+            if (!previewModal) {
+                return;
+            }
+            previewModal.hidden = true;
+            previewModalImage.hidden = true;
+            previewModalPdf.hidden = true;
+            previewModalImage.removeAttribute("src");
+            previewModalPdf.removeAttribute("src");
+            document.body.style.overflow = "";
+        };
+
+        const openPreviewModal = (payload) => {
+            if (!previewModal) {
+                return;
+            }
+            previewModalTitle.textContent = payload.title || "Preview";
+            previewModalImage.hidden = true;
+            previewModalPdf.hidden = true;
+            previewModalImage.removeAttribute("src");
+            previewModalPdf.removeAttribute("src");
+
+            if (payload.type === "pdf") {
+                previewModalPdf.src = payload.path;
+                previewModalPdf.hidden = false;
+            } else {
+                previewModalImage.src = payload.path;
+                previewModalImage.hidden = false;
+            }
+
+            previewModal.hidden = false;
+            document.body.style.overflow = "hidden";
+        };
+
+        openPreviewButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                openPreviewModal({
+                    path: button.dataset.filePath,
+                    title: button.dataset.fileTitle,
+                    type: button.dataset.fileType,
+                });
+            });
+        });
+
+        if (closePreviewModalButton) {
+            closePreviewModalButton.addEventListener("click", closePreviewModal);
+        }
+
+        if (previewModal) {
+            previewModal.addEventListener("click", (event) => {
+                if (event.target === previewModal) {
+                    closePreviewModal();
+                }
+            });
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && previewModal && !previewModal.hidden) {
+                closePreviewModal();
+            }
+        });
+    </script>
+
     {% if not admin_view %}
     <script>
         const cardsContainer = document.getElementById("gallery-cards");
@@ -204,12 +275,6 @@
         const modalDescriptionInput = document.getElementById("modal-description");
         const modalSentimentInput = document.getElementById("modal-sentiment");
         const openModalButtons = Array.from(document.querySelectorAll(".open-edit-modal"));
-        const previewModal = document.getElementById("preview-modal");
-        const closePreviewModalButton = document.getElementById("close-preview-modal");
-        const previewModalTitle = document.getElementById("preview-modal-title");
-        const previewModalImage = document.getElementById("preview-modal-image");
-        const previewModalPdf = document.getElementById("preview-modal-pdf");
-        const openPreviewButtons = Array.from(document.querySelectorAll(".open-preview-modal"));
 
         let currentPage = 1;
         let filteredCards = [...allCards];
@@ -318,18 +383,6 @@
             document.body.style.overflow = "";
         };
 
-        const closePreviewModal = () => {
-            if (!previewModal) {
-                return;
-            }
-            previewModal.hidden = true;
-            previewModalImage.hidden = true;
-            previewModalPdf.hidden = true;
-            previewModalImage.removeAttribute("src");
-            previewModalPdf.removeAttribute("src");
-            document.body.style.overflow = "";
-        };
-
         const openModal = (payload) => {
             if (!editModal || !editModalForm) {
                 return;
@@ -339,28 +392,6 @@
             modalDescriptionInput.value = payload.description || "";
             modalSentimentInput.value = payload.sentiment || "neutral";
             editModal.hidden = false;
-            document.body.style.overflow = "hidden";
-        };
-
-        const openPreviewModal = (payload) => {
-            if (!previewModal) {
-                return;
-            }
-            previewModalTitle.textContent = payload.title || "Preview";
-            previewModalImage.hidden = true;
-            previewModalPdf.hidden = true;
-            previewModalImage.removeAttribute("src");
-            previewModalPdf.removeAttribute("src");
-
-            if (payload.type === "pdf") {
-                previewModalPdf.src = payload.path;
-                previewModalPdf.hidden = false;
-            } else {
-                previewModalImage.src = payload.path;
-                previewModalImage.hidden = false;
-            }
-
-            previewModal.hidden = false;
             document.body.style.overflow = "hidden";
         };
 
@@ -389,10 +420,6 @@
             });
         });
 
-        if (closePreviewModalButton) {
-            closePreviewModalButton.addEventListener("click", closePreviewModal);
-        }
-
         if (editModal) {
             editModal.addEventListener("click", (event) => {
                 if (event.target === editModal) {
@@ -401,100 +428,13 @@
             });
         }
 
-        if (previewModal) {
-            previewModal.addEventListener("click", (event) => {
-                if (event.target === previewModal) {
-                    closePreviewModal();
-                }
-            });
-        }
-
         document.addEventListener("keydown", (event) => {
-            if (event.key !== "Escape") {
-                return;
-            }
-            if (editModal && !editModal.hidden) {
+            if (event.key === "Escape" && editModal && !editModal.hidden) {
                 closeModal();
-            }
-            if (previewModal && !previewModal.hidden) {
-                closePreviewModal();
             }
         });
 
         applyFilters();
-    </script>
-    {% endif %}
-
-    {% if admin_view %}
-    <script>
-        const previewModal = document.getElementById("preview-modal");
-        const closePreviewModalButton = document.getElementById("close-preview-modal");
-        const previewModalTitle = document.getElementById("preview-modal-title");
-        const previewModalImage = document.getElementById("preview-modal-image");
-        const previewModalPdf = document.getElementById("preview-modal-pdf");
-        const openPreviewButtons = Array.from(document.querySelectorAll(".open-preview-modal"));
-
-        const closePreviewModal = () => {
-            if (!previewModal) {
-                return;
-            }
-            previewModal.hidden = true;
-            previewModalImage.hidden = true;
-            previewModalPdf.hidden = true;
-            previewModalImage.removeAttribute("src");
-            previewModalPdf.removeAttribute("src");
-            document.body.style.overflow = "";
-        };
-
-        const openPreviewModal = (payload) => {
-            if (!previewModal) {
-                return;
-            }
-            previewModalTitle.textContent = payload.title || "Preview";
-            previewModalImage.hidden = true;
-            previewModalPdf.hidden = true;
-            previewModalImage.removeAttribute("src");
-            previewModalPdf.removeAttribute("src");
-
-            if (payload.type === "pdf") {
-                previewModalPdf.src = payload.path;
-                previewModalPdf.hidden = false;
-            } else {
-                previewModalImage.src = payload.path;
-                previewModalImage.hidden = false;
-            }
-
-            previewModal.hidden = false;
-            document.body.style.overflow = "hidden";
-        };
-
-        openPreviewButtons.forEach((button) => {
-            button.addEventListener("click", () => {
-                openPreviewModal({
-                    path: button.dataset.filePath,
-                    title: button.dataset.fileTitle,
-                    type: button.dataset.fileType,
-                });
-            });
-        });
-
-        if (closePreviewModalButton) {
-            closePreviewModalButton.addEventListener("click", closePreviewModal);
-        }
-
-        if (previewModal) {
-            previewModal.addEventListener("click", (event) => {
-                if (event.target === previewModal) {
-                    closePreviewModal();
-                }
-            });
-        }
-
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape" && previewModal && !previewModal.hidden) {
-                closePreviewModal();
-            }
-        });
     </script>
     {% endif %}
 

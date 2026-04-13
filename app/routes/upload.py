@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from app.config import BASE_DIR
 from app.database import images_collection
 from app.services.auth_service import get_current_user_from_request
-from app.services.image_service import is_allowed_image, is_valid_sentiment, save_image_file
+from app.services.image_service import detect_upload_file_extension, is_valid_sentiment, save_image_file
 
 
 router = APIRouter()
@@ -56,7 +56,8 @@ def upload_image(
             status_code=400,
         )
 
-    if not image.filename or not is_allowed_image(image.filename):
+    detected_extension = detect_upload_file_extension(image)
+    if detected_extension is None:
         return templates.TemplateResponse(
             "upload.html",
             {
@@ -68,7 +69,7 @@ def upload_image(
             status_code=400,
         )
 
-    image_path = save_image_file(image, user["id"])
+    image_path = save_image_file(image, user["id"], detected_extension)
     images_collection.insert_one(
         {
             "user_id": user["id"],

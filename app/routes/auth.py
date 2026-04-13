@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.config import BASE_DIR
+from app.config import ACCESS_TOKEN_COOKIE_SECURE, BASE_DIR
 from app.services.auth_service import authenticate_user, create_access_token, create_user
 
 
@@ -54,6 +54,7 @@ def login(request: Request, email: str = Form(...), password: str = Form(...)):
         key="access_token",
         value=token,
         httponly=True,
+        secure=ACCESS_TOKEN_COOKIE_SECURE,
         samesite="lax",
         max_age=60 * 60,
     )

@@ -1,5 +1,6 @@
 from bson import ObjectId
-from fastapi import APIRouter, Request
+from bson.errors import InvalidId
+from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -13,13 +14,17 @@ router = APIRouter()
 templates = Jinja2Templates(directory=str(BASE_DIR / "app" / "templates"))
 
 
-@router.get("/")
-def admin_panel(request: Request):
+def require_admin_user(request: Request):
     user = get_current_user_from_request(request)
     if not user:
-        return RedirectResponse(url="/auth/login", status_code=303)
+        raise HTTPException(status_code=303, headers={"Location": "/auth/login"})
     if user.get("role") != "admin":
-        return RedirectResponse(url="/dashboard", status_code=303)
+        raise HTTPException(status_code=303, headers={"Location": "/dashboard"})
+    return user
+
+
+@router.get("/")
+def admin_panel(request: Request, user=Depends(require_admin_user)):
 
     images = list(images_collection.find().sort("created_at", -1))
 
@@ -53,16 +58,11 @@ def admin_panel(request: Request):
 
 
 @router.post("/delete/{image_id}")
-def delete_any_image(request: Request, image_id: str):
-    user = get_current_user_from_request(request)
-    if not user:
-        return RedirectResponse(url="/auth/login", status_code=303)
-    if user.get("role") != "admin":
-        return RedirectResponse(url="/dashboard", status_code=303)
+def delete_any_image(request: Request, image_id: str, user=Depends(require_admin_user)):
 
     try:
         image = images_collection.find_one({"_id": ObjectId(image_id)})
-    except Exception:
+    except InvalidId:
         return RedirectResponse(url="/admin", status_code=303)
 
     if image:

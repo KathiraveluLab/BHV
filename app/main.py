@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.config import BASE_DIR
-from app.database import users_collection
+from app.database import close_database, init_database, users_collection
 from app.routes import admin, auth, gallery, upload
 from app.services.auth_service import get_current_user_from_request
 
@@ -23,7 +23,13 @@ app.include_router(admin.router, prefix="/admin", tags=["admin"])
 
 @app.on_event("startup")
 def setup_indexes() -> None:
+    init_database()
     users_collection.create_index("email", unique=True)
+
+
+@app.on_event("shutdown")
+def shutdown_database() -> None:
+    close_database()
 
 
 @app.get("/")

@@ -52,7 +52,7 @@ def edit_image(
 
     try:
         image_doc = images_collection.find_one({"_id": ObjectId(image_id)})
-    except Exception:
+    except InvalidId:
         return RedirectResponse(url="/gallery", status_code=303)
 
     if not image_doc or image_doc.get("user_id") != user["id"]:

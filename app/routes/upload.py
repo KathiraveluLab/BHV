@@ -76,7 +76,7 @@ def upload_image(
             "description": description.strip(),
             "sentiment": sentiment,
             "image_path": image_path,
-            "created_at": datetime.utcnow(),
+            "created_at": datetime.now(timezone.utc),
         }
     )
 

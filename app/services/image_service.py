@@ -29,7 +29,7 @@ def save_image_file(upload_file: UploadFile, user_id: str) -> str:
     with destination.open("wb") as buffer:
         shutil.copyfileobj(upload_file.file, buffer)
 
-    relative_path = os.path.join("storage", "images", user_id, new_filename)
+    relative_path = (Path("storage") / "images" / user_id / new_filename).as_posix()
     return relative_path
 
 

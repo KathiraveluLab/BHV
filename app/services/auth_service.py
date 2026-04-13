@@ -50,7 +50,7 @@ def create_user(email: str, password: str, role: str = "user") -> bool:
                 "email": email,
                 "password": hash_password(password),
                 "role": role,
-                "created_at": datetime.utcnow(),
+                "created_at": datetime.now(timezone.utc),
             }
         )
         return True
@@ -88,7 +88,7 @@ def get_current_user_from_request(request: Request) -> Optional[dict[str, Any]]:
 
     try:
         user = users_collection.find_one({"_id": ObjectId(user_id)})
-    except Exception:
+    except InvalidId:
         return None
 
     if not user:
